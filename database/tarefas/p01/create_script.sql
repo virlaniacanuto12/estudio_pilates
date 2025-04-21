@@ -77,7 +77,7 @@ CREATE TABLE funcionario_permissoes (
 -- SERVICOS
 CREATE TABLE servicos (
     codigo SERIAL PRIMARY KEY,
-    modalidade CHAR(1) NOT NULL,
+    modalidade VARCHAR(50) NOT NULL,
     niveis_dificuldade CHAR(1) NOT NULL
 );
 
