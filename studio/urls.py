@@ -6,7 +6,9 @@ from . import views # Garanta que esta linha está importando as views
 app_name = 'studio' # Namespace definido
 
 urlpatterns = [
-    # Nova linha: Mapeia o caminho raiz do app ('/studio/') para a view listar_servicos
-    # Demos o nome 'lista_servicos' a esta rota URL
+    
     path('', views.listar_servicos, name='lista_servicos'),
+    path('novo/', views.criar_servico, name='criar_servico'),
+    path('editar/<int:pk>/', views.editar_servico, name='editar_servico'),
+    path('excluir/<int:pk>/', views.excluir_servico, name='excluir_servico'),
 ]

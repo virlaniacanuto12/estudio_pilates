@@ -1,13 +1,22 @@
+# studio/models.py
 from django.db import models
 
-# Model para os Serviços oferecidos pelo estúdio
 class Servico(models.Model):
-    # Django cria um 'id' (PK) automaticamente, que serve como nosso 'cod'
-    
-    modalidade = models.CharField(max_length=50)
-    nivel_dificuldade = models.CharField(max_length=50, blank=True, null=True) # Ex: "Iniciante", "Intermediário", "Avançado". Opcional?
-    descricao = models.TextField(blank=True, null=True) # Descrição mais detalhada do serviço (opcional)
 
-    # Define como o objeto Servico será exibido (ex: na área admin)
+    # Opções para niveis_dificuldade
+    NIVEIS_DIFICULDADE_CHOICES = [
+        ('Iniciante', 'Iniciante'),
+        ('Intermediário', 'Intermediário'),
+        ('Avançado', 'Avançado'),
+    ]
+
+    modalidade = models.CharField(max_length=50) # Not Null por padrão (null=False, blank=False)
+    niveis_dificuldade = models.CharField(
+        max_length=30,
+        choices=NIVEIS_DIFICULDADE_CHOICES # Usando as choices definidas acima
+        # blank=False, null=False por padrão, atendendo "Not Null"
+    )
+    descricao = models.TextField(blank=True, null=True) # Mantido como opcional
+
     def __str__(self):
-        return self.modalidade
+        return f"{self.modalidade} ({self.niveis_dificuldade})" # Sugestão para melhorar o __str__
