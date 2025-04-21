@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from studio import views as studio_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('studio/', include('studio.urls')), 
+    path('', studio_views.listar_servicos, name='home'),
 ]
