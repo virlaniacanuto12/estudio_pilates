@@ -29,4 +29,9 @@ O link também foi compartilhado no Discord conforme solicitado.
 - 🔗 [Documentação de Modelos](docs/docDeModelos.md)
 - 🔗 [Documentação Arquitetural](docs/docArquitetura.md)
 - 🔗 [Documentação de Iteração](docs/planoDeIteracoes.md)
+
 ---
+
+## 📂 Tarefas de PABD
+
+- 🔗 [Projeto 01](database/tarefas/p01/projeto01.md)
