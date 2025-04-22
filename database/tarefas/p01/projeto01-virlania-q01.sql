@@ -15,6 +15,7 @@ FROM aulas_ministradas am
 JOIN pessoa p ON am.cpf = p.cpf
 ORDER BY am.num_aulas_ministradas DESC;
 
-
+8234664
+1d834dc 
 
 
