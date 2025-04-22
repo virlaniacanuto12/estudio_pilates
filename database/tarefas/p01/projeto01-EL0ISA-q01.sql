@@ -4,14 +4,12 @@ FROM conta_receber cr
 LEFT JOIN pagamento p ON cr.codigo = p.conta_receber_codigo AND p.status = TRUE
 WHERE 
   (
-    -- Contas a vencer no mês atual e não pagas
     (cr.vencimento >= date_trunc('month', current_date) 
      AND cr.vencimento < date_trunc('month', current_date) + interval '1 month')
     AND p.conta_receber_codigo IS NULL
   )
   OR
   (
-    -- Contas atrasadas e não pagas
     (cr.vencimento < current_date)
     AND p.conta_receber_codigo IS NULL
   );
