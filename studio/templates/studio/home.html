@@ -1,0 +1,22 @@
+{% extends 'studio/base.html' %}
+
+{% block title %}Página Inicial{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="mb-4">Bem-vindo ao Studio de Pilates</h1>
+        <p class="lead">Sistema de gerenciamento de serviços</p>
+        
+        <div class="card mt-5">
+            <div class="card-body">
+                <h5 class="card-title">Acesse nossos serviços</h5>
+                <p class="card-text">Gerencie todas as modalidades oferecidas pelo studio.</p>
+                <a href="{% url 'studio:lista_servicos' %}" class="btn btn-primary btn-lg">
+                    Ver Serviços
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
