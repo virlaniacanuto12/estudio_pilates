@@ -6,7 +6,7 @@ from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 
 # --- View listar_servicos ATUALIZADA ---
-def listar_servicos(request):
+def lista_servicos(request):
     """
     Lista os serviços, aplicando filtros de modalidade e nível
     enviados via GET através do ServicoFilterForm.
@@ -44,14 +44,14 @@ def listar_servicos(request):
     }
 
     # 6. Renderiza o template
-    return render(request, 'studio/listar_servicos.html', contexto)
+    return render(request, 'studio/servicos/lista_servicos.html', contexto)
 # --- Fim da View listar_servicos ATUALIZADA ---
 
 
 # ... (views criar_servico, editar_servico, excluir_servico existentes) ...
 
 # --- Nova View ---
-def criar_servico(request):
+def novo_servico(request):
     """
     Esta view lida com a exibição do formulário para criar um novo serviço (GET)
     e com o processamento dos dados enviados pelo formulário (POST).
@@ -74,7 +74,7 @@ def criar_servico(request):
         'form': form,
     }
     # Renderiza o template 'criar_servico.html', passando o form
-    return render(request, 'studio/criar_servico.html', contexto)
+    return render(request, 'studio/servicos/criar_servico.html', contexto)
 
 # --- Nova View para Editar ---
 def editar_servico(request, pk):
@@ -104,7 +104,7 @@ def editar_servico(request, pk):
         # 'servico': servico
     }
     # Reutiliza o mesmo template do formulário de criação
-    return render(request, 'studio/criar_servico.html', contexto)
+    return render(request, 'studio/servicos/criar_servico.html', contexto)
 
 def excluir_servico(request, pk):
     servico = get_object_or_404(Servico, pk=pk)
@@ -117,3 +117,7 @@ def excluir_servico(request, pk):
         return redirect('studio:lista_servicos')
     else:
         return redirect('studio:lista_servicos')
+
+
+def home(request):
+    return render(request, 'studio/home.html')

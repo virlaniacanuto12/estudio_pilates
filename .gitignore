@@ -61,6 +61,7 @@ db.sqlite3-journal
 media/
 static_root/
 staticfiles/
+/volumes/ 
 
 # Environments
 .env
@@ -104,3 +105,7 @@ cython_debug/
 # Arquivos de SO
 .DS_Store
 Thumbs.db
+
+# Docker
+docker-compose.yml
+dockerfile

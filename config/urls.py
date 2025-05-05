@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from studio import views as studio_views
+from studio.views import home as studio_home  # Importação absoluta
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('studio/', include('studio.urls')), 
-    path('', studio_views.listar_servicos, name='home'),
+    path('', studio_home, name='home'),  # Usando o alias direto
+    path('servicos/', include('studio.urls')),
 ]
