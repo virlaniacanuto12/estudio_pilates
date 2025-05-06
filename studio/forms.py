@@ -1,6 +1,7 @@
 # studio/forms.py
 from django import forms
 from .models import Servico
+from .models import Funcionario
 
 class ServicoForm(forms.ModelForm):
     class Meta:
@@ -36,3 +37,8 @@ class ServicoFilterForm(forms.Form):
         label='Filtrar por Nível',
         widget=forms.Select(attrs={'class': 'form-select'})
     )
+
+class FuncionarioForm(forms.ModelForm):
+    class Meta:
+        model = Funcionario
+        fields = '__all__'
