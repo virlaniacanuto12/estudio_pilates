@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
+from .models import Funcionario
+from .forms import FuncionarioForm 
 
 # --- View listar_servicos ATUALIZADA ---
 def lista_servicos(request):
@@ -118,6 +120,16 @@ def excluir_servico(request, pk):
     else:
         return redirect('studio:lista_servicos')
 
+
+# View Funcionario 
+def criar_funcionario(request):
+    form = FuncionarioForm()
+    if request.method == 'POST':
+        form = FuncionarioForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # redirecionar ou exibir mensagem
+    return render(request, 'studio/funcionario/criar_funcionario.html', {'form': form})
 
 def home(request):
     return render(request, 'studio/home.html')

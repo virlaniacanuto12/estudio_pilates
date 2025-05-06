@@ -11,4 +11,7 @@ urlpatterns = [
     path('novo/', views.novo_servico, name='novo_servico'),
     path('editar/<int:pk>/', views.editar_servico, name='editar_servico'),
     path('excluir/<int:pk>/', views.excluir_servico, name='excluir_servico'),
+
+    # Funcionario
+    path('criar_funcionario/', views.criar_funcionario, name="criar_funcionario")
 ]

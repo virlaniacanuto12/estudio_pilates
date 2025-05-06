@@ -21,5 +21,5 @@ from studio.views import home as studio_home  # Importação absoluta
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', studio_home, name='home'),  # Usando o alias direto
-    path('servicos/', include('studio.urls')),
+    path('studio/', include('studio.urls')),
 ]
