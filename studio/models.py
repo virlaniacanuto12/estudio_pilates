@@ -1,5 +1,7 @@
 # studio/models.py
 from django.db import models
+from django.utils import timezone
+from datetime import date
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -23,14 +25,32 @@ class Servico(models.Model):
     def __str__(self):
         return f"{self.modalidade} ({self.niveis_dificuldade})" # Sugestão para melhorar o __str__
 
-class Funcionario(models.Model):
+class Pessoa(models.Model):
+    cpf = models.CharField(max_length=14, unique=True)
+    rg = models.CharField(max_length=20, blank=True)
+    nome = models.CharField(max_length=100)
+    telefone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    data_nascimento = models.DateField()
+    status = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True  # Isso define a herança abstrata
+
+    def calcular_idade(self):
+        today = date.today()
+        return today.year - self.data_nascimento.year - (
+            (today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day)
+        )
+
+class Funcionario(Pessoa):
     funcao = models.CharField(max_length=100)
     salario = models.DecimalField(max_digits=10, decimal_places=2)
     carga_horaria = models.FloatField()
     horarios_trabalho = models.JSONField(default=list)  # Armazena um array de strings
     login = models.CharField(max_length=50, unique=True)
     senha_hash = models.CharField(max_length=128)
-    permissoes = models.JSONField(default=list)  # Armazena um array de strings
+    #permissoes = models.JSONField(default=list)  # Armazena um array de strings
     is_admin = models.BooleanField(default=False)
     ultimo_acesso = models.DateTimeField(null=True, blank=True)
 
@@ -53,4 +73,4 @@ class Funcionario(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.login} ({self.funcao})"
+        return f"{self.login} ({self.funcao}) ({self.nome})"
