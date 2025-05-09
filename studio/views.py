@@ -122,14 +122,39 @@ def excluir_servico(request, pk):
 
 
 # View Funcionario 
-def criar_funcionario(request):
-    form = FuncionarioForm()
+def cadastro_funcionario(request):
     if request.method == 'POST':
-        form = FuncionarioForm(request.POST, request.FILES)
+        form = FuncionarioForm(request.POST)
         if form.is_valid():
             form.save()
-            # redirecionar ou exibir mensagem
-    return render(request, 'studio/funcionario/criar_funcionario.html', {'form': form})
+            return redirect('listar_funcionarios')
+    else:
+        form = FuncionarioForm()
+    return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
+
+
+def listar_funcionarios(request):
+    funcionarios = Funcionario.objects.all()
+    return render(request, 'studio/funcionario/listar_funcionario.html', {'funcionario': funcionario})
+
+
+def editar_funcionario(request, id):
+    funcionario = get_object_or_404(Funcionario, id=id)
+    if request.method == 'POST':
+        form = FuncionarioForm(request.POST, instance=funcionario)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_funcionario')
+    else:
+        form = FuncionarioForm(instance=funcionario)
+    return render(request, 'studio/funcionario/funcionario_form.html', {'form': form})
+
+
+def excluir_funcionario(request, id):
+    funcionario = get_object_or_404(Funcionario, id=id)
+    funcionario.delete()
+    messages.success(request, "Funcionário excluído com sucesso!")
+    return redirect('listar_funcionario')
 
 def home(request):
     return render(request, 'studio/home.html')
