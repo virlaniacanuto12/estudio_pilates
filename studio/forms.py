@@ -39,6 +39,21 @@ class ServicoFilterForm(forms.Form):
     )
 
 class FuncionarioForm(forms.ModelForm):
+    from django import forms
+from .models import Funcionario
+
+class FuncionarioForm(forms.ModelForm):
+    senha = forms.CharField(widget=forms.PasswordInput(), required=False)
+
     class Meta:
         model = Funcionario
-        fields = '__all__'
+        fields = ['nome', 'cpf', 'rg', 'telefone', 'email', 'data_nascimento', 'funcao', 'salario', 
+                  'carga_horaria', 'horarios_trabalho', 'login', 'senha', 'is_admin']
+
+    def save(self, commit=True):
+        funcionario = super().save(commit=False)
+        if self.cleaned_data['senha']:
+            funcionario.senha_hash = self.cleaned_data['senha']
+        if commit:
+            funcionario.save()
+        return funcionario

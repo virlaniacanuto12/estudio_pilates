@@ -1,5 +1,3 @@
-# studio/urls.py
-
 from django.urls import path
 from . import views
 
@@ -13,5 +11,9 @@ urlpatterns = [
     path('excluir/<int:pk>/', views.excluir_servico, name='excluir_servico'),
 
     # Funcionario
-    path('criar_funcionario/', views.criar_funcionario, name="criar_funcionario")
+    path('funcionarios/', views.listar_funcionarios, name='listar_funcionarios'),
+    path('funcionarios/novo/', views.cadastro_funcionario, name='cadastro_funcionario'),
+    path('funcionarios/editar/<int:id>/', views.editar_funcionario, name='editar_funcionario'),
+    path('funcionarios/excluir/<int:id>/', views.excluir_funcionario, name='excluir_funcionario'),
+
 ]
