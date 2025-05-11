@@ -2,6 +2,8 @@
 from django import forms
 from .models import Servico
 from .models import Funcionario
+from .models import Aluno
+from .models import Plano
 
 class ServicoForm(forms.ModelForm):
     class Meta:
@@ -57,3 +59,26 @@ class FuncionarioForm(forms.ModelForm):
         if commit:
             funcionario.save()
         return funcionario
+
+
+class AlunoForm(forms.ModelForm):
+    class Meta:
+        model = Aluno
+        fields = [
+            'nome', 'cpf', 'rg', 'telefone', 'email', 'data_nascimento',
+            'profissao', 'historico_saude', 'data_inicio_plano',
+            'data_vencimento_plano', 'plano_ativo', 'evolucao', 'plano'
+        ]
+    plano = forms.ModelChoiceField(
+        queryset=Plano.objects.all(),
+        empty_label="Selecione o Plano",
+        required=True,
+        label="Código do Plano",
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        to_field_name='codigo' 
+    )
+        
+class PlanoForm(forms.ModelForm):
+    class Meta:
+        model = Plano
+        fields = ['codigo', 'nome', 'qtd_aulas', 'valor_aula', 'status', 'limite_vigencia']

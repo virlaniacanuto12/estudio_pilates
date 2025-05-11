@@ -6,7 +6,10 @@ from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 from .models import Funcionario
 from .forms import FuncionarioForm 
-
+from .models import Aluno
+from .forms import AlunoForm 
+from .models import Plano
+from .forms import PlanoForm
 
 # View Serviços
 def lista_servicos(request):
@@ -104,6 +107,77 @@ def excluir_funcionario(request, id):
     funcionario.delete()
     messages.success(request, "Funcionário excluído com sucesso!")
     return redirect('listar_funcionario')
+
+#View Aluno
+def listar_alunos(request):
+    alunos = Aluno.objects.all()
+    return render(request, 'studio/aluno/listar_alunos.html', {'alunos': alunos})
+
+
+def cadastro_aluno(request):
+    if request.method == 'POST':
+        form = AlunoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('studio:listar_alunos')
+    else:
+        form = AlunoForm()
+    return render(request, 'studio/aluno/cadastro_aluno.html', {'form': form})
+
+
+def editar_aluno(request, id):
+    aluno = get_object_or_404(Aluno, id=id)
+    if request.method == 'POST':
+        form = AlunoForm(request.POST, instance=aluno)
+        if form.is_valid():
+            form.save()
+            return redirect('studio:listar_alunos')
+    else:
+        form = AlunoForm(instance=aluno)
+    return render(request, 'studio/aluno/editar_aluno.html', {'form': form})
+
+
+def excluir_aluno(request, id):
+    aluno = get_object_or_404(Aluno, id=id)
+    aluno.delete()
+    messages.success(request, "Aluno excluído com sucesso!")
+    return redirect('studio:listar_alunos')
+
+
+#View Plano
+def listar_planos(request):
+    planos = Plano.objects.all()
+    return render(request, 'studio/plano/listar_planos.html', {'planos': planos})
+
+
+def cadastro_plano(request):
+    if request.method == 'POST':
+        form = PlanoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('studio:listar_planos')
+    else:
+        form = PlanoForm()
+    return render(request, 'studio/plano/cadastro_plano.html', {'form': form})
+
+
+def editar_plano(request, id):
+    plano = get_object_or_404(Plano, id=id)
+    if request.method == 'POST':
+        form = PlanoForm(request.POST, instance=plano)
+        if form.is_valid():
+            form.save()
+            return redirect('studio:listar_planos')
+    else:
+        form = PlanoForm(instance=plano)
+    return render(request, 'studio/plano/editar_plano.html', {'form': form})
+
+
+def excluir_plano(request, id):
+    plano = get_object_or_404(Plano, id=id)
+    plano.delete()
+    messages.success(request, "Plano excluído com sucesso!")
+    return redirect('studio:listar_planos')
 
 def home(request):
     return render(request, 'studio/home.html')

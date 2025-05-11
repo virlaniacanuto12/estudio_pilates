@@ -74,3 +74,27 @@ class Funcionario(Pessoa):
 
     def __str__(self):
         return f"{self.login} ({self.funcao}) ({self.nome})"
+    
+    
+class Plano(models.Model):
+    codigo = models.IntegerField(unique=True)
+    nome = models.CharField(max_length=100)
+    qtd_aulas = models.IntegerField()
+    valor_aula = models.FloatField()
+    status = models.BooleanField(default=True)
+    limite_vigencia = models.DateField()
+
+    def __str__(self):
+        return f"{self.nome} (Código: {self.codigo})"
+
+class Aluno(Pessoa):
+    profissao = models.CharField(max_length=100)
+    historico_saude = models.TextField()
+    data_inicio_plano = models.DateField()
+    data_vencimento_plano = models.DateField()
+    plano = models.ForeignKey('studio.Plano', on_delete=models.SET_NULL, null=True, blank=True)
+    plano_ativo = models.BooleanField(default=True)
+    evolucao = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.cpf} ({self.nome})"
