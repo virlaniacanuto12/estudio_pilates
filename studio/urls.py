@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import StudioLoginView
+
 
 app_name = 'studio'
 
@@ -28,6 +30,7 @@ urlpatterns = [
     path('planos/<int:id>/editar/', views.editar_plano, name='editar_plano'),
     path('planos/<int:id>/excluir/', views.excluir_plano, name='excluir_plano'),
 
-
+    #Login
+    path('login/', StudioLoginView.as_view(), name='login'),
 
 ]
