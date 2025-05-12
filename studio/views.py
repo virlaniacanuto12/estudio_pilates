@@ -2,6 +2,8 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 from .models import Funcionario
@@ -10,6 +12,8 @@ from .models import Aluno
 from .forms import AlunoForm 
 from .models import Plano
 from .forms import PlanoForm
+from .forms import CustomLoginForm
+
 
 # View Serviços
 def lista_servicos(request):
@@ -179,5 +183,10 @@ def excluir_plano(request, id):
     messages.success(request, "Plano excluído com sucesso!")
     return redirect('studio:listar_planos')
 
+#LoginView - view pronta do Django para autenticação
+class StudioLoginView(LoginView):
+    template_name = 'studio/login.html'
+    authentication_form = AuthenticationForm
+
 def home(request):
-    return render(request, 'studio/home.html')
+    return render(request, 'studio/login.html')
