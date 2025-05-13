@@ -45,14 +45,13 @@ class Pessoa(models.Model):
 
 class Funcionario(Pessoa):
     funcao = models.CharField(max_length=100)
-    salario = models.DecimalField(max_digits=10, decimal_places=2)
+    salario = models.DecimalField(max_digits=10, decimal_places=4)
     carga_horaria = models.FloatField()
-    horarios_trabalho = models.JSONField(default=list)  # Armazena um array de strings
+    horarios_trabalho = models.TextField(blank=True)
     login = models.CharField(max_length=50, unique=True)
     senha_hash = models.CharField(max_length=128)
-    #permissoes = models.JSONField(default=list)  # Armazena um array de strings
     is_admin = models.BooleanField(default=False)
-    ultimo_acesso = models.DateTimeField(null=True, blank=True)
+    ultimo_acesso =  models.DateTimeField(default=timezone.now, editable=False)
 
     def autenticar(self, senha: str) -> bool:
         return check_password(senha, self.senha_hash)
