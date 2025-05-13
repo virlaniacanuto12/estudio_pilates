@@ -41,7 +41,13 @@ urlpatterns = [
     #Login
     path('login/', StudioLoginView.as_view(), name='login'),
 
-    
+    #Contas a receber
+    path('contas/', views.listar_contas, name='listar_contas'),  
+    path('contas/novo/', views.registrar_conta, name='registrar_conta'),
+    path('contas/editar/<int:pk>/', views.editar_conta, name='editar_conta'),
 
+    #Pagamentos
+    path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
+    path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
 
 ]
