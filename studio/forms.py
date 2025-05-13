@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML
 from crispy_bootstrap5.bootstrap5 import FloatingField 
+
  
 
 class ServicoForm(forms.ModelForm):
@@ -47,6 +48,16 @@ class ServicoFilterForm(forms.Form):
 
 
 class FuncionarioForm(forms.ModelForm):
+
+    HORARIOS_CHOICES = [(f"{h:02d}:00", f"{h:02d}:00") for h in range(6, 21)]
+
+    horarios_trabalho = forms.MultipleChoiceField(
+        choices=HORARIOS_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        label="Horários de Trabalho",
+        required=False,
+    )
+
     class Meta:
         model = Funcionario
         fields = '__all__'  
@@ -58,7 +69,6 @@ class FuncionarioForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.enctype = 'multipart/form-data'
         self.helper.label_class = 'form-label'
-        self.helper.field_class = 'form-control'
         self.helper.layout = Layout(
 
             # Dados Pessoais
@@ -100,8 +110,6 @@ class FuncionarioForm(forms.ModelForm):
                 'observacoes'
             ),
 
-            # Botão de envio (opcional — pode deixar no template)
-            Submit('submit', 'Salvar Funcionário', css_class='btn btn-primary mt-3')
         )
 
 
