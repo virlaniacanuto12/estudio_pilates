@@ -29,6 +29,7 @@ O link também foi compartilhado no Discord conforme solicitado.
 - 🔗 [Documentação de Modelos](docs/docDeModelos.md)
 - 🔗 [Documentação Arquitetural](docs/docArquitetura.md)
 - 🔗 [Documentação de Iteração](docs/planoDeIteracoes.md)
+- 🔗 [Documentação de Tamanho Funcional](docs/docTamanhoFuncional.md)
 
 ---
 
