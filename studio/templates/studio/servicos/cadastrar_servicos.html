@@ -1,0 +1,54 @@
+{% extends 'studio/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Editar Serviço
+    {% else %}
+        Cadastrar Novo Serviço
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header {% if form.instance.pk %}bg-warning text-dark{% else %}bg-primary text-white{% endif %}">
+                    <h3 class="card-title mb-0">
+                        {% if form.instance.pk %}
+                            <i class="fas fa-edit me-2"></i>Editar Serviço: {{ form.instance.modalidade }}
+                        {% else %}
+                            <i class="fas fa-concierge-bell me-2"></i>Cadastrar Novo Serviço {# fas fa-concierge-bell é um exemplo de ícone para serviço #}
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data"> {# enctype é bom ter, mesmo sem upload de arquivo por enquanto #}
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'studio:lista_servicos' %}" class="btn btn-secondary me-md-2">
+                                {% if form.instance.pk %}
+                                    <i class="fas fa-arrow-left me-1"></i> Voltar
+                                {% else %}
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                {% endif %}
+                            </a>
+                            <button type="submit" class="btn {% if form.instance.pk %}btn-warning{% else %}btn-primary{% endif %}">
+                                <i class="fas fa-save me-1"></i>
+                                {% if form.instance.pk %}
+                                    Salvar Alterações
+                                {% else %}
+                                    Salvar Serviço
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

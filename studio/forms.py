@@ -11,37 +11,40 @@ from crispy_bootstrap5.bootstrap5 import FloatingField
 
  
 
-class ServicoForm(forms.ModelForm):
+class ServicoForm(forms.ModelForm): 
     class Meta:
         model = Servico
-        fields = ['modalidade', 'niveis_dificuldade', 'descricao'] # Atualizado o nome do campo
+        fields = ['modalidade', 'niveis_dificuldade', 'descricao'] #
 
         widgets = {
             'modalidade': forms.TextInput(attrs={'class': 'form-control'}),
-            'niveis_dificuldade': forms.Select(attrs={'class': 'form-select'}), # Mudado para Select por causa do 'choices' no model
+            'niveis_dificuldade': forms.Select(attrs={'class': 'form-select'}), 
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
         labels = {
             'modalidade': 'Modalidade*',
-            'niveis_dificuldade': 'Níveis de Dificuldade*', # Atualizado nome e label (adicionado *)
+            'niveis_dificuldade': 'Níveis de Dificuldade*', 
             'descricao': 'Descrição',
         }
 
-# Prepara as opções para o filtro de nível, adicionando uma opção "Todos"
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.form_method = 'post'
+
 NIVEL_CHOICES_FILTER = [('', 'Todos')] + Servico.NIVEIS_DIFICULDADE_CHOICES
 
 class ServicoFilterForm(forms.Form):
-    # Campo para buscar texto dentro da modalidade
     modalidade = forms.CharField(
-        required=False, # Não obrigatório
+        required=False, #
         label='Filtrar por Modalidade',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Parte do nome...'})
     )
-    # Campo para selecionar um nível de dificuldade específico
+    
     niveis_dificuldade = forms.ChoiceField(
-        required=False, # Não obrigatório
-        choices=NIVEL_CHOICES_FILTER, # Usa a lista com a opção "Todos"
+        required=False, 
+        choices=NIVEL_CHOICES_FILTER,
         label='Filtrar por Nível',
         widget=forms.Select(attrs={'class': 'form-select'})
     )
