@@ -49,12 +49,12 @@ class Funcionario(Pessoa):
     carga_horaria = models.FloatField()
     horarios_trabalho = models.TextField(blank=True)
     login = models.CharField(max_length=50, unique=True)
-    senha_hash = models.CharField(max_length=128)
+    senha = models.CharField(max_length=128)
     is_admin = models.BooleanField(default=False)
     ultimo_acesso =  models.DateTimeField(default=timezone.now, editable=False)
 
     def autenticar(self, senha: str) -> bool:
-        return check_password(senha, self.senha_hash)
+        return check_password(senha, self.senha)
 
     # Vai calcular a carga horária a partir da quantidade de horários no array, e dps multiplica pelos dias da semana, retornando a carga horária semanal.
     def gerar_carga_horaria(self, horarios_trabalho: list) -> int:
@@ -67,8 +67,8 @@ class Funcionario(Pessoa):
         return self.carga_horaria
 
     def save(self, *args, **kwargs):
-        if not self.senha_hash.startswith('pbkdf2_sha256$'):
-            self.senha_hash = make_password(self.senha_hash)
+        if not self.senha.startswith('pbkdf2_sha256$'):
+            self.senha = make_password(self.senha)
         super().save(*args, **kwargs)
 
     def __str__(self):

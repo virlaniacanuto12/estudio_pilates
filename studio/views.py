@@ -98,21 +98,26 @@ def listar_funcionario(request):
 
 def editar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
+
     if request.method == 'POST':
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
-            return redirect('listar_funcionario')
+            return redirect('studio:listar_funcionario')
     else:
         form = FuncionarioForm(instance=funcionario)
-    return render(request, 'studio/funcionario/funcionario_form.html', {'form': form})
+
+    return render(request, 'studio/funcionario/editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
 
 def excluir_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
-    funcionario.delete()
-    messages.success(request, "Funcionário excluído com sucesso!")
-    return redirect('listar_funcionario')
+
+    if request.method == 'POST':
+        funcionario.delete()
+        messages.success(request, "Funcionário excluído com sucesso!")
+        return redirect('studio:listar_funcionario')
+    return redirect('studio:listar_funcionario')  
 
 #View Aluno
 def listar_alunos(request):
