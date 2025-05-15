@@ -65,6 +65,13 @@ class FuncionarioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Oculta campos senha e login da tela de edição
+        if self.instance and self.instance.pk:
+            self.fields.pop('login', None)
+            self.fields.pop('senha', None)
+            self.fields.pop('is_admin', None)
+
+
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.enctype = 'multipart/form-data'
@@ -98,7 +105,7 @@ class FuncionarioForm(forms.ModelForm):
                 "Acesso ao Sistema",
                 Row(
                     Column('login', css_class='col-md-6'),
-                    Column('senha_hash', css_class='col-md-6'),
+                    Column('senha', css_class='col-md-6'),
                     Column('is_admin', css_class='col-md-6'),
                 )
             ),
