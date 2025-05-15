@@ -1,0 +1,80 @@
+{% extends 'studio/base.html' %}
+{% load static %} {# Adicione se precisar de arquivos estáticos locais, mas para ícones FontAwesome e Bootstrap, o base.html deve cuidar disso #}
+
+{% block title %}Serviços Cadastrados{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-stream me-2"></i>Serviços Cadastrados</h2> {# Ícone de exemplo para lista/serviços #}
+        <a href="{% url 'studio:novo_servico' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Novo Serviço {# Ícone de exemplo para adicionar #}
+        </a>
+    </div>
+
+    {# Formulário de Filtro - Mantendo a estrutura que já tínhamos, que é boa #}
+    <form method="get" action="" class="mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md">
+                {{ filter_form.modalidade.label_tag }}
+                {{ filter_form.modalidade }}
+            </div>
+            <div class="col-md">
+                {{ filter_form.niveis_dificuldade.label_tag }}
+                {{ filter_form.niveis_dificuldade }}
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-info">
+                    <i class="fas fa-filter me-1"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if lista_servicos %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-primary"> {# Usando table-primary como no listar_funcionario.html #}
+                    <tr>
+                        <th>Modalidade</th>
+                        <th>Níveis de Dificuldade</th>
+                        <th>Descrição</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for servico in lista_servicos %}
+                        <tr>
+                            <td>{{ servico.modalidade }}</td>
+                            <td>{{ servico.niveis_dificuldade }}</td>
+                            <td>{{ servico.descricao|default:"-" }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'studio:editar_servico' pk=servico.pk %}" class="btn btn-sm btn-warning me-1" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="post" action="{% url 'studio:excluir_servico' pk=servico.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Excluir"
+                                            onclick="return confirm('Tem certeza que deseja excluir este serviço?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+         {% if request.GET %}
+            <p class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Nenhum serviço encontrado com os filtros aplicados.</p>
+         {% else %}
+            <p class="alert alert-info"><i class="fas fa-info-circle me-2"></i>Nenhum serviço cadastrado ainda.</p>
+         {% endif %}
+    {% endif %}
+
+    {# Links de navegação adicionais, se necessário #}
+    {# <a href="{% url 'admin:index' %}" class="btn btn-secondary mt-3">Voltar ao Admin</a> #}
+
+</div>
+{% endblock %}

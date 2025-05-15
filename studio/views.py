@@ -37,7 +37,7 @@ def lista_servicos(request):
         'lista_servicos': queryset,   
         'filter_form': filter_form, 
     }
-    return render(request, 'studio/servicos/lista_servicos.html', contexto)
+    return render(request, 'studio/servicos/listar_servicos.html', contexto)
 
 
 def novo_servico(request):
@@ -51,7 +51,7 @@ def novo_servico(request):
     contexto = {
         'form': form,
     }
-    return render(request, 'studio/servicos/criar_servico.html', contexto)
+    return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
 
 
 def editar_servico(request, pk):
@@ -66,7 +66,7 @@ def editar_servico(request, pk):
     contexto = {
         'form': form,
     }
-    return render(request, 'studio/servicos/criar_servico.html', contexto)
+    return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
 
 def excluir_servico(request, pk):
     servico = get_object_or_404(Servico, pk=pk)
