@@ -11,8 +11,8 @@ Este documento descreve os User Stories criados a partir da Lista de Requisitos 
 
 | Data       | Versão  | Descrição                          | Autor                          |
 | :--------- | :-----: | :--------------------------------: | :----------------------------- |
-| 28/03/2025 | 0.0.1   | Template e descrição do documento  | Virlania |
-| 01/04/2025 | 0.0.2   | Detalhamento do User Story US01    | Virlania |
+| 28/03/2025 | 0.0.1   | Template e descrição do documento  | Virlânia |
+| 01/04/2025 | 0.0.2   | Detalhamento do User Story US01    | Virlânia |
 | 01/04/2025 | 0.0.3   | Detalhamento do User Story US02    | Aron     |
 | 01/04/2025 | 0.0.4   | Detalhamento do User Story US03    | Giovanna |
 | 01/04/2025 | 0.0.5   | Detalhamento do User Story US04    | Giovanna |
@@ -20,8 +20,8 @@ Este documento descreve os User Stories criados a partir da Lista de Requisitos 
 | 02/04/2025 | 0.0.7   | Detalhamento do User Story US06    | Mariana  |
 | 02/04/2025 | 0.0.8   | Detalhamento do User Story US07    | Beatriz  |
 | 02/04/2025 | 0.0.9   | Detalhamento do User Story US08    | Eloisa   |
-| 05/04/2025 | 1.0.0   | Documento completo com o detalhamento de todos os User Stories | Virlania     |
-| 07/04/2022 | 1.0.1   | Adição das informações da equipe: Analista, Desenvolvedor, Revisor e Testador. | Mariana |
+| 05/04/2025 | 1.0.0   | Documento completo com o detalhamento de todos os User Stories | Virlânia     |
+| 07/04/2025 | 1.0.1   | Adição das informações da equipe: Analista, Desenvolvedor, Revisor e Testador. | Mariana |
 
 
 
@@ -164,7 +164,7 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 | **Tamanho Funcional**     | 7 PF                                | 
 | **Analista**              | Eloisa                              | 
 | **Desenvolvedor**         | Giovanna                            |
-| **Revisor**               | Virlania                            | 
+| **Revisor**               | Virlânia                            | 
 | **Testador**              | Beatriz                             | 
 |                           |                                     |
 
@@ -198,8 +198,8 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 | **Estimativa**            | 8 h                                 | 
 | **Tempo Gasto (real):**   |                                     | 
 | **Tamanho Funcional**     | 7 PF                                | 
-| **Analista**              | Beatriz                             | 
-| **Desenvolvedor**         | Aron                                |
+| **Analista**              | Aron                                | 
+| **Desenvolvedor**         | Beatriz                             |
 | **Revisor**               | Giovanna                            | 
 | **Testador**              | Mariana                             | 
 |                           |                                     |
@@ -231,7 +231,7 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 | **Estimativa**            | 8 h                                 | 
 | **Tempo Gasto (real):**   |                                     | 
 | **Tamanho Funcional**     | 7 PF                                | 
-| **Analista**              | Virlania                            | 
+| **Analista**              | Virlânia                            | 
 | **Desenvolvedor**         | Eloisa                              |
 | **Revisor**               | Mariana                             | 
 | **Testador**              | Giovanna                            | 
@@ -267,7 +267,7 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 | **Tamanho Funcional**     | 7 PF                                | 
 | **Analista**              | Beatriz                             | 
 | **Desenvolvedor**         | Aron                                |
-| **Revisor**               | Virlania                            | 
+| **Revisor**               | Virlânia                            | 
 | **Testador**              | Eloisa                              | 
 |                           |                                     |
 
