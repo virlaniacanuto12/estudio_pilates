@@ -133,7 +133,7 @@ def cadastro_aluno(request):
             return redirect('studio:listar_alunos')
     else:
         form = AlunoForm()
-    return render(request, 'studio/aluno/cadastro_aluno.html', {'form': form})
+    return render(request, 'studio/aluno/cadastrar_aluno.html', {'form': form})
 
 
 def editar_aluno(request, id):
@@ -169,7 +169,7 @@ def cadastro_plano(request):
             return redirect('studio:listar_planos')
     else:
         form = PlanoForm()
-    return render(request, 'studio/plano/cadastro_plano.html', {'form': form})
+    return render(request, 'studio/plano/cadastrar_plano.html', {'form': form})
 
 
 def editar_plano(request, id):
