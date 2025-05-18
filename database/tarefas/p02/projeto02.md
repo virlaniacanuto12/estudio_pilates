@@ -142,35 +142,35 @@ Este procedimento desativa o plano ativo de um aluno, limpando os campos de vín
 
 ## 👤 Mariana
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Calcular Valor Cheio do Plano
 
+Esta função recebe o código de um plano da tabela `studio_plano` e retorna seu valor total. O cálculo é feito multiplicando a quantidade de aulas (`qtd_aulas`) pelo valor individual da aula (`valor_aula`) definidos para o plano. É útil para saber o preço integral de um plano.
 
-
-- [Função 1]()
-
----
-
-### 🔧 Função 2: 
-
-
-
-- [Função 2]()
+- [Função 1](projeto02-maricaico-q01.sql)
 
 ---
 
-### ⚙️ Procedimento 1: 
+### 🔧 Função 2: Obter Data de Vencimento do Plano do Aluno
 
+Esta função recebe o CPF de um aluno como parâmetro e retorna a data de vencimento registrada para o plano atualmente associado a esse aluno. É útil para verificações rápidas sobre a validade do plano de um cliente.
 
-
-- [Procedimento 1]()
+- [Função 2](projeto02-maricaico-q02.sql)
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 1: Registrar Novo Serviço Oferecido
 
+Este procedimento permite cadastrar um novo serviço ou modalidade de aula no estúdio. Ele recebe a modalidade, o nível de dificuldade e uma descrição opcional como parâmetros, e insere um novo registro na tabela `studio_servico`. O nível de dificuldade deve corresponder aos valores pré-definidos ('Iniciante', 'Intermediário', 'Avançado').
 
+- [Procedimento 1](projeto02-maricaico-q03.sql)
 
-- [Procedimento 2]()
+---
+
+### ⚙️ Procedimento 2: Alterar Função e Salário de Funcionário
+
+Este procedimento atualiza a função e o salário de um funcionário específico, identificado pelo seu CPF. Recebe o CPF do funcionário, a nova designação da função e o novo valor salarial como parâmetros, e modifica os respectivos campos na tabela `studio_funcionario`. É útil para registrar promoções ou reajustes salariais.
+
+- [Procedimento 2](projeto02-maricaico-q04.sql)
 
 ---
 
