@@ -150,11 +150,11 @@ Esta função recebe o código de um plano da tabela `studio_plano` e retorna se
 
 ---
 
-### 🔧 Função 2: 
+### 🔧 Função 2: Obter Data de Vencimento do Plano do Aluno
 
+Esta função recebe o CPF de um aluno como parâmetro e retorna a data de vencimento registrada para o plano atualmente associado a esse aluno. É útil para verificações rápidas sobre a validade do plano de um cliente.
 
-
-- [Função 2]()
+- [Função 2](projeto02-maricaico-q02.sql)
 
 ---
 
