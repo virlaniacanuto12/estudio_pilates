@@ -49,3 +49,4 @@ Virlânia   | 20230045403 | virlaniacanuto190@gmail.com
 ## 📂 Tarefas de PABD
 
 - 🔗 [Projeto 01](database/tarefas/p01/projeto01.md)
+- 🔗 [Projeto 02](database/tarefas/p02/projeto02.md)
