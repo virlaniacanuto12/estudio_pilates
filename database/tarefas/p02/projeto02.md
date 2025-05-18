@@ -158,9 +158,9 @@ Esta função recebe o CPF de um aluno como parâmetro e retorna a data de venci
 
 ---
 
-### ⚙️ Procedimento 1: 
+### ⚙️ Procedimento 1: Registrar Novo Serviço Oferecido
 
-
+Este procedimento permite cadastrar um novo serviço ou modalidade de aula no estúdio. Ele recebe a modalidade, o nível de dificuldade e uma descrição opcional como parâmetros, e insere um novo registro na tabela `studio_servico`. O nível de dificuldade deve corresponder aos valores pré-definidos ('Iniciante', 'Intermediário', 'Avançado').
 
 - [Procedimento 1]()
 
