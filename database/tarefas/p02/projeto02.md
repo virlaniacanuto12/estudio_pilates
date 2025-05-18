@@ -162,15 +162,15 @@ Esta função recebe o CPF de um aluno como parâmetro e retorna a data de venci
 
 Este procedimento permite cadastrar um novo serviço ou modalidade de aula no estúdio. Ele recebe a modalidade, o nível de dificuldade e uma descrição opcional como parâmetros, e insere um novo registro na tabela `studio_servico`. O nível de dificuldade deve corresponder aos valores pré-definidos ('Iniciante', 'Intermediário', 'Avançado').
 
-- [Procedimento 1]()
+- [Procedimento 1](projeto02-maricaico-q03.sql)
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 2: Alterar Função e Salário de Funcionário
 
+Este procedimento atualiza a função e o salário de um funcionário específico, identificado pelo seu CPF. Recebe o CPF do funcionário, a nova designação da função e o novo valor salarial como parâmetros, e modifica os respectivos campos na tabela `studio_funcionario`. É útil para registrar promoções ou reajustes salariais.
 
-
-- [Procedimento 2]()
+- [Procedimento 2](projeto02-maricaico-q04.sql)
 
 ---
 
