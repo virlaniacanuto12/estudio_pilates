@@ -142,11 +142,11 @@ Este procedimento desativa o plano ativo de um aluno, limpando os campos de vín
 
 ## 👤 Mariana
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Calcular Valor Cheio do Plano
 
+Esta função recebe o código de um plano da tabela `studio_plano` e retorna seu valor total. O cálculo é feito multiplicando a quantidade de aulas (`qtd_aulas`) pelo valor individual da aula (`valor_aula`) definidos para o plano. É útil para saber o preço integral de um plano.
 
-
-- [Função 1]()
+- [Função 1](projeto02-maricaico-q01.sql)
 
 ---
 
