@@ -6,35 +6,35 @@ Este documento reúne as descrições e os links dos arquivos SQL criados por ca
 
 ## 👤 Aron
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Retorna o nome do plano com maior número de alunos vinculados
 
+Retorna o nome do plano com o maior número de alunos vinculados. A função faz um JOIN entre as tabelas studio_aluno e studio_plano, agrupa pelos planos existentes e seleciona aquele com maior quantidade de alunos associados. Útil para análises de popularidade e marketing.
 
-
-- [Função 1]()
-
----
-
-### 🔧 Função 2: 
-
-
-
-- [Função 2]()
+- [Função 1](projeto02-aronslv-q01.sql)
 
 ---
 
-### ⚙️ Procedimento 1: 
+### 🔧 Função 2: Verifica se um aluno está inadimplente (tem conta vencida e não paga)
 
+Verifica se um aluno, identificado por seu CPF, está inadimplente. Um aluno é considerado inadimplente se tiver pelo menos uma conta a receber que esteja vencida e ainda não paga. A função retorna um valor booleano (TRUE ou FALSE) com base nessa condição.
 
-
-- [Procedimento 1]()
+- [Função 2](projeto02-aronslv-q02.sql)
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 1: Desativa todos os alunos com planos vencidos
 
+Desativa automaticamente todos os alunos cujo plano venceu. O procedimento atualiza a coluna plano_ativo para FALSE na tabela studio_aluno quando a data de vencimento do plano (data_vencimento_plano) for anterior à data atual e o plano ainda estiver ativo. É útil para manter a integridade dos dados e o controle de acesso a serviços.
 
+- [Procedimento 1](projeto02-aronslv-q03.sql)
 
-- [Procedimento 2]()
+---
+
+### ⚙️ Procedimento 2: Atualiza status de contas para "pago" com base nos pagamentos existentes
+
+Atualiza o status das contas a receber (studio_contareceber) para 'pago' com base nos registros encontrados na tabela studio_pagamento. Ele verifica quais contas possuem um pagamento associado e marca automaticamente essas contas como quitadas. Garante a sincronização entre os módulos de cobrança e pagamento do sistema.
+
+- [Procedimento 2](projeto02-aronslv-q04.sql)
 
 ---
 
