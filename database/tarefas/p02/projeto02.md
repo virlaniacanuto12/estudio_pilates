@@ -74,7 +74,7 @@ Atualiza o status das contas a receber (studio_contareceber) para 'pago' com bas
 
 ## 👤 Eloisa
 
-### 🔧 Função 1: Obtem o histórico de gagamentos de um aluno
+### 🔧 Função 1: Obtem o histórico de pagamentos de um aluno
 
 Recebe o CPF de um aluno como parâmetro e retorna uma tabela com o histórico completo dos pagamentos realizados por esse aluno. A tabela inclui o nome do aluno, a data do pagamento, o valor pago e o método utilizado para o pagamento. Os registros são ordenados da data mais recente para a mais antiga, facilitando a consulta rápida do histórico financeiro do aluno.
 
@@ -83,7 +83,7 @@ Recebe o CPF de um aluno como parâmetro e retorna uma tabela com o histórico c
 
 ---
 
-### 🔧 Função 2: Verifica o imite de Aulas Frequentadas pelo Aluno
+### 🔧 Função 2: Verifica o imite de aulas frequentadas pelo aluno
 
 Recebe o CPF de um aluno como parâmetro e verifica se ele está dentro do limite de aulas permitidas pelo seu plano atual. A função conta o número de aulas frequentadas (com frequência marcada como TRUE) e compara com a quantidade máxima de aulas definida no plano do aluno. Retorna TRUE se o aluno ainda pode frequentar mais aulas, ou FALSE caso já tenha atingido o limite.
 
@@ -91,11 +91,11 @@ Recebe o CPF de um aluno como parâmetro e verifica se ele está dentro do limit
 
 ---
 
-### ⚙️ Procedimento 1: 
+### ⚙️ Procedimento 1: Atualiza vagas disponíveis de um agendamento
 
+Recebe o código de um agendamento e um valor delta para ajustar a quantidade de vagas disponíveis. O valor pode ser positivo (para aumentar vagas) ou negativo (para diminuir). O procedimento atualiza a quantidade de vagas disponíveis garantindo que o resultado fique sempre entre zero e o total de vagas do agendamento.
 
-
-- [Procedimento 1]()
+- [Procedimento 1](projeto02-EL0ISA-q3.sql)
 
 ---
 
