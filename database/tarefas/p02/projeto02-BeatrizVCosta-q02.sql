@@ -1,28 +1,24 @@
--- Inserir endereço
-INSERT INTO endereco (rua, numero, cep, bairro, cidade)
-VALUES ('Rua das Flores', 123, '59000-000', 'Centro', 'Natal')
-RETURNING id;
+-- Issue: #54
+-- Função 2: Cria uma função que exibe os instrutores que ministraram mais aulas no mês
+DROP FUNCTION IF EXISTS top_professores_mes_atual();
 
--- Suponha que o id retornado foi 1
-
--- Inserir pessoa (funcionário)
-INSERT INTO pessoa (cpf, rg, nome, telefone, email, data_nascimento, status, endereco_id)
-VALUES ('12345678901', 'MG1234567', 'Carlos Silva', '99999-9999', 'carlos@email.com', '1980-05-15', TRUE, 1);
-
--- Inserir funcionário
-INSERT INTO funcionario (cpf, funcao, salario, carga_horaria, login, senha_hash, is_admin)
-VALUES ('12345678901', 'Instrutor de Pilates', 3500.00, 40, 'carloss', 'hashdaSenha', FALSE);
-
--- Inserir agendamento
-INSERT INTO agendamento (data, horario, local, vagas_totais, vagas_disponiveis, instrutor_cpf)
-VALUES (CURRENT_DATE, '18:00', 'Sala 1', 10, 10, '12345678901')
-RETURNING codigo;
-
--- Suponha que o codigo retornado foi 1
-
--- Inserir aulas ligadas ao agendamento
-INSERT INTO aula (agendamento_codigo, data, frequencia)
-VALUES (1, CURRENT_DATE, TRUE),
-       (1, CURRENT_DATE - INTERVAL '5 days', TRUE),
-       (1, CURRENT_DATE - INTERVAL '10 days', FALSE);  -- aula sem frequência
-
+CREATE OR REPLACE FUNCTION top_professores_mes_atual()
+RETURNS TABLE (
+    nome_professor VARCHAR(100),
+    total_aulas INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.nome,
+        COUNT(a.codigo)::INTEGER AS total_aulas
+    FROM aula a
+    JOIN agendamento ag ON a.agendamento_codigo = ag.codigo
+    JOIN funcionario f ON ag.instrutor_cpf = f.cpf
+    JOIN pessoa p ON f.cpf = p.cpf
+    WHERE date_trunc('month', a.data) = date_trunc('month', CURRENT_DATE)
+    GROUP BY p.nome
+    ORDER BY total_aulas DESC
+    LIMIT 3;
+END;
+$$ LANGUAGE plpgsql;

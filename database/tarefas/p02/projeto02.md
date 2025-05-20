@@ -48,9 +48,11 @@ Esta função retorna uma tabela com os 3 instrutores que mais ministraram aulas
 
 ---
 
-### ⚙️ Procedimento 1:
+### ⚙️ Procedimento 1: Altera a data de vencimento da conta para um dia útil
 
-- [Procedimento 1]()
+Este procedimento recebe o código de uma conta a receber e verifica a data de vencimento associada. Caso a data esteja em um fim de semana (sábado ou domingo), ele ajusta o vencimento para a próxima segunda-feira, garantindo que o pagamento não vença em dias não úteis.
+
+- [Procedimento 1](projeto02-BeatrizVCosta-q03.sql)
 
 ---
 
