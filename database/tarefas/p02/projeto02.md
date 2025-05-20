@@ -176,32 +176,35 @@ Este procedimento atualiza a função e o salário de um funcionário específic
 
 ## 👤 Virlânia
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Calcular Total Divida Aluno
 
+Retorna o valor total das contas a receber de um aluno com status pendente (status = FALSE). Essa função é útil para exibir rapidamente o débito atual de um aluno em dashboards ou relatórios.
 
 
 - [Função 1]()
 
 ---
 
-### 🔧 Função 2: 
+### 🔧 Função 2: Quantidade aulas realizadas 
 
+Retorna a quantidade total de aulas em que um aluno específico marcou presença (com base na tabela aula_aluno e aula.frequencia = TRUE). Útil para acompanhamento da evolução do aluno ou controle do uso do plano contratado.
 
 
 - [Função 2]()
 
 ---
 
-### ⚙️ Procedimento 1: 
+### ⚙️ Procedimento 1: Renovar plano aluno
 
+ ESte procedimento vai facilitar a renovação de plano para um aluno, atualizando os campos de plano e datas na tabela aluno, além de possivelmente gerar uma nova conta_receber.
 
 
 - [Procedimento 1]()
 
 ---
 
-### ⚙️ Procedimento 2: 
-
+### ⚙️ Procedimento 2: Registrar Acesso Funcionario
+Esse procedimento atualiza o campo ultimo_acesso do funcionário com o timestamp atual, sempre que ele faz login no sistema. Pode ser chamado no momento da autenticação. Utilidade deste procedimento: rastreia o histórico de acessos, ajuda na auditoria e segurança e permite identificar inatividade ou comportamento suspeito.
 
 
 - [Procedimento 2]()
