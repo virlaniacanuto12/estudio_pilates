@@ -74,35 +74,36 @@ Atualiza o status das contas a receber (studio_contareceber) para 'pago' com bas
 
 ## 👤 Eloisa
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Obtem o histórico de pagamentos de um aluno
+
+Recebe o CPF de um aluno como parâmetro e retorna uma tabela com o histórico completo dos pagamentos realizados por esse aluno. A tabela inclui o nome do aluno, a data do pagamento, o valor pago e o método utilizado para o pagamento. Os registros são ordenados da data mais recente para a mais antiga, facilitando a consulta rápida do histórico financeiro do aluno.
 
 
-
-- [Função 1]()
-
----
-
-### 🔧 Função 2: 
-
-
-
-- [Função 2]()
+- [Função 1](projeto02-EL0ISA-q1.sql)
 
 ---
 
-### ⚙️ Procedimento 1: 
+### 🔧 Função 2: Verifica o imite de aulas frequentadas pelo aluno
 
+Recebe o CPF de um aluno como parâmetro e verifica se ele está dentro do limite de aulas permitidas pelo seu plano atual. A função conta o número de aulas frequentadas (com frequência marcada como TRUE) e compara com a quantidade máxima de aulas definida no plano do aluno. Retorna TRUE se o aluno ainda pode frequentar mais aulas, ou FALSE caso já tenha atingido o limite.
 
-
-- [Procedimento 1]()
+- [Função 2](projeto02-EL0ISA-q2.sql)
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 1: Atualiza vagas disponíveis de um agendamento
 
+Recebe o código de um agendamento e um valor delta para ajustar a quantidade de vagas disponíveis. O valor pode ser positivo (para aumentar vagas) ou negativo (para diminuir). O procedimento atualiza a quantidade de vagas disponíveis garantindo que o resultado fique sempre entre zero e o total de vagas do agendamento.
 
+- [Procedimento 1](projeto02-EL0ISA-q3.sql)
 
-- [Procedimento 2]()
+---
+
+### ⚙️ Procedimento 2: Tornar funcionário administrador
+
+Promove um funcionário ao papel de administrador. Recebe o CPF do funcionário como parâmetro, verifica se ele existe na tabela funcionario e, em caso positivo, atualiza o campo is_admin para TRUE. Caso o CPF informado não corresponda a nenhum funcionário, uma exceção é lançada.
+
+- [Procedimento 2](projeto02-EL0ISA-q4.sql)
 
 ---
 
