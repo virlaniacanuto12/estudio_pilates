@@ -99,11 +99,11 @@ Recebe o código de um agendamento e um valor delta para ajustar a quantidade de
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 2: Tornar funcionário administrador
 
+Promove um funcionário ao papel de administrador. Recebe o CPF do funcionário como parâmetro, verifica se ele existe na tabela funcionario e, em caso positivo, atualiza o campo is_admin para TRUE. Caso o CPF informado não corresponda a nenhum funcionário, uma exceção é lançada.
 
-
-- [Procedimento 2]()
+- [Procedimento 2](projeto02-EL0ISA-q4.sql)
 
 ---
 
