@@ -32,7 +32,7 @@ Este documento reúne as descrições e os links dos arquivos SQL criados por ca
 
 ## 👤 Beatriz
 
-### 🔧 Função 1:
+### 🔧 Função 1: Retorna o tempo restante do plano de um aluno
 
 Esta função recebe o CPF de um aluno como parâmetro e retorna o número de dias restantes até o vencimento do seu plano. Para isso, realiza uma junção entre as tabelas aluno e plano, utilizando o campo plano_codigo para obter a data limite de vigência do plano (limite_vigencia). A função calcula a diferença entre a data atual (CURRENT_DATE) e a data de vencimento, garantindo que o valor retornado nunca seja negativo (casos de planos vencidos retornam 0).
 
@@ -40,9 +40,11 @@ Esta função recebe o CPF de um aluno como parâmetro e retorna o número de di
 
 ---
 
-### 🔧 Função 2:
+### 🔧 Função 2: Retorna os instrutores que ministraram mais aulas no mês
 
-- [Função 2]()
+Esta função retorna uma tabela com os 3 instrutores que mais ministraram aulas no mês atual. Para cada instrutor, apresenta o nome e o total de aulas com frequência registrada (frequencia = TRUE) dentro do mês corrente.
+
+- [Função 2](projeto02-BeatrizVCosta-q02.sql)
 
 ---
 
