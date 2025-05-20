@@ -74,11 +74,12 @@ Atualiza o status das contas a receber (studio_contareceber) para 'pago' com bas
 
 ## 👤 Eloisa
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Obter histórico de gagamentos de um aluno
+
+Esta função recebe o CPF de um aluno como parâmetro e retorna uma tabela com o histórico completo dos pagamentos realizados por esse aluno. A tabela inclui o nome do aluno, a data do pagamento, o valor pago e o método utilizado para o pagamento. Os registros são ordenados da data mais recente para a mais antiga, facilitando a consulta rápida do histórico financeiro do aluno.
 
 
-
-- [Função 1]()
+- [Função 1](projeto02-EL0ISA-q1.sql)
 
 ---
 
