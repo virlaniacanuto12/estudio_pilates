@@ -6,33 +6,25 @@ Este documento reúne as descrições e os links dos arquivos SQL criados por ca
 
 ## 👤 Aron
 
-### 🔧 Função 1: 
-
-
+### 🔧 Função 1:
 
 - [Função 1]()
 
 ---
 
-### 🔧 Função 2: 
-
-
+### 🔧 Função 2:
 
 - [Função 2]()
 
 ---
 
-### ⚙️ Procedimento 1: 
-
-
+### ⚙️ Procedimento 1:
 
 - [Procedimento 1]()
 
 ---
 
-### ⚙️ Procedimento 2: 
-
-
+### ⚙️ Procedimento 2:
 
 - [Procedimento 2]()
 
@@ -40,33 +32,27 @@ Este documento reúne as descrições e os links dos arquivos SQL criados por ca
 
 ## 👤 Beatriz
 
-### 🔧 Função 1: 
+### 🔧 Função 1:
 
+Esta função recebe o CPF de um aluno como parâmetro e retorna o número de dias restantes até o vencimento do seu plano. Para isso, realiza uma junção entre as tabelas aluno e plano, utilizando o campo plano_codigo para obter a data limite de vigência do plano (limite_vigencia). A função calcula a diferença entre a data atual (CURRENT_DATE) e a data de vencimento, garantindo que o valor retornado nunca seja negativo (casos de planos vencidos retornam 0).
 
-
-- [Função 1]()
+- [Função 1](projeto02-BeatrizVCosta-q01.sql)
 
 ---
 
-### 🔧 Função 2: 
-
-
+### 🔧 Função 2:
 
 - [Função 2]()
 
 ---
 
-### ⚙️ Procedimento 1: 
-
-
+### ⚙️ Procedimento 1:
 
 - [Procedimento 1]()
 
 ---
 
-### ⚙️ Procedimento 2: 
-
-
+### ⚙️ Procedimento 2:
 
 - [Procedimento 2]()
 
@@ -74,33 +60,25 @@ Este documento reúne as descrições e os links dos arquivos SQL criados por ca
 
 ## 👤 Eloisa
 
-### 🔧 Função 1: 
-
-
+### 🔧 Função 1:
 
 - [Função 1]()
 
 ---
 
-### 🔧 Função 2: 
-
-
+### 🔧 Função 2:
 
 - [Função 2]()
 
 ---
 
-### ⚙️ Procedimento 1: 
-
-
+### ⚙️ Procedimento 1:
 
 - [Procedimento 1]()
 
 ---
 
-### ⚙️ Procedimento 2: 
-
-
+### ⚙️ Procedimento 2:
 
 - [Procedimento 2]()
 
@@ -176,33 +154,25 @@ Este procedimento atualiza a função e o salário de um funcionário específic
 
 ## 👤 Virlânia
 
-### 🔧 Função 1: 
-
-
+### 🔧 Função 1:
 
 - [Função 1]()
 
 ---
 
-### 🔧 Função 2: 
-
-
+### 🔧 Função 2:
 
 - [Função 2]()
 
 ---
 
-### ⚙️ Procedimento 1: 
-
-
+### ⚙️ Procedimento 1:
 
 - [Procedimento 1]()
 
 ---
 
-### ⚙️ Procedimento 2: 
-
-
+### ⚙️ Procedimento 2:
 
 - [Procedimento 2]()
 
