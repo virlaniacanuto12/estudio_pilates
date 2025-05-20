@@ -56,9 +56,11 @@ Este procedimento recebe o código de uma conta a receber e verifica a data de v
 
 ---
 
-### ⚙️ Procedimento 2:
+### ⚙️ Procedimento 2: Reativar plano de aluno inativo após quitação de débitos
 
-- [Procedimento 2]()
+Este procedimento percorre todos os alunos com o plano inativo (plano_ativo = FALSE) e verifica se não existem contas pendentes de pagamento. Caso todas as dívidas estejam quitadas, o plano do aluno é automaticamente reativado.
+
+- [Procedimento 2](projeto02-BeatrizVCosta-q04.sql)
 
 ---
 
