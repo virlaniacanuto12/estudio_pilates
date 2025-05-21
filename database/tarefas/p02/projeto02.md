@@ -40,35 +40,35 @@ Atualiza o status das contas a receber (studio_contareceber) para 'pago' com bas
 
 ## 👤 Beatriz
 
-### 🔧 Função 1: 
+### 🔧 Função 1: Retorna o tempo restante do plano de um aluno
 
+Esta função recebe o CPF de um aluno como parâmetro e retorna o número de dias restantes até o vencimento do seu plano. Para isso, realiza uma junção entre as tabelas aluno e plano, utilizando o campo plano_codigo para obter a data limite de vigência do plano (limite_vigencia). A função calcula a diferença entre a data atual (CURRENT_DATE) e a data de vencimento, garantindo que o valor retornado nunca seja negativo (casos de planos vencidos retornam 0).
 
-
-- [Função 1]()
-
----
-
-### 🔧 Função 2: 
-
-
-
-- [Função 2]()
+- [Função 1](projeto02-BeatrizVCosta-q01.sql)
 
 ---
 
-### ⚙️ Procedimento 1: 
+### 🔧 Função 2: Retorna os instrutores que ministraram mais aulas no mês
 
+Esta função retorna uma tabela com os 3 instrutores que mais ministraram aulas no mês atual. Para cada instrutor, apresenta o nome e o total de aulas com frequência registrada (frequencia = TRUE) dentro do mês corrente.
 
-
-- [Procedimento 1]()
+- [Função 2](projeto02-BeatrizVCosta-q02.sql)
 
 ---
 
-### ⚙️ Procedimento 2: 
+### ⚙️ Procedimento 1: Altera a data de vencimento da conta para um dia útil
 
+Este procedimento recebe o código de uma conta a receber e verifica a data de vencimento associada. Caso a data esteja em um fim de semana (sábado ou domingo), ele ajusta o vencimento para a próxima segunda-feira, garantindo que o pagamento não vença em dias não úteis.
 
+- [Procedimento 1](projeto02-BeatrizVCosta-q03.sql)
 
-- [Procedimento 2]()
+---
+
+### ⚙️ Procedimento 2: Reativar plano de aluno inativo após quitação de débitos
+
+Este procedimento percorre todos os alunos com o plano inativo (plano_ativo = FALSE) e verifica se não existem contas pendentes de pagamento. Caso todas as dívidas estejam quitadas, o plano do aluno é automaticamente reativado.
+
+- [Procedimento 2](projeto02-BeatrizVCosta-q04.sql)
 
 ---
 
@@ -77,7 +77,6 @@ Atualiza o status das contas a receber (studio_contareceber) para 'pago' com bas
 ### 🔧 Função 1: Obtem o histórico de pagamentos de um aluno
 
 Recebe o CPF de um aluno como parâmetro e retorna uma tabela com o histórico completo dos pagamentos realizados por esse aluno. A tabela inclui o nome do aluno, a data do pagamento, o valor pago e o método utilizado para o pagamento. Os registros são ordenados da data mais recente para a mais antiga, facilitando a consulta rápida do histórico financeiro do aluno.
-
 
 - [Função 1](projeto02-EL0ISA-q1.sql)
 
@@ -181,15 +180,13 @@ Este procedimento atualiza a função e o salário de um funcionário específic
 
 Retorna o valor total das contas a receber de um aluno com status pendente (status = FALSE). Essa função é útil para exibir rapidamente o débito atual de um aluno em dashboards ou relatórios.
 
-
 - [Função 1]()
 
 ---
 
-### 🔧 Função 2: Quantidade aulas realizadas 
+### 🔧 Função 2: Quantidade aulas realizadas
 
 Retorna a quantidade total de aulas em que um aluno específico marcou presença (com base na tabela aula_aluno e aula.frequencia = TRUE). Útil para acompanhamento da evolução do aluno ou controle do uso do plano contratado.
-
 
 - [Função 2]()
 
@@ -197,16 +194,15 @@ Retorna a quantidade total de aulas em que um aluno específico marcou presença
 
 ### ⚙️ Procedimento 1: Renovar plano aluno
 
- ESte procedimento vai facilitar a renovação de plano para um aluno, atualizando os campos de plano e datas na tabela aluno, além de possivelmente gerar uma nova conta_receber.
-
+ESte procedimento vai facilitar a renovação de plano para um aluno, atualizando os campos de plano e datas na tabela aluno, além de possivelmente gerar uma nova conta_receber.
 
 - [Procedimento 1]()
 
 ---
 
 ### ⚙️ Procedimento 2: Registrar Acesso Funcionario
-Esse procedimento atualiza o campo ultimo_acesso do funcionário com o timestamp atual, sempre que ele faz login no sistema. Pode ser chamado no momento da autenticação. Utilidade deste procedimento: rastreia o histórico de acessos, ajuda na auditoria e segurança e permite identificar inatividade ou comportamento suspeito.
 
+Esse procedimento atualiza o campo ultimo_acesso do funcionário com o timestamp atual, sempre que ele faz login no sistema. Pode ser chamado no momento da autenticação. Utilidade deste procedimento: rastreia o histórico de acessos, ajuda na auditoria e segurança e permite identificar inatividade ou comportamento suspeito.
 
 - [Procedimento 2]()
 
