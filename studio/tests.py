@@ -2,10 +2,14 @@
 
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.messages import get_messages
+from datetime import date, timedelta
 from .models import Servico
 from .forms import ServicoForm 
 from django.contrib import messages
 from .forms import ServicoForm, ServicoFilterForm 
+from studio.models import ContaReceber, Aluno
+from studio.forms import ContaReceberForm
 
 
 class ServicoCreateViewTests(TestCase):
@@ -263,3 +267,4 @@ class ServicoDeleteViewTests(TestCase):
         """Testa o POST para a URL de exclusão com um PK que NÃO existe (deve ser 404)."""
         response = self.client.post(self.delete_url_invalid_pk)
         self.assertEqual(response.status_code, 404)
+
