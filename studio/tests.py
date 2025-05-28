@@ -22,7 +22,7 @@ class ServicoCreateViewTests(TestCase):
         """Testa se a página de criação de serviço carrega corretamente (GET)"""
         response = self.client.get(self.create_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'studio/servicos/criar_servico.html')
+        self.assertTemplateUsed(response, 'studio/servicos/cadastrar_servicos.html')
         self.assertIsInstance(response.context['form'], ServicoForm)
         self.assertFalse(response.context['form'].is_bound)
         self.assertContains(response, '<form')
@@ -55,7 +55,7 @@ class ServicoCreateViewTests(TestCase):
         }
         response = self.client.post(self.create_url, data=invalid_data)
         self.assertEqual(response.status_code, 200) 
-        self.assertTemplateUsed(response, 'studio/servicos/criar_servico.html')
+        self.assertTemplateUsed(response, 'studio/servicos/cadastrar_servicos.html')
         self.assertTrue(response.context['form'].is_bound)
         self.assertFalse(response.context['form'].is_valid())
         self.assertTrue(response.context['form'].has_error('modalidade'))
@@ -96,7 +96,7 @@ class ServicoListViewTests(TestCase):
         """Testa se a view renderiza o template correto"""
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'studio/servicos/lista_servicos.html')
+        self.assertTemplateUsed(response, 'studio/servicos/listar_servicos.html')
 
     def test_list_displays_all_services_initially(self):
         """Testa se todos os serviços criados aparecem na página inicialmente"""
@@ -186,7 +186,7 @@ class ServicoUpdateViewTests(TestCase):
         """Testa o GET na view de edição para um serviço existente."""
         response = self.client.get(self.edit_url_valid_pk)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'studio/servicos/criar_servico.html') 
+        self.assertTemplateUsed(response, 'studio/servicos/cadastrar_servicos.html')
         self.assertIsInstance(response.context['form'], ServicoForm)
         self.assertEqual(response.context['form'].instance, self.servico_existente) 
 
@@ -219,7 +219,7 @@ class ServicoUpdateViewTests(TestCase):
         }
         response = self.client.post(self.edit_url_valid_pk, data=dados_invalidos)
         self.assertEqual(response.status_code, 200) 
-        self.assertTemplateUsed(response, 'studio/servicos/criar_servico.html')
+        self.assertTemplateUsed(response, 'studio/servicos/cadastrar_servicos.html')
         self.assertFalse(response.context['form'].is_valid())
         self.assertTrue(response.context['form'].has_error('modalidade'))
         self.servico_existente.refresh_from_db()
