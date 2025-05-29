@@ -196,6 +196,5 @@ PAGAMENTO "1" -- "M" CONTA_RECEBER : quita
 |  RF02 - Pesquisar Plano   |    CE    |    1    |    4    |      Baixa       | 3 PF              |
 |  RF03 - Alterar Plano   |    EE    |    1    |    4    |      Baixa       | 3 PF              |
 |  RF04 - Excluir Plano   |    EE    |    1    |    2    |      Baixa       | 3 PF              |
-
-|   **Total**        |          |         |         |     **Cd**       | **138 PF**         |
+|   **Total**             |          |         |         |      **Cd**      | **138 PF**        |
 
