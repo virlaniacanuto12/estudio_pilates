@@ -61,7 +61,7 @@ class Funcionario(Pessoa):
         return len(horarios_trabalho) * 5 
     
     # Altera a carga horária com base nas horas extras trabalhadas
-        # aaaaaaaaaaaaaaaaaa
+        # aaaaaaaaaa555
     def alterar_carga_horaria(self, horas_extras: float = 0.0) -> float:
         self.carga_horaria += horas_extras
         self.save()  # Salva automaticamente no banco de dados
