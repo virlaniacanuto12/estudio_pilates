@@ -35,8 +35,8 @@ urlpatterns = [
     # Plano
     path('planos/', views.listar_planos, name='listar_planos'),
     path('planos/novo/', views.cadastro_plano, name='cadastrar_plano'),
-    path('planos/<int:id>/editar/', views.editar_plano, name='editar_plano'),
-    path('planos/<int:id>/excluir/', views.excluir_plano, name='excluir_plano'),
+    path('planos/<int:codigo>/editar/', views.editar_plano, name='editar_plano'),
+    path('planos/<int:codigo>/excluir/', views.excluir_plano, name='excluir_plano'),
 
     #Login
     path('login/', StudioLoginView.as_view(), name='login'),

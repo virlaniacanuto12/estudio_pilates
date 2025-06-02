@@ -173,8 +173,8 @@ def cadastro_plano(request):
     return render(request, 'studio/plano/cadastrar_plano.html', {'form': form})
 
 
-def editar_plano(request, id):
-    plano = get_object_or_404(Plano, id=id)
+def editar_plano(request, codigo):
+    plano = get_object_or_404(Plano, codigo=codigo)
     if request.method == 'POST':
         form = PlanoForm(request.POST, instance=plano)
         if form.is_valid():
@@ -185,8 +185,8 @@ def editar_plano(request, id):
     return render(request, 'studio/plano/editar_plano.html', {'form': form})
 
 
-def excluir_plano(request, id):
-    plano = get_object_or_404(Plano, id=id)
+def excluir_plano(request, codigo):
+    plano = get_object_or_404(Plano, codigo=codigo)
     plano.delete()
     messages.success(request, "Plano excluído com sucesso!")
     return redirect('studio:listar_planos')
