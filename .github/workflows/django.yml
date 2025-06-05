@@ -42,6 +42,10 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+    - name: Run tests with coverage
+      run: |
+        coverage run manage.py test
+        coverage xml
     - name: Install SonarScanner CLI
       run: |
         curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
@@ -57,3 +61,4 @@ jobs:
           -Dsonar.sources=. \
           -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
           -Dsonar.login=$SONAR_TOKEN
+          -Dsonar.python.coverage.reportPaths=coverage.xml
