@@ -61,5 +61,5 @@ jobs:
           -Dsonar.projectKey=estudio_pilates \
           -Dsonar.sources=. \
           -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
-          -Dsonar.login=$SONAR_TOKEN
+          -Dsonar.login=$SONAR_TOKEN \
           -Dsonar.python.coverage.reportPaths=coverage.xml
