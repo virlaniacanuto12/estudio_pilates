@@ -58,4 +58,14 @@ urlpatterns = [
     path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
     path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
 
+    #Agendamentos
+    path('agendamentos/horarios/novo/', views.cadastrar_horario_disponivel, name='cadastrar_horario_disponivel'),
+    path('agendamentos/horarios/', views.listar_horarios, name='listar_horarios'),
+    path('agendamentos/horarios/<int:horario_id>/agendar/', views.agendar_aluno, name='agendar_aluno'),
+    path('agendamentos/horarios/editar/<int:horario_id>/', views.editar_horario, name='editar_horario'),
+    path('agendamentos/horarios/excluir/<int:horario_id>/', views.excluir_horario, name='excluir_horario'),
+
+
+
+
 ]

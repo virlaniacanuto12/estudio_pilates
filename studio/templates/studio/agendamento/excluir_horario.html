@@ -1,0 +1,72 @@
+{% extends 'studio/base.html' %} {% block title %}Confirmar Exclusão de
+Horário{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {% if messages %}
+      <ul class="messages list-unstyled mb-3">
+        {% for message in messages %}
+        <li
+          class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div class="card shadow border-danger">
+        <div class="card-header bg-danger text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Exclusão
+            de Horário
+          </h3>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Você tem certeza que deseja **excluir permanentemente** o horário:
+          </p>
+          <h5 class="mb-3">
+            <strong>Data:</strong> {{ horario.data|date:"d/m/Y" }}<br />
+            <strong>Início:</strong> {{ horario.horario_inicio|time:"H:i" }}
+            {%if horario.horario_fim %}- {{ horario.horario_fim|time:"H:i" }}
+            {%endif %}<br />
+            <strong>Serviço:</strong>
+            {% if horario.servico%}{{horario.servico.modalidade }} {% else %}Não
+            especificado{% endif %}<br />
+            <strong>Professor:</strong>
+            {% if horario.funcionario%} {{horario.funcionario.nome }} {%
+            else%}Nãoatribuído {% endif %}
+          </h5>
+          <p class="text-danger">Esta ação não poderá ser desfeita!</p>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a
+                href="{% url 'studio:listar_horarios' %}"
+                class="btn btn-secondary me-md-2"
+              >
+                <i class="fas fa-times me-1"></i> Cancelar
+              </a>
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-1"></i> Confirmar Exclusão
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .card {
+    border-radius: 10px;
+  }
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+</style>
+{% endblock %}
