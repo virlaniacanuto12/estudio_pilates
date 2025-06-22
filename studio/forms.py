@@ -6,7 +6,7 @@ from .models import Aluno
 from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno, HorarioDisponivel, Agendamento
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML
+from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML, Field
 from crispy_bootstrap5.bootstrap5 import FloatingField 
 from django.utils import timezone
 from datetime import date, datetime

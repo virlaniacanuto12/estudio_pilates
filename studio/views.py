@@ -14,7 +14,7 @@ from .forms import FuncionarioForm
 from .models import Aluno
 from .forms import AlunoForm 
 from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno, HorarioDisponivel, Agendamento
-from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlunoFrequenciaForm, HorarioDisponivelForm
+from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlunoFrequenciaForm, HorarioDisponivelForm, AgendamentoForm
 from .forms import CustomLoginForm
 from datetime import date, datetime 
 
@@ -378,17 +378,20 @@ def listar_horarios(request):
    
     return render(request, 'studio/agendamento/listar_horarios.html', context)
 
+
 def agendar_aluno(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
+    # Verifica se o horário está cheio antes de tentar agendar
     if horario.esta_cheio:
         messages.error(request, 'Este horário não possui mais vagas disponíveis. Vagas esgotadas.')
-        return redirect('studio:listar_horarios')
+        return redirect('studio:listar_horarios') 
 
     if request.method == 'POST':
-        aluno_id = request.POST.get('aluno_id')
+        aluno_id = request.POST.get('aluno_id') # Pega o ID do aluno do formulário
         try:
-            aluno = Aluno.objects.get(id=aluno_id)
+            aluno = Aluno.objects.get(id=aluno_id) 
+
             
             agendamento, created = Agendamento.objects.get_or_create(
                 horario_disponivel=horario,
@@ -397,28 +400,95 @@ def agendar_aluno(request, horario_id):
             )
             
             if not created and agendamento.cancelado:
+                
                 agendamento.reativar_agendamento()
                 messages.success(request, f'Agendamento de {aluno.nome} reativado com sucesso para {horario}.')
             elif created:
                 messages.success(request, f'Aluno {aluno.nome} agendado com sucesso para {horario}.')
             else:
-                
+               
                 messages.info(request, f'Aluno {aluno.nome} já está agendado para {horario}.')
 
         except Aluno.DoesNotExist:
-            messages.error(request, 'Aluno não encontrado.')
+            messages.error(request, 'Aluno não encontrado. Por favor, selecione um aluno válido.')
         except Exception as e:
-            messages.error(request, f'Erro ao agendar: {e}')
+            messages.error(request, f'Erro ao agendar: {e}.')
+        
         
         return redirect('studio:listar_horarios')
-    
     
     alunos = Aluno.objects.all().order_by('nome') 
     context = {
         'horario': horario,
-        'alunos': alunos,
+        'alunos': alunos,   
     }
     return render(request, 'studio/agendamento/agendar_aluno.html', context)
+
+def listar_agendamentos(request):
+    # Recupera todos os agendamentos, otimizando o acesso a HorarioDisponivel e Aluno
+    agendamentos = Agendamento.objects.select_related('horario_disponivel', 'aluno').order_by(
+        'horario_disponivel__data', 'horario_disponivel__horario_inicio', 'aluno__nome'
+    )
+
+    query_aluno = request.GET.get('aluno_nome', '').strip()
+    if query_aluno:
+        agendamentos = agendamentos.filter(aluno__nome__icontains=query_aluno)
+        if not agendamentos.exists() and query_aluno:
+            messages.info(request, f'Nenhum agendamento encontrado para o aluno "{query_aluno}".')
+
+    query_data = request.GET.get('data_aula')
+    if query_data:
+        try:
+            parsed_date = datetime.strptime(query_data, '%Y-%m-%d').date()
+            agendamentos = agendamentos.filter(horario_disponivel__data=parsed_date)
+        except ValueError:
+            messages.error(request, 'Formato de data inválido para pesquisa. Use AAAA-MM-DD.')
+
+    context = {
+        'agendamentos': agendamentos,
+        'query_aluno': query_aluno, 
+        'query_data': query_data,   
+    }
+    return render(request, 'studio/agendamento/listar_agendamentos.html', context)
+
+def editar_agendamento(request, agendamento_id):
+    agendamento = get_object_or_404(Agendamento, id=agendamento_id) 
+
+    if request.method == 'POST':
+        form = AgendamentoForm(request.POST, instance=agendamento) 
+        if form.is_valid():
+            form.save() 
+            messages.success(request, 'Agendamento atualizado com sucesso!')
+            return redirect('studio:listar_agendamentos') 
+        else:
+            messages.error(request, 'Erro ao atualizar agendamento. Verifique os dados e tente novamente.')
+    else:
+        form = AgendamentoForm(instance=agendamento) 
+
+    context = {
+        'form': form,
+        'agendamento': agendamento,
+    }
+    return render(request, 'studio/agendamento/editar_agendamento.html', context)
+
+def excluir_agendamento(request, agendamento_id):
+    agendamento = get_object_or_404(Agendamento, id=agendamento_id)
+
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo_cancelamento', '').strip()
+
+        if not agendamento.cancelado:
+            agendamento.cancelar_agendamento(motivo=motivo) 
+            messages.success(request, f'Agendamento de {agendamento.aluno.nome} em {agendamento.horario_disponivel} cancelado com sucesso. A vaga foi liberada.')
+        else:
+            messages.info(request, 'Este agendamento já estava cancelado.')
+
+        return redirect('studio:listar_agendamentos')
+    
+    context = {
+        'agendamento': agendamento,
+    }
+    return render(request, 'studio/agendamento/excluir_agendamento.html', context)
 
 def cadastrar_horario_disponivel(request):
     if request.method == 'POST':

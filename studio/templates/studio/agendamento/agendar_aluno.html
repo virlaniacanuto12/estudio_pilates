@@ -1,0 +1,107 @@
+{% extends 'studio/base.html' %} {% load crispy_forms_tags %} {# Para estilizar
+o formulário com Crispy Forms #}{% block title%}Agendar Aluno{% endblock %}
+{%block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {% if messages %}
+      <ul class="messages list-unstyled mb-3">
+        {% for message in messages %}
+        <li
+          class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-calendar-check me-2"></i>Agendar Aluno
+          </h3>
+        </div>
+        <div class="card-body">
+          <h5 class="card-subtitle mb-3 text-muted">
+            Agendando para: {{ horario.data|date:"d/m/Y" }} às
+            {{horario.horario_inicio|time:"H:i" }} {% if horario.horario_fim %}-
+            {{ horario.horario_fim|time:"H:i" }}{% endif %}
+          </h5>
+          <p class="card-text">
+            Vagas disponíveis:
+            <strong>{{ horario.vagas_disponiveis }}</strong> de
+            {{horario.capacidade_maxima }}
+          </p>
+
+          {% if horario.esta_cheio %}
+          <div class="alert alert-danger" role="alert">
+            Este horário não possui mais vagas disponíveis. Vagas esgotadas.
+          </div>
+          {% else %}
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="aluno_select" class="form-label"
+                >Selecione o Aluno:</label
+              >
+              <select
+                name="aluno_id"
+                id="aluno_select"
+                class="form-select"
+                required
+              >
+                <option value="">-- Selecione um Aluno --</option>
+                {% for aluno in alunos %}
+                <option value="{{ aluno.id }}">
+                  {{ aluno.nome }} (CPF: {{ aluno.cpf }})
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a
+                href="{% url 'studio:listar_horarios' %}"
+                class="btn btn-secondary me-md-2"
+              >
+                <i class="fas fa-times me-1"></i> Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Confirmar Agendamento
+              </button>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .card {
+    border-radius: 10px;
+  }
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  $(document).ready(function () {
+    // Não há campos de entrada de texto direto para mascarar aqui,
+    // mas o bloco é mantido para consistência se você adicionar campos futuramente.
+  });
+</script>
+{% endblock %}

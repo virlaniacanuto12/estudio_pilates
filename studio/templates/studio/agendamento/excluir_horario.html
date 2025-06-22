@@ -25,7 +25,7 @@ Horário{% endblock %} {% block content %}
         </div>
         <div class="card-body">
           <p class="card-text">
-            Você tem certeza que deseja **excluir permanentemente** o horário:
+            Você tem certeza que deseja excluir permanentemente o horário:
           </p>
           <h5 class="mb-3">
             <strong>Data:</strong> {{ horario.data|date:"d/m/Y" }}<br />
@@ -36,8 +36,8 @@ Horário{% endblock %} {% block content %}
             {% if horario.servico%}{{horario.servico.modalidade }} {% else %}Não
             especificado{% endif %}<br />
             <strong>Professor:</strong>
-            {% if horario.funcionario%} {{horario.funcionario.nome }} {%
-            else%}Nãoatribuído {% endif %}
+            {% if horario.funcionario%} {{horario.funcionario.nome }} {% else%}
+            Nãoatribuído {% endif %}
           </h5>
           <p class="text-danger">Esta ação não poderá ser desfeita!</p>
 
