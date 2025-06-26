@@ -58,6 +58,5 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         sonar-scanner \
-        -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
-        -Dsonar.login=$SONAR_TOKEN
+        -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube
 
