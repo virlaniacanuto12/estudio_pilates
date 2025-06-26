@@ -47,18 +47,14 @@ jobs:
       run: |
         coverage run manage.py test
         coverage xml
-    - name: Install SonarScanner CLI
-      run: |
-        curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-        unzip sonar-scanner.zip -d $HOME
-        echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
-
-    - name: Run SonarScanner
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@v5.2.0
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        sonar-scanner \
-          -Dsonar.projectKey=estudio_pilates \
-          -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
-          -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.python.coverage.reportPaths=coverage.xml
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: SonarQube Quality Gate check
+      uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        # Force to fail step after specific time
+      timeout-minutes: 5
+      env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
