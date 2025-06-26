@@ -69,8 +69,4 @@ urlpatterns = [
     path('agendamentos/gerenciar/', views.listar_agendamentos, name='listar_agendamentos'), 
     path('agendamentos/alterar/<int:agendamento_id>/', views.editar_agendamento, name='editar_agendamento'), 
     path('agendamentos/cancelar/<int:agendamento_id>/', views.excluir_agendamento, name='excluir_agendamento'), 
-
-
-
-
 ]
