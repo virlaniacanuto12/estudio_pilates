@@ -79,7 +79,6 @@ def excluir_servico(request, pk):
     else:
         return redirect('studio:lista_servicos')
 
-
 # View Funcionario 
 def cadastro_funcionario(request):
     if request.method == 'POST':
