@@ -56,10 +56,6 @@ jobs:
     - name: Run SonarScanner
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        sonar-scanner \
-          -Dsonar.projectKey=estudio_pilates \
-          -Dsonar.sources=. \
-          -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
-          -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.python.coverage.reportPaths=coverage.xml
+        SONAR_HOST_URL: http://labens.dct.ufrn.br/sonarqube
+        run: |
+          sonar-scanner
