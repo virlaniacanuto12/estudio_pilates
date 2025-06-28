@@ -1,0 +1,88 @@
+{% extends 'studio/base.html' %} {% block title %}Confirmar Cancelamento
+{%endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {% if messages %}
+      <ul class="messages list-unstyled mb-3">
+        {% for message in messages %}
+        <li
+          class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div class="card shadow border-warning">
+        <div class="card-header bg-warning text-dark">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-exclamation-triangle me-2"></i>Confirmar
+            Cancelamento de Agendamento
+          </h3>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Você tem certeza que deseja cancelar o agendamento de:
+          </p>
+          <h5 class="mb-3">
+            <strong>Aluno:</strong> {{ agendamento.aluno.nome }}<br />
+            <strong>Data:</strong>
+            {{agendamento.horario_disponivel.data|date:"d/m/Y" }}<br />
+            <strong>Início:</strong>
+            {{agendamento.horario_disponivel.horario_inicio|time:"H:i" }} -
+            {{agendamento.horario_disponivel.horario_fim|time:"H:i" }}
+          </h5>
+
+          {% if agendamento.cancelado %}
+          <p class="text-info">
+            Este agendamento já está marcado como cancelado.
+          </p>
+          {% else %}
+          <p class="text-muted">
+            A vaga será liberada para novos agendamentos.
+          </p>
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="motivo_cancelamento" class="form-label"
+                >Motivo do Cancelamento (opcional):</label
+              >
+              <textarea
+                id="motivo_cancelamento"
+                name="motivo_cancelamento"
+                class="form-control"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a
+                href="{% url 'studio:listar_agendamentos' %}"
+                class="btn btn-secondary me-md-2"
+              >
+                <i class="fas fa-times me-1"></i> Voltar
+              </a>
+              <button type="submit" class="btn btn-warning">
+                <i class="fas fa-ban me-1"></i> Confirmar Cancelamento
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .card {
+    border-radius: 10px;
+  }
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+</style>
+{% endblock %}

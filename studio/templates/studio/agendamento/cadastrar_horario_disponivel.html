@@ -1,0 +1,66 @@
+{% extends 'studio/base.html' %} {% load crispy_forms_tags %} {# Para estilizar
+o formulário com Crispy Forms #} {% block title %}Cadastrar Horário
+Disponível{%endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {# Mensagens de sucesso/erro do Django #} {% if messages %}
+      <ul class="messages list-unstyled mb-3">
+        {% for message in messages %}
+        <li
+          class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-calendar-plus me-2"></i>Cadastrar Novo Horário
+            Disponível
+          </h3>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %} {# Essencial para segurança em formulários POST #}
+            {{ form|crispy }} {# Renderiza o formulário usando o Crispy Forms #}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a
+                href="{% url 'studio:home' %}"
+                class="btn btn-secondary me-md-2"
+              >
+                <i class="fas fa-times me-1"></i> Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> Salvar Horário
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .card {
+    border-radius: 10px;
+  }
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  $(document).ready(function () {});
+</script>
+{% endblock %}
