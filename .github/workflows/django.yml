@@ -47,6 +47,8 @@ jobs:
       run: |
         coverage run manage.py test
         coverage xml
+    - name: Ensure sonar-project.properties is where scanner runs
+      run: cp sonar-project.properties ${{ runner.temp }}/sonar-scanner-cli-7.1.0.4889-Linux-X64
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v5.1.0
       env:
