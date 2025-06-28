@@ -56,6 +56,20 @@ jobs:
     - name: Run SonarScanner
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: http://labens.dct.ufrn.br/sonarqube
         run: |
-          sonar-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=estudio_pilates \
+            -Dsonar.projectName="Sistema para estúdio de pilates" \
+            -Dsonar.projectVersion=0.1.0 \
+            -Dsonar.sources=. \
+            -Dsonar.sources.inclusions=**/**.py \
+            -Dsonar.exclusions=**/tests/**,docs/**,sigarte/**,**/static/**,**/templates/**,**/migrations/**,**/__pycache__/**,**/admin.py,**/__init__.*,manage.py \
+            -Dsonar.language=py \
+            -Dsonar.scm.provider=git \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.tests=. \
+            -Dsonar.test.inclusions=**/test_**.py,**/tests_**.py,**/tests.py \
+            -Dsonar.python.coverage.reportPaths=coverage.xml \
+            -Dsonar.python.coveragePlugin=cobertura \
+            -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
+            -Dsonar.login=$SONAR_TOKEN
