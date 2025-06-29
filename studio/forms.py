@@ -82,9 +82,6 @@ class FuncionarioForm(forms.ModelForm):
             'login',
             'senha',
             'is_admin',
-            'ultimo_acesso',
-            'observacoes',
-            'data_contratacao',
         ]
 
     def __init__(self, *args, **kwargs):
