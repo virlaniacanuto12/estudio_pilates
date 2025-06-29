@@ -67,7 +67,25 @@ class FuncionarioForm(forms.ModelForm):
 
     class Meta:
         model = Funcionario
-        fields = '__all__'
+        fields = [
+            'nome',
+            'cpf',
+            'rg',
+            'telefone',
+            'email',
+            'data_nascimento',
+            'status',
+            'funcao',
+            'salario',
+            'carga_horaria',
+            'horarios_trabalho',
+            'login',
+            'senha',
+            'is_admin',
+            'ultimo_acesso',
+            'observacoes',
+            'data_contratacao',
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
