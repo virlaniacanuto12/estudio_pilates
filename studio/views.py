@@ -17,6 +17,7 @@ from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno
 from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlunoFrequenciaForm
 from .forms import CustomLoginForm
 
+
 LISTAR_SERVICOS = 'studio:lista_servicos'
 LISTAR_FUNCIONARIO = 'studio:listar_funcionario'
 LISTAR_ALUNOS = 'studio:listar_alunos'
@@ -219,9 +220,9 @@ def frequencia_aula(request, pk):
 
     if aula.cancelada:
         messages.error(request, 'Não é possível marcar frequência em uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.pk)
+        return redirect('studio:detalhes_aula', pk=aula.pk)
 
-    AulaAlunoFormSet = modelformset_factory(
+    aula_aluno_formset = modelformset_factory(
         AulaAluno,
         form=AulaAlunoFrequenciaForm,
         extra=0
@@ -230,9 +231,154 @@ def frequencia_aula(request, pk):
     queryset = AulaAluno.objects.filter(aula=aula)
 
     if request.method == 'POST':
-        formset = AulaAlunoFormSet(request.POST, queryset=queryset)
+        formset = aula_aluno_formset(request.POST, queryset=queryset)
         if formset.is_valid():
             formset.save()
+            return redirect('studio:detalhes_aula', pk=aula.pk)
+    else:
+        formset = aula_aluno_formset(queryset=queryset)
+
+    return render(request, 'studio/aula/frequencia_aula.html', {
+        'aula': aula,
+        'formset': formset,
+    })
+
+
+def cadastro_aula(request):
+    if request.method == 'POST':
+        form = AulaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(LISTAR_AULAS)
+    else:
+        form = AulaForm()
+    return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
+
+
+def editar_aula(request, pk):
+    aula = get_object_or_404(Aula, pk=pk)
+    if aula.cancelada:
+        messages.error(request, 'Não é possível editar uma aula cancelada.')
+        return redirect(DETALHES_AULA, pk=aula.pk)
+    if request.method == 'POST':
+        form = AulaForm(request.POST, instance=aula)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Aula atualizada com sucesso.')
             return redirect(DETALHES_AULA, pk=aula.pk)
     else:
-        formset = Au
+        form = AulaForm(instance=aula)
+    return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
+
+
+def cancelar_aula(request, codigo):
+    aula = get_object_or_404(Aula, codigo=codigo)
+    aula.cancelada = True
+    aula.save()
+    messages.success(request, f'Aula {aula.codigo} foi cancelada com sucesso.')
+    return redirect(LISTAR_AULAS)
+
+
+# Views contas/pagamentos
+def listar_contas(request):
+    contas = ContaReceber.objects.all()
+    aluno_id = request.GET.get('aluno')
+    estado = request.GET.get('estado')
+    inicio = request.GET.get('inicio')
+    fim = request.GET.get('fim')
+    if aluno_id:
+        contas = contas.filter(aluno_id=aluno_id)
+    if estado:
+        contas = [c for c in contas if c.estado_atual.lower() == estado.lower()]
+    if inicio and fim:
+        contas = contas.filter(vencimento__range=[inicio, fim])
+
+    alunos = Aluno.objects.all()
+    return render(request, 'studio/conta/listar_contas.html', {
+        'contas': contas,
+        'alunos': alunos,
+    })
+
+
+def registrar_conta(request):
+    if request.method == 'POST':
+        form = ContaReceberForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Conta registrada com sucesso.')
+            return redirect(LISTAR_CONTAS)
+    else:
+        form = ContaReceberForm()
+
+    contexto = {
+        'form': form
+    }
+    return render(request, 'studio/conta/registrar_conta.html', contexto)
+
+
+def editar_conta(request, pk):
+    conta = get_object_or_404(ContaReceber, pk=pk)
+
+    if request.method == 'POST':
+        form = ContaReceberForm(request.POST, instance=conta)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Conta atualizada com sucesso.')
+            return redirect(LISTAR_CONTAS)
+    else:
+        form = ContaReceberForm(instance=conta)
+
+    contexto = {
+        'form': form,
+        'conta': conta,
+    }
+    return render(request, 'studio/conta/registrar_conta.html', contexto)
+
+
+def registrar_pagamento(request):
+    if request.method == 'POST':
+        form = PagamentoForm(request.POST)
+        if form.is_valid():
+            pagamento = form.save(commit=False)
+            pagamento.valor = pagamento.conta.valor
+            pagamento.status = 'Efetivado'
+            pagamento.save()
+
+            pagamento.conta.status = 'pago'
+            pagamento.conta.save()
+
+            messages.success(request, 'Pagamento registrado com sucesso.')
+            return redirect(LISTAR_PAGAMENTOS)
+    else:
+        form = PagamentoForm()
+
+    return render(request, 'studio/pagamento/registrar_pagamento.html', {'form': form})
+
+
+def listar_pagamentos(request):
+    pagamentos = Pagamento.objects.all()
+
+    metodo = request.GET.get('metodo')
+    data_inicial = request.GET.get('data_inicial')
+    data_final = request.GET.get('data_final')
+    aluno = request.GET.get('aluno')
+
+    if metodo:
+        pagamentos = pagamentos.filter(metodo_pagamento=metodo)
+    if data_inicial and data_final:
+        pagamentos = pagamentos.filter(data_pagamento__range=[data_inicial, data_final])
+    if aluno:
+        pagamentos = pagamentos.filter(conta__aluno__nome__icontains=aluno)
+
+    return render(request, 'studio/pagamento/listar_pagamentos.html', {'pagamentos': pagamentos})
+
+
+# LoginView - view pronta do Django para autenticação
+class StudioLoginView(LoginView):
+    template_name = 'studio/login.html'
+    authentication_form = AuthenticationForm
+    next_page = reverse_lazy('home')
+
+
+def home(request):
+    return render(request, 'studio/home.html')
