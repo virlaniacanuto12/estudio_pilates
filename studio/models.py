@@ -20,7 +20,7 @@ class Servico(models.Model):
         choices=NIVEIS_DIFICULDADE_CHOICES # Usando as choices definidas acima
         # blank=False, null=False por padrão, atendendo "Not Null"
     )
-    descricao = models.TextField(blank=True, null=True) # Mantido como opcional
+    descricao = models.TextField(blank=True) # Mantido como opcional
 
     def __str__(self):
         return f"{self.modalidade} ({self.niveis_dificuldade})" # Sugestão para melhorar o __str__
@@ -99,7 +99,7 @@ class Aluno(Pessoa):
     data_vencimento_plano = models.DateField()
     plano = models.ForeignKey('studio.Plano', on_delete=models.SET_NULL, null=True, blank=True)
     plano_ativo = models.BooleanField(default=True)
-    evolucao = models.TextField(blank=True, null=True)
+    evolucao = models.TextField(blank=True)
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
@@ -197,3 +197,70 @@ class Pagamento(models.Model):
 
     def __str__(self):
         return f'Pagamento #{self.id} - {self.conta}'
+    
+class HorarioDisponivel(models.Model):
+    data = models.DateField()
+    horario_inicio = models.TimeField()
+    horario_fim = models.TimeField(null=True, blank=True)
+    capacidade_maxima = models.IntegerField(default=5)
+    # Acessamos os modelos Servico e Funcionario via string para evitar problemas de ordem de importação circular
+    servico = models.ForeignKey('studio.Servico', on_delete=models.SET_NULL, null=True, blank=True)
+    funcionario = models.ForeignKey('studio.Funcionario', on_delete=models.SET_NULL, null=True, blank=True)
+
+
+    class Meta:
+        unique_together = ('data', 'horario_inicio', 'servico')
+        verbose_name = "Horário Disponível"
+        verbose_name_plural = "Horários Disponíveis"
+        ordering = ['data', 'horario_inicio']
+
+    def __str__(self):
+        # Garante que o serviço e o funcionário sejam exibidos se existirem
+        servico_str = f"({self.servico.modalidade})" if self.servico else ""
+        funcionario_str = f" com {self.funcionario.nome}" if self.funcionario else ""
+        return f"{self.data.strftime('%d/%m/%Y')} às {self.horario_inicio.strftime('%H:%M')}{servico_str}{funcionario_str}"
+
+    @property
+    def vagas_disponiveis(self):
+        return self.capacidade_maxima - self.agendamentos.filter(cancelado=False).count()
+
+    @property
+    def esta_cheio(self):
+        
+        return self.vagas_disponiveis <= 0
+
+class Agendamento(models.Model):
+    horario_disponivel = models.ForeignKey(
+        HorarioDisponivel,
+        on_delete=models.CASCADE,
+        related_name='agendamentos'
+    )
+    aluno = models.ForeignKey(
+        'studio.Aluno',
+        on_delete=models.CASCADE,
+        related_name='meus_agendamentos'
+    )
+    data_agendamento = models.DateTimeField(auto_now_add=True)
+    cancelado = models.BooleanField(default=False)
+    motivo_cancelamento = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ('horario_disponivel', 'aluno')
+        verbose_name = "Agendamento"
+        verbose_name_plural = "Agendamentos"
+        ordering = ['horario_disponivel__data', 'horario_disponivel__horario_inicio']
+
+    def __str__(self):
+        status = " (Cancelado)" if self.cancelado else ""
+        return f"Agendamento de {self.aluno.nome} para {self.horario_disponivel}{status}"
+
+    def cancelar_agendamento(self, motivo=None):
+        self.cancelado = True
+        if motivo:
+            self.motivo_cancelamento = motivo
+        self.save()
+
+    def reativar_agendamento(self):
+        self.cancelado = False
+        self.motivo_cancelamento = None
+        self.save()

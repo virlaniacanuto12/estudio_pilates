@@ -1,0 +1,138 @@
+{% extends 'studio/base.html' %} {% load crispy_forms_tags %}{# Para estilizar o
+formulário com Crispy Forms #} {% block title %}Listar Horários
+Disponíveis{%endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      {% if messages %}
+      <ul class="messages list-unstyled mb-3">
+        {% for message in messages %}
+        <li
+          class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div class="card shadow">
+        <div
+          class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+        >
+          <h3 class="card-title mb-0">
+            <i class="fas fa-calendar-alt me-2"></i>Horários Disponíveis para
+            Agendamento
+          </h3>
+          <a
+            href="{% url 'studio:cadastrar_horario_disponivel' %}"
+            class="btn btn-light btn-sm"
+          >
+            <i class="fas fa-plus me-1"></i> Adicionar Horário
+          </a>
+        </div>
+        <div class="card-body">
+          {% if horarios %}
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for horario in horarios %}
+            <div class="col">
+              <div
+                class="card h-100 {% if horario.esta_cheio %}border-danger{% elif horario.vagas_disponiveis <= 2 %}border-warning{% endif %}"
+              >
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title text-primary">
+                    {{ horario.data|date:"d/m/Y" }}
+                  </h5>
+                  <p class="card-text mb-1">
+                    <strong>Início:</strong>
+                    {{horario.horario_inicio|time:"H:i"}}
+                  </p>
+                  {% if horario.horario_fim %}
+                  <p class="card-text mb-1">
+                    <strong>Término:</strong> {{horario.horario_fim|time:"H:i"}}
+                  </p>
+                  {% endif %}
+                  <p class="card-text mb-1">
+                    <strong>Serviço:</strong>
+                    {% if horario.servico%}{{horario.servico.modalidade }}
+                    ({{horario.servico.niveis_dificuldade }}){% else %}Não
+                    especificado{% endif %}
+                  </p>
+                  <p class="card-text mb-1">
+                    <strong>Professor:</strong>
+                    {% if horario.funcionario%}{{horario.funcionario.nome }}
+                    {%else%}Não atribuído {%endif%}
+                  </p>
+
+                  <div class="mt-auto pt-3">
+                    {% if horario.esta_cheio %}
+                    <span class="badge bg-danger p-2">Vagas Esgotadas</span>
+                    {% else %}
+                    <span class="badge bg-success p-2"
+                      >Vagas: {{ horario.vagas_disponiveis }} de
+                      {{horario.capacidade_maxima }}</span
+                    >
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                      <a
+                        href="{% url 'studio:agendar_aluno' horario.id %}"
+                        class="btn btn-sm btn-outline-primary mt-2"
+                        >Agendar Aluno</a
+                      >
+                      {% endif %}
+                      <a
+                        href="{% url 'studio:editar_horario' horario.id %}"
+                        class="btn btn-sm btn-outline-secondary mt-2 ms-2"
+                        >Editar</a
+                      >
+                      <a
+                        href="{% url 'studio:excluir_horario' horario.id %}"
+                        class="btn btn-sm btn-outline-danger mt-2 ms-2"
+                        >Excluir</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="alert alert-info">
+            Nenhum horário disponível encontrado.
+            <a href="{% url 'studio:cadastrar_horario_disponivel' %}"
+              >Cadastre um novo agora!</a
+            >
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+  .border-danger {
+    border-color: #dc3545 !important;
+  }
+  .border-warning {
+    border-color: #ffc107 !important;
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  $(document).ready(function () {
+    // JavaScript opcional para a página, se necessário
+  });
+</script>
+{% endblock %}

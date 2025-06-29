@@ -1,0 +1,66 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.12]
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: studio_db
+          POSTGRES_USER: studio_user
+          POSTGRES_PASSWORD: password
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install coverage
+    - name: Copying configurations
+      run: |
+        cp .env.example .env
+    - name: Run migrations
+      run: |
+        python manage.py migrate
+    - name: Run Tests
+      run: |
+        python manage.py test
+    - name: Run tests with coverage
+      run: |
+        coverage run manage.py test
+        coverage xml
+    - name: Install SonarScanner CLI
+      run: |
+        curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+        unzip sonar-scanner.zip -d $HOME
+        echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
+    - name: Run SonarScannerAdd
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        sonar-scanner \
+          -Dsonar.projectKey=estudio_pilates \
+          -Dsonar.sources=. \
+          -Dsonar.sources.inclusions=**/**.py \
+          -Dsonar.exclusions=**/tests/**,docs/**,sigarte/**,**/static/**,**/templates/**,**/migrations/**,**/__pycache__/**,**/admin.py,**/__init__.*,manage.py \
+          -Dsonar.host.url=http://labens.dct.ufrn.br/sonarqube \
+          -Dsonar.login=$SONAR_TOKEN \
+          -Dsonar.python.coverage.reportPaths=coverage.xml

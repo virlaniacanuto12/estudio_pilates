@@ -1,31 +1,45 @@
-{% extends 'studio/base.html' %}
-
-{% block title %}Página Inicial{% endblock %}
-
+{% extends 'studio/base.html' %} {% block title %}Página Inicial{% endblock %}
 {% block content %}
 <div class="row">
-    <div class="col-md-8 mx-auto text-center">
-        <h1 class="mb-4">Bem-vindo ao Studio de Pilates</h1>
-        <p class="lead">Sistema de gerenciamento de serviços</p>
-        
-        <div class="card mt-5">
-            <div class="card-body">
-                <h5 class="card-title">Acesse nossos serviços</h5>
-                <p class="card-text">Gerencie todas as modalidades oferecidas pelo studio.</p>
-                <a href="{% url 'studio:lista_servicos' %}" class="btn btn-primary btn-lg">
-                    Ver Serviços
-                </a>
-                <a href="{% url 'studio:listar_funcionario' %}" class="btn btn-success btn-lg">
-                    Ver Funcionário
-                </a>
-                <a href="{% url 'studio:listar_alunos' %}" class="btn btn-info btn-lg">
-                    Ver Alunos
-                </a>
-                <a href="{% url 'studio:listar_planos' %}" class="btn btn-warning btn-lg">
-                    Ver Planos
-                </a>
-            </div>
-        </div>
+  <div class="col-md-8 mx-auto text-center">
+    <h1 class="mb-4">Bem-vindo ao Studio de Pilates</h1>
+    <p class="lead">Sistema de gerenciamento de serviços</p>
+
+    <div class="card mt-5">
+      <div class="card-body">
+        <h5 class="card-title">Acesse nossos serviços</h5>
+        <p class="card-text">
+          Gerencie todas as modalidades oferecidas pelo studio.
+        </p>
+        <a
+          href="{% url 'studio:lista_servicos' %}"
+          class="btn btn-primary btn-lg"
+        >
+          Ver Serviços
+        </a>
+        <a
+          href="{% url 'studio:listar_funcionario' %}"
+          class="btn btn-success btn-lg"
+        >
+          Ver Funcionário
+        </a>
+        <a href="{% url 'studio:listar_alunos' %}" class="btn btn-info btn-lg">
+          Ver Alunos
+        </a>
+        <a
+          href="{% url 'studio:listar_planos' %}"
+          class="btn btn-warning btn-lg"
+        >
+          Ver Planos
+        </a>
+        <a
+          href="{% url 'studio:listar_agendamentos' %}"
+          class="btn btn-secondary btn-lg"
+        >
+          Ver Agendamentos
+        </a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
