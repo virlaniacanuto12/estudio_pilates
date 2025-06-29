@@ -13,6 +13,8 @@ from datetime import date, datetime
 
 
 COL_MD_6 = "col-md-6"
+COL_MD_6_MB_3 = "col-md-6 mb-3"
+
 
 class ServicoForm(forms.ModelForm):
     class Meta:
@@ -267,16 +269,16 @@ class HorarioDisponivelForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Row(
-                Column('data', css_class='col-md-6 mb-3'),
-                Column('horario_inicio', css_class='col-md-6 mb-3'),
+                Column('data', css_class=COL_MD_6_MB_3),
+                Column('horario_inicio', css_class=COL_MD_6_MB_3),
             ),
             Row(
-                Column('horario_fim', css_class='col-md-6 mb-3'),
-                Column('capacidade_maxima', css_class='col-md-6 mb-3'),
+                Column('horario_fim', css_class=COL_MD_6_MB_3),
+                Column('capacidade_maxima', css_class=COL_MD_6_MB_3),
             ),
             Row(
-                Column('servico', css_class='col-md-6 mb-3'),
-                Column('funcionario', css_class='col-md-6 mb-3'),
+                Column('servico', css_class=COL_MD_6_MB_3),
+                Column('funcionario', css_class=COL_MD_6_MB_3),
             ),
             Submit('submit', 'Salvar Horário', css_class='btn btn-primary')
         )
