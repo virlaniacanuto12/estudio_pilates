@@ -7,45 +7,47 @@ from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno, HorarioDisp
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML, Field
-from crispy_bootstrap5.bootstrap5 import FloatingField 
+from crispy_bootstrap5.bootstrap5 import FloatingField
 from django.utils import timezone
 from datetime import date, datetime
 
- 
 
-class ServicoForm(forms.ModelForm): 
+COL_MD_6 = "col-md-6"
+
+class ServicoForm(forms.ModelForm):
     class Meta:
         model = Servico
-        fields = ['modalidade', 'niveis_dificuldade', 'descricao'] #
+        fields = ['modalidade', 'niveis_dificuldade', 'descricao']
 
         widgets = {
             'modalidade': forms.TextInput(attrs={'class': 'form-control'}),
-            'niveis_dificuldade': forms.Select(attrs={'class': 'form-select'}), 
+            'niveis_dificuldade': forms.Select(attrs={'class': 'form-select'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
         labels = {
             'modalidade': 'Modalidade*',
-            'niveis_dificuldade': 'Níveis de Dificuldade*', 
+            'niveis_dificuldade': 'Níveis de Dificuldade*',
             'descricao': 'Descrição',
         }
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.helper = FormHelper()
-            self.helper.form_method = 'post'
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+
 
 NIVEL_CHOICES_FILTER = [('', 'Todos')] + Servico.NIVEIS_DIFICULDADE_CHOICES
 
 class ServicoFilterForm(forms.Form):
     modalidade = forms.CharField(
-        required=False, #
+        required=False,
         label='Filtrar por Modalidade',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Parte do nome...'})
     )
-    
+
     niveis_dificuldade = forms.ChoiceField(
-        required=False, 
+        required=False,
         choices=NIVEL_CHOICES_FILTER,
         label='Filtrar por Nível',
         widget=forms.Select(attrs={'class': 'form-select'})
@@ -65,7 +67,22 @@ class FuncionarioForm(forms.ModelForm):
 
     class Meta:
         model = Funcionario
-        fields = '__all__'  
+        fields = [
+            'nome',
+            'cpf',
+            'rg',
+            'telefone',
+            'email',
+            'data_nascimento',
+            'status',
+            'funcao',
+            'salario',
+            'carga_horaria',
+            'horarios_trabalho',
+            'login',
+            'senha',
+            'is_admin',
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +92,6 @@ class FuncionarioForm(forms.ModelForm):
             self.fields.pop('login', None)
             self.fields.pop('senha', None)
             self.fields.pop('is_admin', None)
-
 
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -87,10 +103,10 @@ class FuncionarioForm(forms.ModelForm):
             Fieldset(
                 "Dados Pessoais",
                 Row(
-                    Column('nome', css_class='col-md-6'),
-                    Column('cpf', css_class='col-md-6'),
-                    Column('data_nascimento', css_class='col-md-6'),
-                    Column('telefone', css_class='col-md-6'),
+                    Column('nome', css_class=COL_MD_6),
+                    Column('cpf', css_class=COL_MD_6),
+                    Column('data_nascimento', css_class=COL_MD_6),
+                    Column('telefone', css_class=COL_MD_6),
                 )
             ),
 
@@ -98,10 +114,10 @@ class FuncionarioForm(forms.ModelForm):
             Fieldset(
                 "Dados Profissionais",
                 Row(
-                    Column('funcao', css_class='col-md-6'),
-                    Column('carga_horaria', css_class='col-md-6'),
-                    Column('salario', css_class='col-md-6'),
-                    Column('data_contratacao', css_class='col-md-6'),
+                    Column('funcao', css_class=COL_MD_6),
+                    Column('carga_horaria', css_class=COL_MD_6),
+                    Column('salario', css_class=COL_MD_6),
+                    Column('data_contratacao', css_class=COL_MD_6),
                 )
             ),
 
@@ -109,9 +125,9 @@ class FuncionarioForm(forms.ModelForm):
             Fieldset(
                 "Acesso ao Sistema",
                 Row(
-                    Column('login', css_class='col-md-6'),
-                    Column('senha', css_class='col-md-6'),
-                    Column('is_admin', css_class='col-md-6'),
+                    Column('login', css_class=COL_MD_6),
+                    Column('senha', css_class=COL_MD_6),
+                    Column('is_admin', css_class=COL_MD_6),
                 )
             ),
 
@@ -133,19 +149,22 @@ class AlunoForm(forms.ModelForm):
             'profissao', 'historico_saude', 'data_inicio_plano',
             'data_vencimento_plano', 'plano_ativo', 'evolucao', 'plano'
         ]
+
     plano = forms.ModelChoiceField(
         queryset=Plano.objects.all(),
         empty_label="Selecione o Plano",
         required=True,
         label="Código do Plano",
         widget=forms.Select(attrs={'class': 'form-select'}),
-        to_field_name='codigo' 
+        to_field_name='codigo'
     )
-        
+
+
 class PlanoForm(forms.ModelForm):
     class Meta:
         model = Plano
         fields = ['codigo', 'nome', 'qtd_aulas', 'valor_aula', 'status', 'limite_vigencia']
+
 
 class CustomLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -153,6 +172,7 @@ class CustomLoginForm(AuthenticationForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('login', 'Entrar', css_class='btn btn-primary w-100'))
+
 
 class AulaForm(forms.ModelForm):
     class Meta:
@@ -169,7 +189,6 @@ class AulaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            # Formato ISO para input date
             self.initial['data'] = self.instance.data.strftime('%Y-%m-%d')
             self.initial['horario'] = self.instance.horario.strftime('%H:%M')
 
@@ -188,6 +207,7 @@ class AulaForm(forms.ModelForm):
             if data_hora < agora:
                 raise forms.ValidationError('Não é possível agendar aulas para datas/horários passados.')
 
+
 class AulaAlunoFrequenciaForm(forms.ModelForm):
     class Meta:
         model = AulaAluno
@@ -196,11 +216,19 @@ class AulaAlunoFrequenciaForm(forms.ModelForm):
             'frequencia': forms.CheckboxInput(),
         }
 
+
 class ContaReceberForm(forms.ModelForm):
     class Meta:
         model = ContaReceber
         fields = ['aluno', 'valor', 'vencimento', 'status']
-    aluno = forms.ModelChoiceField(queryset=Aluno.objects.all(), empty_label="Selecione o aluno", widget=forms.Select)
+
+    aluno = forms.ModelChoiceField(
+        queryset=Aluno.objects.all(),
+        empty_label="Selecione o aluno",
+        widget=forms.Select
+    )
+
+
 class PagamentoForm(forms.ModelForm):
     class Meta:
         model = Pagamento

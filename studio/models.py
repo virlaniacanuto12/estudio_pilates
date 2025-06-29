@@ -20,7 +20,7 @@ class Servico(models.Model):
         choices=NIVEIS_DIFICULDADE_CHOICES # Usando as choices definidas acima
         # blank=False, null=False por padrão, atendendo "Not Null"
     )
-    descricao = models.TextField(blank=True, null=True) # Mantido como opcional
+    descricao = models.TextField(blank=True) # Mantido como opcional
 
     def __str__(self):
         return f"{self.modalidade} ({self.niveis_dificuldade})" # Sugestão para melhorar o __str__
@@ -99,7 +99,7 @@ class Aluno(Pessoa):
     data_vencimento_plano = models.DateField()
     plano = models.ForeignKey('studio.Plano', on_delete=models.SET_NULL, null=True, blank=True)
     plano_ativo = models.BooleanField(default=True)
-    evolucao = models.TextField(blank=True, null=True)
+    evolucao = models.TextField(blank=True)
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
@@ -242,7 +242,7 @@ class Agendamento(models.Model):
     )
     data_agendamento = models.DateTimeField(auto_now_add=True)
     cancelado = models.BooleanField(default=False)
-    motivo_cancelamento = models.TextField(blank=True, null=True)
+    motivo_cancelamento = models.TextField(blank=True)
 
     class Meta:
         unique_together = ('horario_disponivel', 'aluno')
