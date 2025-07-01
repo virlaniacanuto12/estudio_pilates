@@ -5,6 +5,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
+from django.db.models import Count, Sum, Q, F 
+from django.db import models 
 
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
@@ -15,7 +17,8 @@ from .forms import AlunoForm
 from .models import Plano, ContaReceber, Pagamento, Aula, AulaAluno, HorarioDisponivel, Agendamento
 from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlunoFrequenciaForm, HorarioDisponivelForm, AgendamentoForm
 from .forms import CustomLoginForm
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from django.utils import timezone
 
 LISTAR_SERVICOS = 'studio:lista_servicos'
 LISTAR_FUNCIONARIO = 'studio:listar_funcionario'
@@ -409,11 +412,6 @@ class StudioLoginView(LoginView):
     next_page = reverse_lazy('home')
 
 
-@require_GET
-def home(request):
-    return render(request, 'studio/home.html')
-
-
 # Views Horarios/Agendamento
 
 @require_GET
@@ -594,3 +592,73 @@ def excluir_horario(request, horario_id):
     }
     return render(request, 'studio/agendamento/excluir_horario_disponivel.html', context)
 
+@require_GET
+def home(request):
+    
+    hoje = date.today()
+    agora = timezone.now()
+    
+    total_alunos_ativos = Aluno.objects.filter(status=True).count()
+    
+    aulas_com_vagas_hoje = HorarioDisponivel.objects.filter(
+        data=hoje,
+    ).annotate(
+        agendamentos_ativos_count=Count('agendamentos', filter=Q(agendamentos__cancelado=False))
+    ).filter(
+        agendamentos_ativos_count__lt=models.F('capacidade_maxima')
+    ).count()
+
+    contas_a_receber_atraso_soma = ContaReceber.objects.filter(
+        vencimento__lt=hoje,
+        status='pendente'
+    ).aggregate(Sum('valor'))['valor__sum'] or 0
+    
+    data_vencimento_proximo = hoje + timedelta(days=7)
+    contas_a_vencer_proximo_soma = ContaReceber.objects.filter(
+        vencimento__range=(hoje, data_vencimento_proximo),
+        status='pendente'
+    ).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    proximos_agendamentos_hoje = Agendamento.objects.filter(
+        horario_disponivel__data=hoje,
+        horario_disponivel__horario_inicio__gte=agora.time(),
+        cancelado=False
+    ).select_related('aluno', 'horario_disponivel__funcionario').order_by('horario_disponivel__horario_inicio')
+    
+    
+    aniversariantes_mes = Aluno.objects.filter(
+        data_nascimento__month=hoje.month,
+        status=True 
+    ).order_by('data_nascimento__day')
+
+    aulas_confirmadas_hoje = Aula.objects.filter(
+        data=hoje,
+        cancelada=False
+    ).count()
+
+
+    context = {
+        'dashboard_data': {
+            'total_alunos_ativos': total_alunos_ativos,
+            'aulas_com_vagas': aulas_com_vagas_hoje,
+            'contas_em_atraso_valor': contas_a_receber_atraso_soma,
+            'contas_a_vencer_proximo_valor': contas_a_vencer_proximo_soma,
+            'aulas_confirmadas_hoje': aulas_confirmadas_hoje,
+            'proximos_agendamentos': [
+                {
+                    'id': ag.id, # Adicionei o ID do agendamento
+                    'data': ag.horario_disponivel.data.strftime('%d/%m/%Y'),
+                    'hora_inicio': ag.horario_disponivel.horario_inicio.strftime('%H:%M'),
+                    'servico': ag.horario_disponivel.servico.modalidade if ag.horario_disponivel.servico else 'N/A',
+                    'instrutor': ag.horario_disponivel.funcionario.nome if ag.horario_disponivel.funcionario else 'N/A',
+                    'aluno_nome': ag.aluno.nome,
+                } for ag in proximos_agendamentos_hoje
+            ],
+            'aniversariantes_mes': [
+                {'nome': aluno.nome, 'aniversario': aluno.data_nascimento}
+                for aluno in aniversariantes_mes
+            ],
+        }
+    }
+    
+    return render(request, 'studio/home.html', context)
