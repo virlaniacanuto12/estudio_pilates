@@ -1,45 +1,134 @@
-{% extends 'studio/base.html' %} {% block title %}Página Inicial{% endblock %}
-{% block content %}
-<div class="row">
-  <div class="col-md-8 mx-auto text-center">
-    <h1 class="mb-4">Bem-vindo ao Studio de Pilates</h1>
-    <p class="lead">Sistema de gerenciamento de serviços</p>
+{% extends 'studio/base.html' %} 
 
-    <div class="card mt-5">
-      <div class="card-body">
-        <h5 class="card-title">Acesse nossos serviços</h5>
-        <p class="card-text">
-          Gerencie todas as modalidades oferecidas pelo studio.
-        </p>
-        <a
-          href="{% url 'studio:lista_servicos' %}"
-          class="btn btn-primary btn-lg"
-        >
-          Ver Serviços
-        </a>
-        <a
-          href="{% url 'studio:listar_funcionario' %}"
-          class="btn btn-success btn-lg"
-        >
-          Ver Funcionário
-        </a>
-        <a href="{% url 'studio:listar_alunos' %}" class="btn btn-info btn-lg">
-          Ver Alunos
-        </a>
-        <a
-          href="{% url 'studio:listar_planos' %}"
-          class="btn btn-warning btn-lg"
-        >
-          Ver Planos
-        </a>
-        <a
-          href="{% url 'studio:listar_agendamentos' %}"
-          class="btn btn-secondary btn-lg"
-        >
-          Ver Agendamentos
-        </a>
-      </div>
+{% block title %}Página Inicial{% endblock %}
+
+{% block content %}
+<div class="row g-4 mt-2">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card shadow-sm h-100 border-success">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle text-muted">Alunos Ativos</h6>
+                <p class="card-text display-4 fw-bold text-success">
+                    {{ dashboard_data.total_alunos_ativos }}
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card shadow-sm h-100 border-info">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle text-muted">Aulas com Vagas</h6>
+                <p class="card-text display-4 fw-bold text-info">
+                    {{ dashboard_data.aulas_com_vagas }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card shadow-sm h-100 border-warning">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle text-muted">Faltas Registradas Hoje</h6>
+                <p class="card-text display-4 fw-bold text-warning">
+                    {{ dashboard_data.faltas_hoje }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card shadow-sm h-100 border-danger">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle text-muted">Contas a Receber</h6>
+                <p class="card-text display-6 fw-bold text-danger">
+                    R$ {{ dashboard_data.contas_a_receber|floatformat:2 }}
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="row g-4 mt-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Próximos Agendamentos do Dia</h5>
+            </div>
+            <div class="card-body">
+                {% if dashboard_data.proximos_agendamentos %}
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for agendamento in dashboard_data.proximos_agendamentos %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ agendamento.aluno_nome }}</strong><br>
+                                        <small>
+                                            {{ agendamento.hora_inicio }} -
+                                            Instrutor: {{ agendamento.instrutor }}
+                                        </small>
+                                    </div>
+                                    <a href="{% url 'studio:editar_agendamento' agendamento.id %}" class="btn btn-sm btn-primary">Ver</a>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">Nenhum agendamento futuro para hoje.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0" role="alert">
+                        Nenhum agendamento para hoje.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="d-flex flex-column h-100">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Aniversariantes do Mês</h5>
+                </div>
+                <div class="card-body overflow-auto" style="max-height: 200px;">
+                    <ul class="list-group list-group-flush">
+                        {% if dashboard_data.aniversariantes_mes %}
+                            {% for aniversariante in dashboard_data.aniversariantes_mes %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-gift me-2 text-primary"></i> {{ aniversariante.nome }}</span>
+                                    <span class="badge bg-secondary">{{ aniversariante.aniversario|date:"d \d\e F" }}</span>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item">Nenhum aniversariante neste mês.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-auto">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">Alertas Financeiros</h5>
+                </div>
+                <div class="card-body">
+                    {% if dashboard_data.alertas_financeiros.contas_em_atraso and dashboard_data.alertas_financeiros.contas_em_atraso > 0 %}
+                        <div class="alert alert-danger" role="alert">
+                            <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Contas a pagar em atraso!</h6>
+                            <p class="mb-0">Você tem <strong>{{ dashboard_data.alertas_financeiros.contas_em_atraso }} conta(s)</strong> em atraso. <a href="#" class="alert-link">Clique aqui para pagamentos.</a></p>
+                        </div>
+                    {% endif %}
+                    {% if dashboard_data.alertas_financeiros.proximos_vencimentos %}
+                        <div class="alert alert-info" role="alert">
+                            <h6 class="alert-heading"><i class="fas fa-bell me-2"></i>Próximos vencimentos</h6>
+                            <p class="mb-0">{{ dashboard_data.alertas_financeiros.proximos_vencimentos }}</p>
+                        </div>
+                    {% endif %}
+                    {% if not dashboard_data.alertas_financeiros.contas_em_atraso and not dashboard_data.alertas_financeiros.proximos_vencimentos %}
+                        <div class="alert alert-success mb-0" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>Nenhum alerta financeiro pendente.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
