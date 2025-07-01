@@ -26,6 +26,7 @@ DETALHES_AULA = 'studio:detalhes_aula'
 LISTAR_CONTAS = 'studio:listar_contas'
 LISTAR_PAGAMENTOS = 'studio:listar_pagamentos'
 LISTAR_HORARIOS = 'studio:listar_horarios'
+LISTAR_AGENDAMENTOS = 'studio:listar_agendamentos'
 
 
 # View Serviços
@@ -508,7 +509,7 @@ def editar_agendamento(request, agendamento_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Agendamento atualizado com sucesso!')
-            return redirect('studio:listar_agendamentos')
+            return redirect(LISTAR_AGENDAMENTOS)
         else:
             messages.error(request, 'Erro ao atualizar agendamento. Verifique os dados e tente novamente.')
     else:
@@ -535,7 +536,7 @@ def excluir_agendamento(request, agendamento_id):
     else:
         messages.info(request, 'Este agendamento já estava cancelado.')
 
-    return redirect('studio:listar_agendamentos')
+    return redirect(LISTAR_AGENDAMENTOS)
 
 
 @require_http_methods(["GET", "POST"])
@@ -583,7 +584,13 @@ def editar_horario(request, horario_id):
 def excluir_horario(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
-    horario.delete()
-    messages.success(request, 'Horário disponível excluído com sucesso!')
-    return redirect(LISTAR_HORARIOS)
+    if request.method == 'POST':
+        horario.delete()
+        messages.success(request, 'Horário disponível excluído com sucesso!')
+        return redirect(LISTAR_HORARIOS)
+
+    context = {
+        'horario': horario,
+    }
+    return render(request, 'studio/agendamento/excluir_horario_disponivel.html', context)
 
