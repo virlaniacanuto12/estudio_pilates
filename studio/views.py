@@ -1,11 +1,10 @@
-# studio/views.py
-
 from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
 
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
@@ -30,6 +29,8 @@ LISTAR_HORARIOS = 'studio:listar_horarios'
 
 
 # View Serviços
+
+@require_GET
 def lista_servicos(request):
     queryset = Servico.objects.all()
     filter_form = ServicoFilterForm(request.GET or None)
@@ -52,6 +53,7 @@ def lista_servicos(request):
     return render(request, 'studio/servicos/listar_servicos.html', contexto)
 
 
+@require_http_methods(["GET", "POST"])
 def novo_servico(request):
     if request.method == 'POST':
         form = ServicoForm(request.POST)
@@ -66,6 +68,7 @@ def novo_servico(request):
     return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
 
 
+@require_http_methods(["GET", "POST"])
 def editar_servico(request, pk):
     servico = get_object_or_404(Servico, pk=pk)
     if request.method == 'POST':
@@ -81,17 +84,18 @@ def editar_servico(request, pk):
     return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
 
 
+@require_POST
 def excluir_servico(request, pk):
     servico = get_object_or_404(Servico, pk=pk)
-    if request.method == 'POST':
-        modalidade_servico = servico.modalidade
-        servico.delete()
-        messages.success(request, f'Serviço "{modalidade_servico}" excluído com sucesso.')
-        return redirect(LISTAR_SERVICOS)
-    else:
-        return redirect(LISTAR_SERVICOS)
+    modalidade_servico = servico.modalidade
+    servico.delete()
+    messages.success(request, f'Serviço "{modalidade_servico}" excluído com sucesso.')
+    return redirect(LISTAR_SERVICOS)
+
 
 # View Funcionario
+
+@require_http_methods(["GET", "POST"])
 def cadastro_funcionario(request):
     if request.method == 'POST':
         form = FuncionarioForm(request.POST)
@@ -103,11 +107,13 @@ def cadastro_funcionario(request):
     return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
 
 
+@require_GET
 def listar_funcionario(request):
     funcionario = Funcionario.objects.all()
     return render(request, 'studio/funcionario/listar_funcionario.html', {'funcionario': funcionario})
 
 
+@require_http_methods(["GET", "POST"])
 def editar_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
 
@@ -122,22 +128,23 @@ def editar_funcionario(request, id):
     return render(request, 'studio/funcionario/editar_funcionario.html', {'form': form, 'funcionario': funcionario})
 
 
+@require_POST
 def excluir_funcionario(request, id):
     funcionario = get_object_or_404(Funcionario, id=id)
-
-    if request.method == 'POST':
-        funcionario.delete()
-        messages.success(request, "Funcionário excluído com sucesso!")
-        return redirect(LISTAR_FUNCIONARIO)
+    funcionario.delete()
+    messages.success(request, "Funcionário excluído com sucesso!")
     return redirect(LISTAR_FUNCIONARIO)
 
 
 # View Aluno
+
+@require_GET
 def listar_alunos(request):
     alunos = Aluno.objects.all()
     return render(request, 'studio/aluno/listar_alunos.html', {'alunos': alunos})
 
 
+@require_http_methods(["GET", "POST"])
 def cadastro_aluno(request):
     if request.method == 'POST':
         form = AlunoForm(request.POST)
@@ -149,6 +156,7 @@ def cadastro_aluno(request):
     return render(request, 'studio/aluno/cadastrar_aluno.html', {'form': form})
 
 
+@require_http_methods(["GET", "POST"])
 def editar_aluno(request, id):
     aluno = get_object_or_404(Aluno, id=id)
     if request.method == 'POST':
@@ -161,6 +169,7 @@ def editar_aluno(request, id):
     return render(request, 'studio/aluno/editar_aluno.html', {'form': form})
 
 
+@require_POST
 def excluir_aluno(request, id):
     aluno = get_object_or_404(Aluno, id=id)
     aluno.delete()
@@ -169,11 +178,14 @@ def excluir_aluno(request, id):
 
 
 # View Plano
+
+@require_GET
 def listar_planos(request):
     planos = Plano.objects.all()
     return render(request, 'studio/plano/listar_planos.html', {'planos': planos})
 
 
+@require_http_methods(["GET", "POST"])
 def cadastro_plano(request):
     if request.method == 'POST':
         form = PlanoForm(request.POST)
@@ -185,6 +197,7 @@ def cadastro_plano(request):
     return render(request, 'studio/plano/cadastrar_plano.html', {'form': form})
 
 
+@require_http_methods(["GET", "POST"])
 def editar_plano(request, codigo):
     plano = get_object_or_404(Plano, codigo=codigo)
     if request.method == 'POST':
@@ -197,6 +210,7 @@ def editar_plano(request, codigo):
     return render(request, 'studio/plano/editar_plano.html', {'form': form})
 
 
+@require_POST
 def excluir_plano(request, codigo):
     plano = get_object_or_404(Plano, codigo=codigo)
     plano.delete()
@@ -205,16 +219,20 @@ def excluir_plano(request, codigo):
 
 
 # Views aula
+
+@require_GET
 def listar_aulas(request):
     aulas = Aula.objects.all()
     return render(request, 'studio/aula/listar_aulas.html', {'aulas': aulas})
 
 
+@require_GET
 def detalhes_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
     return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula})
 
 
+@require_http_methods(["GET", "POST"])
 def frequencia_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
 
@@ -244,6 +262,7 @@ def frequencia_aula(request, pk):
     })
 
 
+@require_http_methods(["GET", "POST"])
 def cadastro_aula(request):
     if request.method == 'POST':
         form = AulaForm(request.POST)
@@ -255,6 +274,7 @@ def cadastro_aula(request):
     return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
 
 
+@require_http_methods(["GET", "POST"])
 def editar_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
     if aula.cancelada:
@@ -271,6 +291,7 @@ def editar_aula(request, pk):
     return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
 
 
+@require_POST
 def cancelar_aula(request, codigo):
     aula = get_object_or_404(Aula, codigo=codigo)
     aula.cancelada = True
@@ -280,6 +301,8 @@ def cancelar_aula(request, codigo):
 
 
 # Views contas/pagamentos
+
+@require_GET
 def listar_contas(request):
     contas = ContaReceber.objects.all()
     aluno_id = request.GET.get('aluno')
@@ -300,6 +323,7 @@ def listar_contas(request):
     })
 
 
+@require_http_methods(["GET", "POST"])
 def registrar_conta(request):
     if request.method == 'POST':
         form = ContaReceberForm(request.POST)
@@ -316,6 +340,7 @@ def registrar_conta(request):
     return render(request, 'studio/conta/registrar_conta.html', contexto)
 
 
+@require_http_methods(["GET", "POST"])
 def editar_conta(request, pk):
     conta = get_object_or_404(ContaReceber, pk=pk)
 
@@ -335,6 +360,7 @@ def editar_conta(request, pk):
     return render(request, 'studio/conta/registrar_conta.html', contexto)
 
 
+@require_http_methods(["GET", "POST"])
 def registrar_pagamento(request):
     if request.method == 'POST':
         form = PagamentoForm(request.POST)
@@ -355,6 +381,7 @@ def registrar_pagamento(request):
     return render(request, 'studio/pagamento/registrar_pagamento.html', {'form': form})
 
 
+@require_GET
 def listar_pagamentos(request):
     pagamentos = Pagamento.objects.all()
 
@@ -373,18 +400,22 @@ def listar_pagamentos(request):
     return render(request, 'studio/pagamento/listar_pagamentos.html', {'pagamentos': pagamentos})
 
 
-# LoginView - view pronta do Django para autenticação
+# LoginView
+
 class StudioLoginView(LoginView):
     template_name = 'studio/login.html'
     authentication_form = AuthenticationForm
     next_page = reverse_lazy('home')
 
 
+@require_GET
 def home(request):
     return render(request, 'studio/home.html')
 
 
 # Views Horarios/Agendamento
+
+@require_GET
 def listar_horarios(request):
     horarios = HorarioDisponivel.objects.filter(
         data__gte=date.today()
@@ -398,6 +429,7 @@ def listar_horarios(request):
     return render(request, 'studio/agendamento/listar_horarios.html', context)
 
 
+@require_http_methods(["GET", "POST"])
 def agendar_aluno(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
@@ -439,6 +471,7 @@ def agendar_aluno(request, horario_id):
     return render(request, 'studio/agendamento/agendar_aluno.html', context)
 
 
+@require_GET
 def listar_agendamentos(request):
     agendamentos = Agendamento.objects.select_related('horario_disponivel', 'aluno').order_by(
         'horario_disponivel__data', 'horario_disponivel__horario_inicio', 'aluno__nome'
@@ -466,6 +499,7 @@ def listar_agendamentos(request):
     return render(request, 'studio/agendamento/listar_agendamentos.html', context)
 
 
+@require_http_methods(["GET", "POST"])
 def editar_agendamento(request, agendamento_id):
     agendamento = get_object_or_404(Agendamento, id=agendamento_id)
 
@@ -486,27 +520,25 @@ def editar_agendamento(request, agendamento_id):
     }
     return render(request, 'studio/agendamento/editar_agendamento.html', context)
 
-
+@require_POST
 def excluir_agendamento(request, agendamento_id):
     agendamento = get_object_or_404(Agendamento, id=agendamento_id)
 
-    if request.method == 'POST':
-        motivo = request.POST.get('motivo_cancelamento', '').strip()
+    motivo = request.POST.get('motivo_cancelamento', '').strip()
 
-        if not agendamento.cancelado:
-            agendamento.cancelar_agendamento(motivo=motivo)
-            messages.success(request, f'Agendamento de {agendamento.aluno.nome} em {agendamento.horario_disponivel} cancelado com sucesso. A vaga foi liberada.')
-        else:
-            messages.info(request, 'Este agendamento já estava cancelado.')
+    if not agendamento.cancelado:
+        agendamento.cancelar_agendamento(motivo=motivo)
+        messages.success(
+            request,
+            f'Agendamento de {agendamento.aluno.nome} em {agendamento.horario_disponivel} cancelado com sucesso. A vaga foi liberada.'
+        )
+    else:
+        messages.info(request, 'Este agendamento já estava cancelado.')
 
-        return redirect('studio:listar_agendamentos')
-
-    context = {
-        'agendamento': agendamento,
-    }
-    return render(request, 'studio/agendamento/excluir_agendamento.html', context)
+    return redirect('studio:listar_agendamentos')
 
 
+@require_http_methods(["GET", "POST"])
 def cadastrar_horario_disponivel(request):
     if request.method == 'POST':
         form = HorarioDisponivelForm(request.POST)
@@ -525,6 +557,7 @@ def cadastrar_horario_disponivel(request):
     return render(request, 'studio/agendamento/cadastrar_horario_disponivel.html', context)
 
 
+@require_http_methods(["GET", "POST"])
 def editar_horario(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
@@ -546,15 +579,11 @@ def editar_horario(request, horario_id):
     return render(request, 'studio/agendamento/editar_horario_disponivel.html', context)
 
 
+@require_POST
 def excluir_horario(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
-    if request.method == 'POST':
-        horario.delete()
-        messages.success(request, 'Horário disponível excluído com sucesso!')
-        return redirect(LISTAR_HORARIOS)
+    horario.delete()
+    messages.success(request, 'Horário disponível excluído com sucesso!')
+    return redirect(LISTAR_HORARIOS)
 
-    context = {
-        'horario': horario,
-    }
-    return render(request, 'studio/agendamento/excluir_horario_disponivel.html', context)
