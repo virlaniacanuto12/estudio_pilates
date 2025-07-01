@@ -249,8 +249,7 @@ class ServicoDeleteViewTests(TestCase):
         """Testa se um GET para a URL de exclusão redireciona e não exclui."""
         servicos_count_before = Servico.objects.count()
         response = self.client.get(self.delete_url_valid_pk)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.list_url)
+        self.assertEqual(response.status_code, 405)
         self.assertEqual(Servico.objects.count(), servicos_count_before)
 
     def test_delete_view_post_deletes_service_and_redirects(self):
