@@ -55,14 +55,14 @@ Este documento descreve os User Stories criados a partir da Lista de Requisitos 
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA01.01** |O funcionário informa, na tela de Cadastro, os dados do aluno para cadastrá-lo corretamente, ao clicar em Salvar o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro realizado com sucesso, aguardando aprovação do administrador. |
-| **TA01.02** | O funcionário informa, na tela de Cadastro, os dados do aluno para cadastrá-lo incorretamente, ao clicar em Salvar ele é notificado com uma mensagem de erro. Mensagem: Cadastro não realizado, o campo “xxxx” não foi informado corretamente.|
-| **TA01.03** | O funcionário informa, na tela de Pesquisa, os dados do aluno para fazer a pesquisa corretamente, ao clicar em Pesquisar o sistema apresenta os dados do aluno pesquisado.|
-| **TA01.04** | O funcionário informa, na tela de Pesquisa, os dados do aluno para fazer a pesquisa incorretamente, ao clicar em Pesquisar o sistema apresenta uma mensagem de erro. Mensagem: Cadastro não localizado no sistema.|
-| **TA01.05** | O funcionário informa, na tela de pesquisa, os dados do aluno que deseja fazer a alteração, preenche corretamente os dados e ao clicar em Alterar, o sistema apresenta uma mensagem de sucesso. Mensagem: Alteração realizada com sucesso, aguardando aprovação do administrador.|
-| **TA01.06** | O funcionário informa, na tela de pesquisa, os dados do aluno que deseja fazer a alteração, ao digitar os dados deixa de preencher um campo obrigatório, e ao clicar em Alterar o sistema apresenta uma mensagem de erro. Mensagem: Alteração não realizada, o campo “xxxx” não foi informado corretamente.|
-| **TA01.07** | O funcionário informa corretamente, na tela de pesquisa, os dados do aluno que deseja fazer a exclusão do cadastro, o funcionário seleciona o cadastro, e ao clicar em Excluir o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro excluído com sucesso, aguardando aprovação do administrador.|
-| **TA01.08** | O administrador informa, na tela de pesquisa, os dados do administrador que deseja fazer a exclusão do cadastro, o sistema apresenta uma mensagem de erro. Mensagem: Exclusão não permitida: Não é possível excluir o único administrador cadastrado no sistema. Por favor, cadastre outro administrador antes de realizar esta ação. |
+| **TA01.01** | O funcionário informa, na tela de Cadastro, os dados do aluno para cadastrá-lo corretamente, ao clicar em Salvar o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro realizado com sucesso. |
+| **TA01.02** | O funcionário informa, na tela de Cadastro, os dados do aluno para cadastrá-lo incorretamente, ao clicar em Salvar ele é notificado com uma mensagem de erro. Mensagem: Cadastro não realizado, o campo “xxxx” não foi informado corretamente. |
+| **TA01.03** | O funcionário informa, na tela de Pesquisa, os dados do aluno para fazer a pesquisa corretamente, ao clicar em Pesquisar o sistema apresenta os dados do aluno pesquisado. |
+| **TA01.04** | O funcionário informa, na tela de Pesquisa, os dados do aluno para fazer a pesquisa incorretamente, ao clicar em Pesquisar o sistema apresenta uma mensagem de erro. Mensagem: Cadastro não localizado no sistema. |
+| **TA01.05** | O funcionário informa os dados do aluno que deseja fazer a alteração, preenche corretamente os dados e ao clicar em Alterar, o sistema apresenta uma mensagem de sucesso. Mensagem: Alteração realizada com sucesso, aguardando aprovação do administrador. |
+| **TA01.06** | O funcionário informa os dados do aluno que deseja fazer a alteração, ao digitar os dados deixa de preencher um campo obrigatório, e ao clicar em Alterar o sistema apresenta uma mensagem de erro. Mensagem: Alteração não realizada, o campo “xxxx” não foi informado corretamente. |
+| **TA01.07** | O funcionário informa corretamente os dados do aluno que deseja fazer a exclusão do cadastro, o funcionário seleciona o cadastro, e ao clicar em Excluir o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro excluído com sucesso, aguardando aprovação do administrador. |
+
 
 ### User Story US02 - Manter Funcionário
 
@@ -94,13 +94,13 @@ Este documento descreve os User Stories criados a partir da Lista de Requisitos 
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA02.01** | O administrador informa, na tela de Cadastro, os dados do funcionário para cadastrá-lo corretamente, ao clicar em Salvar o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro realizado com sucesso, aguardando aprovação do administrador. |
+| **TA02.01** | O administrador informa, na tela de Cadastro, os dados do funcionário para cadastrá-lo corretamente, ao clicar em Salvar o sistema apresenta uma mensagem de sucesso. Mensagem: Cadastro realizado com sucesso. |
 | **TA02.02** | O administrador informa, na tela de Cadastro, os dados do funcionário para cadastrá-lo incorretamente, ao clicar em Salvar ele é notificado com uma mensagem de erro. Mensagem: Cadastro não realizado, o campo “xxxx” não foi informado corretamente. |
 | **TA02.03** | O administrador informa, na tela de Pesquisa, os dados do funcionário para fazer a pesquisa corretamente, ao clicar em Pesquisar o sistema apresenta os dados do funcionário pesquisado. |
 | **TA02.04** | O administrador informa, na tela de Pesquisa, os dados do funcionário para fazer a pesquisa incorretamente, ao clicar em Pesquisar o sistema apresenta uma mensagem de erro. Mensagem: Cadastro não localizado no sistema. |
-| **TA02.05** | O administrador informa, na tela de pesquisa, os dados do funcionário que deseja fazer a alteração, preenche corretamente os dados e ao clicar em Alterar, o sistema atualiza os dados do funcionário com sucesso. |
-| **TA02.06** | O administrador informa, na tela de pesquisa, os dados do funcionário que deseja fazer a alteração, ao digitar os dados, deixa de preencher um campo obrigatório, e ao clicar em Alterar o sistema apresenta uma mensagem de erro. Mensagem: Alteração não realizada, o campo “xxxx” não foi informado corretamente. |
-| **TA02.07** | O administrador informa corretamente, na tela de pesquisa, os dados do funcionário que deseja fazer a exclusão do cadastro, o administrador seleciona o cadastro, e ao clicar em Excluir o sistema exclui o cadastro do funcionário. |
+| **TA02.05** | O administrador informa os dados do funcionário que deseja fazer a alteração, preenche corretamente os dados e ao clicar em Alterar, o sistema atualiza os dados do funcionário com sucesso. |
+| **TA02.06** | O administrador informa os dados do funcionário que deseja fazer a alteração, ao digitar os dados deixa de preencher um campo obrigatório, e ao clicar em Alterar o sistema apresenta uma mensagem de erro. Mensagem: Alteração não realizada, o campo “xxxx” não foi informado corretamente. |
+| **TA02.07** | O administrador informa corretamente, na tela de pesquisa, os dados do funcionário que deseja fazer a exclusão do cadastro, o administrador seleciona o cadastro, e ao clicar em Excluir o sistema exclui o cadastro do funcionário. Mensagem: Exclusão realizado com sucesso. |
 | **TA02.08** | O administrador informa, na tela de Login, os dados incorretos para logar, ao clicar em Entrar ele é notificado com uma mensagem de erro. Mensagem: Dados incorretos, informe os dados novamente. |
 
 ### User Story US03 - Manter Serviço
@@ -134,14 +134,9 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA04.01** | O administrador/ funcionário acessa o sistema através de login e senha, acessa a aba Cadastrar serviços, e insere corretamente todas as informações inerentes ao serviço oferecido, clica em Salvar e as informações são salvas no sistema. |
-| **TA04.02** | O administrador/ funcionário acessa o sistema através de login e senha, acessa a aba Cadastrar serviços, e insere as informações inerentes ao serviço oferecido, ao clicar em Salvar o sistema detecta incoerência no preenchimento de um ou mais campos, e emite uma mensagem de erro. Mensagem: Erro no(s) tipo(s) de dado(s) “x”, cadastro não realizado. |
-| **TA04.03** | O administrador/ funcionário acessa a aba de pesquisar serviço, e informa corretamente o código/ nome do serviço que deseja pesquisar, clica em Pesquisar e o sistema exibe as informações do serviço. |
-| **TA04.04** | O administrador/ funcionário acessa a aba de pesquisar serviço, e informa incorretamente o código/ nome do serviço que deseja pesquisar, clica em Pesquisar e o sistema exibe uma mensagem de erro. Mensagem: Serviço não localizado. |
-| **TA04.05** | O administrador/ funcionário realiza o mesmo procedimento de pesquisa, e edita os campos que deseja alterar, clica em salvar e o sistema atualiza as informações. |
-| **TA04.06** | O administrador/ funcionário realiza o mesmo procedimento de pesquisa, e ao editar os campos, deixa de preencher um campo obrigatório, clica em salvar e o sistema exibe uma mensagem de erro: Cadastro não realizado, o campo “xxxx” não foi informado corretamente |
-| **TA04.07** | O administrador/ funcionário realiza o mesmo procedimento de pesquisa, seleciona o serviço e confirma a exclusão do serviço. |
-| **TA04.08** | O administrador/ funcionário realiza o mesmo procedimento de pesquisa, seleciona o serviço e quando clica em Confirmar exclusão aparece uma mensagem de erro. Mensagem: Exclusão não permitida: O serviço está vinculado a matrículas ativas. |
+| **TA03.01** | O administrador/funcionário acessa a funcionalidade de serviço, insere modalidade, nível de dificuldade e descrição, salva informações e o sistema confirma com mensagem de sucesso. |
+| **TA03.02** | O administrador/funcionário acessa a funcionalidade de serviço, seleciona o serviço existente, edita informações, salva alterações e o sistema confirma que as alterações foram salvas com sucesso. |
+| **TA03.03** | O administrador/funcionário acessa a funcionalidade de serviço, seleciona serviço, clica em excluir, e o sistema confirma exclusão do plano. |
 
 ### User Story US04 - Registrar Aula
 
@@ -172,10 +167,12 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA05.01** | O administrador/funcionário acessa o campo de registrar aula, seleciona qual aula ele ministrou e insere as informações essenciais da aula. Depois vai para a opção registrar a evolução do aluno, seleciona o aluno para registro e registra sua evolução naquela aula e repete isso para todos os alunos presentes na aula. O funcionário salva o registro e o sistema confirma com a mensagem: aula registrada com sucesso. |
-| **TA05.02** | O administrador/funcionário acessa o campo de registrar aula, seleciona qual aula ele ministrou e insere as informações essenciais da aula: funcionário que ministrou a aula, frequência e reposições. Depois vai para a opção registrar a evolução do aluno, e seleciona um aluno ausente para registro e o sistema exibe uma mensagem de erro. Mensagem: aluno não disponível para registro. |
-| **TA05.03** | O administrador/ funcionário acessa a aba de pesquisar aula, informa a aula que ele deseja pesquisar com base na modalidade, horário e data e o sistema exibe as informações detalhadas sobre a aula. |
-| **TA05.04** | O administrador/funcionário acessa a aba de pesquisar aula, informa a aula que ele deseja pesquisar com base na modalidade, horário e data e o sistema exibe uma mensagem de erro. Mensagem: aula não encontrada. |
+| **TA04.01** | O administrador/funcionário acessa o campo de registrar aula, seleciona a aula ministrada, insere informações da aula, registra a evolução dos alunos presentes, salva o registro e o sistema confirma com a mensagem: aula registrada com sucesso. |
+| **TA04.02** | O administrador/funcionário acessa o campo de registrar aula, seleciona a aula, insere informações da aula, tenta registrar evolução de aluno ausente, e o sistema exibe mensagem de erro: aluno não disponível para registro. |
+| **TA04.03** | O administrador/funcionário acessa a aba de pesquisar aula, informa a aula que deseja pesquisar com base na modalidade, horário e data, e o sistema exibe as informações detalhadas da aula. |
+| **TA04.04** | O administrador/funcionário acessa a aba de pesquisar aula, informa dados incorretos da aula (modalidade, horário ou data), e o sistema exibe mensagem de erro: aula não encontrada. |
+| **TA04.05** | O administrador informa os dados da aula que deseja fazer a alteração, ao digitar os dados deixa de preencher um campo obrigatório, e ao clicar em Alterar o sistema apresenta uma mensagem de erro. Mensagem: Alteração não realizada, o campo “xxxx” não foi informado corretamente. |
+| **TA04.06** | O administrador informa corretamente os dados da aula que deseja fazer o cancelamento da aula, o administrador seleciona o cadastro, e ao clicar em Cancelar o sistema realiza o cancelamento da aula. Mensagem: Cancelamento realizado com sucesso. |
 
 ### User Story US05 - Agendamento
 
@@ -208,10 +205,10 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA07.01** | O administrador/funcionário acessa o sistema na funcionalidade de agendamentos de alunos, seleciona um horário que tenha disponibilidade, seleciona o horário disponível e realiza o agendamento. O sistema confirma o agendamento. |
-| **TA07.02** | O administrador/funcionário acessa o sistema na funcionalidade de agendamentos de alunos, seleciona uma data e horário de atendimento e o sistema exibe uma mensagem de erro. Mensagem: horário indisponível. Vagas esgotadas. |
-| **TA07.03** | O administrador/funcionário acessa o sistema na funcionalidade de agendamentos de alunos, seleciona uma data de atendimento e pesquisa o aluno que deseja cancelar a aula naquele dia. O sistema confirma o cancelamento e atualiza os alunos agendados para aquela aula. |
-| **TA07.04** | O administrador/funcionário acessa o sistema na funcionalidade de agendamentos de alunos, seleciona uma data de atendimento e pesquisa o aluno que deseja cancelar a aula. O sistema exibe uma mensagem de erro: aluno não encontrado. |
+| **TA05.01** | O administrador/funcionário acessa a funcionalidade de agendamentos, seleciona horário disponível e realiza agendamento; o sistema confirma o agendamento. |
+| **TA05.02** | O administrador/funcionário acessa a funcionalidade de agendamentos, seleciona horário indisponível (vagas esgotadas) e o sistema exibe mensagem de erro: horário indisponível. Vagas esgotadas. |
+| **TA05.03** | O administrador/funcionário acessa a funcionalidade de agendamentos, seleciona data e aluno para cancelar agendamento; o sistema confirma cancelamento e atualiza agenda. |
+| **TA05.04** | O administrador/funcionário acessa a funcionalidade de agendamentos, informa dados de aluno não encontrado para cancelamento, e o sistema exibe mensagem de erro: aluno não encontrado. |
 
 ### User Story US06 - Registrar pagamento
 
@@ -241,8 +238,8 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA07.01** | O administrador/funcionário acessa o sistema na funcionalidade de pagamentos, insere o valor, a data e o método do pagamento e salva o pagamento. O sistema confirma que o registro foi salvo com sucesso. |
-| **TA07.02** | O administrador/funcionário acessa o sistema na funcionalidade de pagamentos, seleciona uma data de pagamento ou/e um aluno, e acessa os horários disponíveis naquele dia, mas o sistema não encontra nenhum registro para os dados informados, exibindo uma mensagem de aviso. Mensagem: Pagamentos para a data/aluno não encontrados. |
+| **TA06.01** | O administrador/funcionário acessa a funcionalidade de pagamentos, insere valor, data e método do pagamento, salva o pagamento, e o sistema confirma que o registro foi salvo com sucesso. |
+| **TA06.02** | O administrador/funcionário acessa a funcionalidade de pagamentos, seleciona data ou aluno para pesquisa de pagamentos, e quando não há registros, o sistema exibe mensagem: Pagamentos para a data/aluno não encontrados. |
 
 ### User Story US07 - Cadastrar Plano 
 
@@ -267,19 +264,15 @@ O administrador/ funcionário realiza o mesmo procedimento de pesquisa, selecion
 | **Tamanho Funcional**     | 7 PF                                | 
 | **Analista**              | Beatriz                             | 
 | **Desenvolvedor**         | Aron                                |
-| **Revisor**               | Virlânia                            | 
-| **Testador**              | Eloisa                              | 
+| **Revisor**               | Eloisa                              | 
+| **Testador**              | Virlânia                            | 
 |                           |                                     |
 
 **Testes de Aceitação (TA)**
 |             |           |  
 | ----------- | --------- |
 | **Código**      | **Descrição** |
-| **TA07.01** | O administrador/funcionário acessa o sistema na funcionalidade de plano, insere o valor, a modalidade do plano(um, dois ou três dias na semana), o tipo do plano(mensal, trimestral ou semestral) e salva as informações de cadastro. O sistema confirma que o cadastro foi salvo com sucesso. |
-| **TA07.02** | O administrador/funcionário acessa o sistema na funcionalidade de plano, insere o valor, a modalidade do plano(um, dois ou três dias na semana), o tipo do plano(mensal, trimestral ou semestral) e apertar em salvar mas o sistema apresenta uma mensagem de erro. Mensagem: Já existe um plano com  as mesmas informações que deseja cadastrar.|
-| **TA07.03** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome de um plano e o sistema exibe as informações do plano selecionado. |
-| **TA07.04** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome de um plano e o sistema exibe uma mensagem de erro. Mensagem de erro: plano não encontrado. |
-| **TA07.05** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome do plano que deseja editar, o sistema exibe o plano selecionado e todos os seus campos para serem editados. O usuário edita as informações desejadas, salva as informações editadas e o sistema confirma as alteraçõe salvas. |
-| **TA07.06** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome do plano que deseja editar, o sistema exibe o plano selecionado e todos os seus campos para serem editados. O usuário aperta em salvar as informações editadas mas o sistema exibe uma mensagem de erro. Mensagem de erro: você já possui um plano com essas informações. |
-| **TA07.07** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome do plano que deseja excluir, o sistema exibe o plano selecionado. O usuário aperta em excluir e o sistema exibe uma mensagem de erro: Mensagem: existe alunos ativos vinculados a este plano.|
-| **TA07.08** | O administrador/funcionário acessa o sistema na funcionalidade de plano, seleciona o nome do plano que deseja excluir, o sistema exibe o plano selecionado. O usuário aperta em excluir e o sistema exibe uma mensagem confirmando a exclusão.|
+| **TA07.01** | O administrador/funcionário acessa a funcionalidade de plano, insere valor, modalidade (1, 2 ou 3 dias/semana), tipo do plano (mensal, trimestral, semestral), salva informações e o sistema confirma com mensagem de sucesso. |
+| **TA07.02** | O administrador/funcionário acessa a funcionalidade de plano, seleciona plano existente, edita informações, salva alterações e o sistema confirma que as alterações foram salvas com sucesso. |
+| **TA07.03** | O administrador/funcionário acessa a funcionalidade de plano, seleciona plano vinculado a alunos ativos, clica em excluir, e o sistema exibe mensagem de erro: existe alunos ativos vinculados a este plano. |
+| **TA07.04** | O administrador/funcionário acessa a funcionalidade de plano, seleciona plano sem alunos vinculados, clica em excluir, e o sistema confirma exclusão do plano. |
