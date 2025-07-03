@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
 from django.db.models import Count, Sum, Q, F 
 from django.db import models 
-
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 from .models import Funcionario
@@ -347,7 +346,9 @@ def registrar_conta(request):
 @require_http_methods(["GET", "POST"])
 def editar_conta(request, pk):
     conta = get_object_or_404(ContaReceber, pk=pk)
-
+    if conta.status.lower() == 'pago':
+        messages.warning(request, 'Esta conta já foi paga e não pode mais ser editada.')
+        return redirect('studio:listar_contas')
     if request.method == 'POST':
         form = ContaReceberForm(request.POST, instance=conta)
         if form.is_valid():
@@ -363,9 +364,16 @@ def editar_conta(request, pk):
     }
     return render(request, 'studio/conta/registrar_conta.html', contexto)
 
+@require_POST
+def excluir_conta(request, pk):
+    plano = get_object_or_404(ContaReceber, pk=pk)
+    plano.delete()
+    messages.success(request, "Conta excluída com sucesso!")
+    return redirect(LISTAR_CONTAS)
 
 @require_http_methods(["GET", "POST"])
 def registrar_pagamento(request):
+    conta_id = request.GET.get('conta_id')
     if request.method == 'POST':
         form = PagamentoForm(request.POST)
         if form.is_valid():
@@ -380,7 +388,15 @@ def registrar_pagamento(request):
             messages.success(request, 'Pagamento registrado com sucesso.')
             return redirect(LISTAR_PAGAMENTOS)
     else:
-        form = PagamentoForm()
+        if conta_id:
+            conta = get_object_or_404(ContaReceber, id=conta_id)
+            hoje_str = timezone.now().date().strftime('%Y-%m-%d')
+            form = PagamentoForm(initial={
+                'conta': conta,
+                'data_pagamento': timezone.now().date().strftime('%Y-%m-%d'),
+            })
+        else:
+            form = PagamentoForm()
 
     return render(request, 'studio/pagamento/registrar_pagamento.html', {'form': form})
 

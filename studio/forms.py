@@ -222,7 +222,7 @@ class AulaAlunoFrequenciaForm(forms.ModelForm):
 class ContaReceberForm(forms.ModelForm):
     class Meta:
         model = ContaReceber
-        fields = ['aluno', 'valor', 'vencimento', 'status']
+        fields = ['aluno', 'valor', 'vencimento']
 
     aluno = forms.ModelChoiceField(
         queryset=Aluno.objects.all(),
@@ -235,7 +235,9 @@ class PagamentoForm(forms.ModelForm):
     class Meta:
         model = Pagamento
         fields = ['conta', 'data_pagamento', 'metodo_pagamento']
-
+        widgets = {
+            'data_pagamento': forms.DateInput(attrs={'type': 'date'}),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Filtra apenas contas pendentes
