@@ -1,14 +1,17 @@
 from django.urls import path
 from . import views
 from .views import StudioLoginView
+from django.urls import path, include
+
 
 app_name = 'studio'
 
 urlpatterns = [
 
+
     #Login
     
-    path('', StudioLoginView.as_view(), name='login'),
+    #path('', StudioLoginView.as_view(), name='login'),
 
     #home
     path('home/', views.home, name='home'),

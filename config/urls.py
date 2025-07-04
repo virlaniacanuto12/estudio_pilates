@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', studio_home, name='home'),  # Usando o alias direto
     path('studio/', include('studio.urls')),
+    #URLs de autenticação do Django (login, logout, etc.)
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

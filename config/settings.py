@@ -66,8 +66,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'], # Garante que Django olhe uma pasta 'templates' na raiz do projeto
+        'APP_DIRS': True, # Garante que Django olhe dentro da pasta 'templates' de cada app
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
