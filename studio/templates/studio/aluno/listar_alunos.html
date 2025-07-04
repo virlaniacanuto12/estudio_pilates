@@ -42,12 +42,15 @@
                     <a href="{% url 'studio:editar_aluno' aluno.id %}" class="btn btn-sm btn-warning me-1">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <form method="post" action="{% url 'studio:excluir_aluno' aluno.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
+                    <button 
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteModal"
+                        data-url="{% url 'studio:excluir_aluno' aluno.id %}"
+                        data-nome="{{ aluno.nome }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </td>
             </tr>
             {% empty %}
@@ -58,4 +61,46 @@
         </tbody>
     </table>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Modal de confirmação -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <form id="deleteForm" method="post">
+        {% csrf_token %}
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja realmente excluir <strong id="modal-item-name"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Sim, excluir</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var confirmModal = document.getElementById('confirmDeleteModal');
+
+    confirmModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var url = button.getAttribute('data-url');
+        var nome = button.getAttribute('data-nome');
+
+        var modalTitle = confirmModal.querySelector('#modal-item-name');
+        modalTitle.textContent = nome || '';
+
+        var form = confirmModal.querySelector('#deleteForm');
+        form.setAttribute('action', url);
+    });
+});
+</script>
 {% endblock %}
