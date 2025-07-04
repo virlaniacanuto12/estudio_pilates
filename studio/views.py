@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
 from django.db.models import Count, Sum, Q, F 
 from django.db import models 
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 from .models import Funcionario
@@ -141,84 +142,75 @@ def excluir_funcionario(request, id):
 
 # View Aluno
 
-@require_GET
-def listar_alunos(request):
-    alunos = Aluno.objects.all()
-    return render(request, 'studio/aluno/listar_alunos.html', {'alunos': alunos})
+class AlunoListView(ListView):
+    model = Aluno
+    template_name = 'studio/aluno/listar_alunos.html'
+    context_object_name = 'alunos'
 
 
-@require_http_methods(["GET", "POST"])
-def cadastro_aluno(request):
-    if request.method == 'POST':
-        form = AlunoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_ALUNOS)
-    else:
-        form = AlunoForm()
-    return render(request, 'studio/aluno/cadastrar_aluno.html', {'form': form})
+class AlunoCreateView(CreateView):
+    model = Aluno
+    form_class = AlunoForm
+    template_name = 'studio/aluno/cadastrar_aluno.html'
+    success_url = reverse_lazy(LISTAR_ALUNOS)
 
 
-@require_http_methods(["GET", "POST"])
-def editar_aluno(request, id):
-    aluno = get_object_or_404(Aluno, id=id)
-    if request.method == 'POST':
-        form = AlunoForm(request.POST, instance=aluno)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_ALUNOS)
-    else:
-        form = AlunoForm(instance=aluno)
-    return render(request, 'studio/aluno/editar_aluno.html', {'form': form})
+class AlunoUpdateView(UpdateView):
+    model = Aluno
+    form_class = AlunoForm
+    template_name = 'studio/aluno/editar_aluno.html'
+    success_url = reverse_lazy(LISTAR_ALUNOS)
+    pk_url_kwarg = 'id'
 
 
-@require_POST
-def excluir_aluno(request, id):
-    aluno = get_object_or_404(Aluno, id=id)
-    aluno.delete()
-    messages.success(request, "Aluno excluído com sucesso!")
-    return redirect(LISTAR_ALUNOS)
+class AlunoDeleteView(DeleteView):
+    model = Aluno
+    template_name = 'studio/aluno/confirmar_exclusao_aluno.html'
+    success_url = reverse_lazy(LISTAR_ALUNOS)
+    pk_url_kwarg = 'id'
 
+    def delete(self, request, *args, **kwargs):
+        aluno = self.get_object()
+        aluno.delete()
+        messages.success(request, "Aluno excluído com sucesso!")
+        return redirect(self.success_url)
 
 # View Plano
 
-@require_GET
-def listar_planos(request):
-    planos = Plano.objects.all()
-    return render(request, 'studio/plano/listar_planos.html', {'planos': planos})
+class PlanoListView(ListView):
+    model = Plano
+    template_name = 'studio/plano/listar_planos.html'
+    context_object_name = 'planos'
 
 
-@require_http_methods(["GET", "POST"])
-def cadastro_plano(request):
-    if request.method == 'POST':
-        form = PlanoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_PLANOS)
-    else:
-        form = PlanoForm()
-    return render(request, 'studio/plano/cadastrar_plano.html', {'form': form})
+class PlanoCreateView(CreateView):
+    model = Plano
+    form_class = PlanoForm
+    template_name = 'studio/plano/cadastrar_plano.html'
+    success_url = reverse_lazy(LISTAR_PLANOS)
 
 
-@require_http_methods(["GET", "POST"])
-def editar_plano(request, codigo):
-    plano = get_object_or_404(Plano, codigo=codigo)
-    if request.method == 'POST':
-        form = PlanoForm(request.POST, instance=plano)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_PLANOS)
-    else:
-        form = PlanoForm(instance=plano)
-    return render(request, 'studio/plano/editar_plano.html', {'form': form})
+class PlanoUpdateView(UpdateView):
+    model = Plano
+    form_class = PlanoForm
+    template_name = 'studio/plano/editar_plano.html'
+    success_url = reverse_lazy(LISTAR_PLANOS)
+    slug_field = 'codigo'
+    slug_url_kwarg = 'codigo'
 
 
-@require_POST
-def excluir_plano(request, codigo):
-    plano = get_object_or_404(Plano, codigo=codigo)
-    plano.delete()
-    messages.success(request, "Plano excluído com sucesso!")
-    return redirect(LISTAR_PLANOS)
+class PlanoDeleteView(DeleteView):
+    model = Plano
+    template_name = 'studio/plano/confirmar_exclusao_plano.html'
+    success_url = reverse_lazy(LISTAR_PLANOS)
+    slug_field = 'codigo'
+    slug_url_kwarg = 'codigo'
+
+    def delete(self, request, *args, **kwargs):
+        plano = self.get_object()
+        plano.delete()
+        messages.success(request, "Plano excluído com sucesso!")
+        return redirect(self.success_url)
 
 
 # Views aula
