@@ -32,70 +32,67 @@ LISTAR_HORARIOS = 'studio:listar_horarios'
 LISTAR_AGENDAMENTOS = 'studio:listar_agendamentos'
 
 
-# View Serviços
+#View Serviços
 
-@require_GET
-def lista_servicos(request):
-    queryset = Servico.objects.all()
-    filter_form = ServicoFilterForm(request.GET or None)
+class ServicoListView(ListView):
+    model = Servico
+    template_name = 'studio/servicos/listar_servicos.html'
+    context_object_name = 'lista_servicos'
+    paginate_by = 10
 
-    if filter_form.is_valid():
-        modalidade = filter_form.cleaned_data.get('modalidade')
-        niveis = filter_form.cleaned_data.get('niveis_dificuldade')
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('modalidade')
+        self.filter_form = ServicoFilterForm(self.request.GET or None)
 
-        if modalidade:
-            queryset = queryset.filter(modalidade__icontains=modalidade)
+        if self.filter_form.is_valid():
+            modalidade = self.filter_form.cleaned_data.get('modalidade')
+            niveis = self.filter_form.cleaned_data.get('niveis_dificuldade')
 
-        if niveis:
-            queryset = queryset.filter(niveis_dificuldade=niveis)
+            if modalidade:
+                queryset = queryset.filter(modalidade__icontains=modalidade)
 
-    queryset = queryset.order_by('modalidade')
-    contexto = {
-        'lista_servicos': queryset,
-        'filter_form': filter_form,
-    }
-    return render(request, 'studio/servicos/listar_servicos.html', contexto)
+            if niveis:
+                queryset = queryset.filter(niveis_dificuldade=niveis)
 
+        return queryset
 
-@require_http_methods(["GET", "POST"])
-def novo_servico(request):
-    if request.method == 'POST':
-        form = ServicoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_SERVICOS)
-    else:
-        form = ServicoForm()
-    contexto = {
-        'form': form,
-    }
-    return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = self.filter_form
+        return context
 
 
-@require_http_methods(["GET", "POST"])
-def editar_servico(request, pk):
-    servico = get_object_or_404(Servico, pk=pk)
-    if request.method == 'POST':
-        form = ServicoForm(request.POST, instance=servico)
-        if form.is_valid():
-            form.save()
-            return redirect(LISTAR_SERVICOS)
-    else:
-        form = ServicoForm(instance=servico)
-    contexto = {
-        'form': form,
-    }
-    return render(request, 'studio/servicos/cadastrar_servicos.html', contexto)
+class ServicoCreateView(CreateView):
+    model = Servico
+    form_class = ServicoForm
+    template_name = 'studio/servicos/cadastrar_servicos.html'
+    success_url = reverse_lazy(LISTAR_SERVICOS)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Serviço cadastrado com sucesso!")
+        return super().form_valid(form)
 
 
-@require_POST
-def excluir_servico(request, pk):
-    servico = get_object_or_404(Servico, pk=pk)
-    modalidade_servico = servico.modalidade
-    servico.delete()
-    messages.success(request, f'Serviço "{modalidade_servico}" excluído com sucesso.')
-    return redirect(LISTAR_SERVICOS)
+class ServicoUpdateView(UpdateView):
+    model = Servico
+    form_class = ServicoForm
+    template_name = 'studio/servicos/cadastrar_servicos.html'
+    success_url = reverse_lazy(LISTAR_SERVICOS)
 
+    def form_valid(self, form):
+        messages.success(self.request, "Serviço atualizado com sucesso!")
+        return super().form_valid(form)
+
+
+class ServicoDeleteView(DeleteView):
+    model = Servico
+    template_name = 'studio/servicos/confirmar_exclusao_servico.html'
+    success_url = reverse_lazy(LISTAR_SERVICOS)
+
+    def form_valid(self, form):
+        nome_servico = self.object.modalidade
+        messages.success(self.request, f'Serviço "{nome_servico}" excluído com sucesso.')
+        return super().form_valid(form)
 
 # View Funcionario
 
