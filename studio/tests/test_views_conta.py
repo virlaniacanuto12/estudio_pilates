@@ -133,7 +133,6 @@ class ContaReceberViewsTestCase(TestCase):
         url = reverse('studio:editar_conta', args=[self.conta_pago.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        # Testa mensagem de warning
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any("já foi paga" in str(m) for m in messages))
 
