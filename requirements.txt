@@ -1,8 +1,10 @@
 asgiref==3.8.1
+beautifulsoup4==4.13.4
+crispy-bootstrap5==2025.4
 Django==5.2
 django-crispy-forms==2.4
-crispy-bootstrap5
 django-environ==0.12.0
 psycopg2-binary==2.9.10
+soupsieve==2.7
 sqlparse==0.5.3
 typing_extensions==4.13.2

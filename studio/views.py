@@ -307,7 +307,11 @@ def listar_contas(request):
     if aluno_id:
         contas = contas.filter(aluno_id=aluno_id)
     if estado:
-        contas = [c for c in contas if c.estado_atual.lower() == estado.lower()]
+        estado = estado.lower()
+        if estado == 'vencido':
+            contas = contas.filter(vencimento__lt=date.today()).exclude(status='pago')
+        elif estado in ['pendente', 'pago']:
+            contas = contas.filter(status=estado)
     if inicio and fim:
         contas = contas.filter(vencimento__range=[inicio, fim])
 
