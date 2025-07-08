@@ -10,6 +10,10 @@ from .views import (
     PlanoCreateView,
     PlanoUpdateView,
     PlanoDeleteView,
+    ServicoListView,
+    ServicoCreateView,
+    ServicoUpdateView,
+    ServicoDeleteView,
     )
 from django.urls import path, include
 
@@ -27,10 +31,10 @@ urlpatterns = [
     path('home/', views.home, name='home'),
 
     # Serviços
-    path('servicos', views.lista_servicos, name='lista_servicos'), 
-    path('novo/', views.novo_servico, name='novo_servico'),
-    path('editar/<int:pk>/', views.editar_servico, name='editar_servico'),
-    path('excluir/<int:pk>/', views.excluir_servico, name='excluir_servico'),
+    path('servicos/', ServicoListView.as_view(), name='lista_servicos'),
+    path('servicos/novo/', ServicoCreateView.as_view(), name='novo_servico'),
+    path('servicos/editar/<int:pk>/', ServicoUpdateView.as_view(), name='editar_servico'),
+    path('servicos/excluir/<int:pk>/', ServicoDeleteView.as_view(), name='excluir_servico'),
 
     # Funcionario
     path('funcionarios/', views.listar_funcionario, name='listar_funcionario'),
