@@ -47,6 +47,7 @@ urlpatterns = [
     path('alunos/novo/', AlunoCreateView.as_view(), name='cadastrar_aluno'),
     path('alunos/editar/<int:id>/', AlunoUpdateView.as_view(), name='editar_aluno'),
     path('alunos/excluir/<int:id>/', AlunoDeleteView.as_view(), name='excluir_aluno'),
+    path('alunos/<int:id>/evolucoes/', views.evolucoes_aluno, name='evolucoes_aluno'),
 
     # Plano
     path('planos/', PlanoListView.as_view(), name='listar_planos'),
