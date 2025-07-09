@@ -13,6 +13,7 @@
         <div class="card-body">
             <p><strong>Data:</strong> {{ aula.data }}</p>
             <p><strong>Horário:</strong> {{ aula.horario }}</p>
+            <p><strong>Funcionário responsável:</strong> {{ aula.funcionario.nome }}</p>
             <p><strong>Serviços:</strong></p>
             <ul>
                 {% for servico in aula.servicos.all %}
@@ -28,19 +29,49 @@
                 </div>
             {% endif %}
 
+            <h4 class="mt-4">Alunos Agendados</h4>
+            <table class="table table-bordered mt-2">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Presença</th>
+                        <th>Evolução</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for participacao in aula.participacoes.all %}
+                        {# Ajuste esta condição conforme sua lógica para filtrar cancelamentos #}
+                        {% if not participacao.aluno.cancelou_aula or participacao.frequencia %}
+                        <tr>
+                            <td>{{ participacao.aluno.nome }}</td>
+                            <td>{% if participacao.frequencia %}Presente{% else %}Ausente{% endif %}</td>
+                            <td>{{ participacao.evolucao_na_aula|default:"-" }}</td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">Nenhum aluno agendado para esta aula.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                {% if aula.cancelada %}
-                    <span class="badge bg-danger">Cancelada</span>
-                {% else %}
+                {% if not aula.cancelada %}
                     <a href="{% url 'studio:frequencia_aula' aula.codigo %}" class="btn btn-success me-md-2">
                         <i class="fas fa-user-check"></i> Marcar Frequência
                     </a>
                     <a href="{% url 'studio:editar_aula' aula.codigo %}" class="btn btn-warning me-md-2">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <a href="{% url 'studio:cancelar_aula' aula.codigo %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja cancelar esta aula?');">
-                        <i class="fas fa-times-circle"></i> Cancelar Aula
-                    </a>
+                    <form action="{% url 'studio:cancelar_aula' aula.codigo %}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja cancelar esta aula?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times-circle"></i> Cancelar Aula
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="badge bg-danger">Cancelada</span>
                 {% endif %}
             </div>
         </div>
