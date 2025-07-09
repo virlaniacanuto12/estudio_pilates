@@ -172,6 +172,27 @@ class AlunoDeleteView(DeleteView):
         messages.success(request, "Aluno excluído com sucesso!")
         return redirect(self.success_url)
 
+
+def evolucoes_aluno(request, id):
+    aluno = get_object_or_404(Aluno, id=id)
+    
+    participacoes = AulaAluno.objects.filter(
+        aluno=aluno,
+    ).exclude(
+        evolucao_na_aula__isnull=True
+    ).exclude(
+        evolucao_na_aula__exact=''
+    ).select_related('aula').order_by('-aula__data')  # ordenar por data da aula, mais recente primeiro
+    
+    evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
+    
+    context = {
+        'aluno': aluno,
+        'evolucoes': evolucoes,
+    }
+    return render(request, 'studio/evolucoes_aluno.html', context)
+
+
 # View Plano
 
 class PlanoListView(ListView):
