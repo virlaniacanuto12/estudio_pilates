@@ -179,13 +179,14 @@ class CustomLoginForm(AuthenticationForm):
 class AulaForm(forms.ModelForm):
     class Meta:
         model = Aula
-        fields = ['data', 'horario', 'servicos']
+        fields = ['data', 'horario', 'servicos', 'funcionario']
         widgets = {
             'data': forms.DateInput(
                 attrs={'type': 'date', 'min': date.today().isoformat()}
             ),
             'horario': forms.TimeInput(attrs={'type': 'time'}),
             'servicos': forms.CheckboxSelectMultiple(),
+            'funcionario': forms.Select(attrs={'class': 'form-select'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -213,10 +214,28 @@ class AulaForm(forms.ModelForm):
 class AulaAlunoFrequenciaForm(forms.ModelForm):
     class Meta:
         model = AulaAluno
-        fields = ['frequencia']
+        fields = ['frequencia', 'evolucao_na_aula']
         widgets = {
             'frequencia': forms.CheckboxInput(),
+            'evolucao_na_aula': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Descreva a evolução do aluno (se presente)...'
+            }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        frequencia = cleaned_data.get('frequencia')
+        evolucao = cleaned_data.get('evolucao_na_aula')
+
+        if not frequencia and evolucao:
+            raise forms.ValidationError("Não é possível registrar evolução de aluno ausente.")
+
+        if not frequencia:
+            cleaned_data['evolucao_na_aula'] = ''  # Apaga a evolução indevidamente preenchida
+
+        return cleaned_data
 
 
 class ContaReceberForm(forms.ModelForm):
