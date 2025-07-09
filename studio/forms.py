@@ -191,6 +191,7 @@ class AulaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['funcionario'].required = True
         if self.instance and self.instance.pk:
             self.initial['data'] = self.instance.data.strftime('%Y-%m-%d')
             self.initial['horario'] = self.instance.horario.strftime('%H:%M')

@@ -109,7 +109,6 @@ class Aula(models.Model):
     data = models.DateField()
     horario = models.TimeField()
     cancelada = models.BooleanField(default=False)
-    # funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT, null=True, blank=True)
 
     servicos = models.ManyToManyField(Servico)
