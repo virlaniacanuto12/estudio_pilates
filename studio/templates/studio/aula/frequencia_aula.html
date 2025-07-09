@@ -23,6 +23,7 @@
                                 <tr>
                                     <th>Aluno</th>
                                     <th>Presente</th>
+                                    <th>Evolução</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -30,6 +31,9 @@
                                 <tr>
                                     <td>{{ form.instance.aluno.nome }}</td>
                                     <td>{{ form.frequencia }}</td>
+                                    <td>
+                                        <textarea name="{{ form.prefix }}-evolucao_na_aula" class="form-control" rows="2" {% if not form.instance.frequencia %}disabled{% endif %}>{{ form.instance.evolucao_na_aula }}</textarea>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

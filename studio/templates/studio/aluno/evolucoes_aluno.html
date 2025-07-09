@@ -1,0 +1,34 @@
+{% extends 'studio/base.html' %}
+
+{% block title %}Evoluções do Aluno{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Evoluções de {{ aluno.nome }}</h2>
+
+    {% if evolucoes %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Aula</th>
+                <th>Data</th>
+                <th>Evolução</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aula, texto in evolucoes %}
+            <tr>
+                <td>{{ aula.codigo }}</td>
+                <td>{{ aula.data }}</td>
+                <td>{{ texto }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Não há evoluções registradas para este aluno.</p>
+    {% endif %}
+
+    <a href="{% url 'studio:detalhes_aluno' aluno.pk %}" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+{% endblock %}

@@ -105,26 +105,31 @@ class Aluno(Pessoa):
         return f"{self.cpf} ({self.nome})"
 
 class Aula(models.Model):
-    # agendamento = models.OneToOneField(Agendamento, on_delete=models.CASCADE)  # aguardando implementação de agendamento
-    servicos = models.ManyToManyField(Servico)
     codigo = models.AutoField(primary_key=True)
     data = models.DateField()
     horario = models.TimeField()
     cancelada = models.BooleanField(default=False)
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT)
+    servicos = models.ManyToManyField(Servico)
 
     def __str__(self):
         return f'Aula {self.codigo} em {self.data} às {self.horario}'
 
-    def cancelar(self, motivo=None):
+    def cancelar(self):
         """Marca a aula como cancelada."""
         self.cancelada = True
         self.save()
 
-    # def gerar_participacoes(self):
-    #     """Cria entradas de AulaAluno para todos os alunos do agendamento."""
-    #     alunos = self.agendamento.alunos.all()
-    #     for aluno in alunos:
-    #         AulaAluno.objects.get_or_create(aula=self, aluno=aluno)
+    def gerar_participacoes(self):
+        """Cria entradas de AulaAluno para todos os alunos do agendamento."""
+        agendamentos = Agendamento.objects.filter(data=self.data, horario=self.horario, cancelado=False)
+        for ag in agendamentos:
+            AulaAluno.objects.get_or_create(aula=self, aluno=ag.aluno)
+
+    def remover_participacoes_canceladas(self):
+        """Remove participações de alunos que cancelaram o agendamento."""
+        agendados = Agendamento.objects.filter(data=self.data, horario=self.horario, cancelado=False).values_list('aluno_id', flat=True)
+        self.participacoes.exclude(aluno_id__in=agendados).delete()
 
     def alunos_confirmados(self):
         return self.participacoes.filter(frequencia=True).values_list('aluno', flat=True)
@@ -143,6 +148,7 @@ class AulaAluno(models.Model):
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='participacoes')
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     frequencia = models.BooleanField(default=False)
+    evolucao_na_aula = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'Aluno {self.aluno} na Aula {self.aula}'
@@ -153,6 +159,11 @@ class AulaAluno(models.Model):
 
     def marcar_ausencia(self):
         self.frequencia = False
+        self.save()
+
+    def marcar_ausencia(self):
+        self.frequencia = False
+        self.evolucao_na_aula = ""
         self.save()
 
     def status_presenca(self):
