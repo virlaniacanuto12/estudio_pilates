@@ -214,14 +214,26 @@ class PlanoDeleteView(DeleteView):
 
 @require_GET
 def listar_aulas(request):
+    data = request.GET.get('data')
+    horario = request.GET.get('horario')
     aulas = Aula.objects.all()
+
+    if data:
+        aulas = aulas.filter(data=data)
+        if horario:
+            aulas = aulas.filter(horario=horario)
+    elif horario:
+        messages.warning(request, "Para filtrar por horário, você deve informar a data.")
+        aulas = Aula.objects.none()
+
     return render(request, 'studio/aula/listar_aulas.html', {'aulas': aulas})
 
 
 @require_GET
 def detalhes_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
-    return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula})
+    participacoes = AulaAluno.objects.filter(aula=aula)
+    return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula, 'participacoes': participacoes})
 
 
 @require_http_methods(["GET", "POST"])
@@ -230,7 +242,7 @@ def frequencia_aula(request, pk):
 
     if aula.cancelada:
         messages.error(request, 'Não é possível marcar frequência em uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.pk)
+        return redirect(DETALHES_AULA, pk=aula.codigo)
 
     aula_aluno_formset = modelformset_factory(
         AulaAluno,
@@ -244,7 +256,10 @@ def frequencia_aula(request, pk):
         formset = aula_aluno_formset(request.POST, queryset=queryset)
         if formset.is_valid():
             formset.save()
-            return redirect(DETALHES_AULA, pk=aula.pk)
+            messages.success(request, 'Aula registrada com sucesso.')
+            return redirect(DETALHES_AULA, pk=aula.codigo)
+        else:
+            messages.error(request, 'Erro ao registrar aula. Verifique os campos destacados.')
     else:
         formset = aula_aluno_formset(queryset=queryset)
 
@@ -260,6 +275,7 @@ def cadastro_aula(request):
         form = AulaForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Aula cadastrada com sucesso.")
             return redirect(LISTAR_AULAS)
     else:
         form = AulaForm()
@@ -271,13 +287,13 @@ def editar_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
     if aula.cancelada:
         messages.error(request, 'Não é possível editar uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.pk)
+        return redirect(DETALHES_AULA, pk=aula.codigo)
     if request.method == 'POST':
         form = AulaForm(request.POST, instance=aula)
         if form.is_valid():
             form.save()
             messages.success(request, 'Aula atualizada com sucesso.')
-            return redirect(DETALHES_AULA, pk=aula.pk)
+            return redirect(DETALHES_AULA, pk=aula.codigo)
     else:
         form = AulaForm(instance=aula)
     return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
