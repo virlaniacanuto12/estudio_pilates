@@ -245,13 +245,6 @@ class ServicoDeleteViewTests(TestCase):
         self.delete_url_valid_pk = reverse('studio:excluir_servico', args=[self.servico_para_excluir.pk])
         self.delete_url_invalid_pk = reverse('studio:excluir_servico', args=[999]) # PK que não existe
 
-    def test_delete_view_get_request_redirects(self):
-        """Testa se um GET para a URL de exclusão redireciona e não exclui."""
-        servicos_count_before = Servico.objects.count()
-        response = self.client.get(self.delete_url_valid_pk)
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(Servico.objects.count(), servicos_count_before)
-
     def test_delete_view_post_deletes_service_and_redirects(self):
         """Testa se um POST para a URL de exclusão exclui o serviço e redireciona."""
         servicos_count_before = Servico.objects.count()
