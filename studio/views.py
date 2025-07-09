@@ -190,7 +190,7 @@ def evolucoes_aluno(request, id):
         'aluno': aluno,
         'evolucoes': evolucoes,
     }
-    return render(request, 'studio/evolucoes_aluno.html', context)
+    return render(request, 'studio/aluno/evolucoes_aluno.html', context)
 
 
 # View Plano
@@ -261,11 +261,7 @@ def detalhes_aula(request, pk):
 def frequencia_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
 
-    if aula.cancelada:
-        messages.error(request, 'Não é possível marcar frequência em uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.codigo)
-
-    aula_aluno_formset = modelformset_factory(
+    AulaAlunoFormSet = modelformset_factory(
         AulaAluno,
         form=AulaAlunoFrequenciaForm,
         extra=0
@@ -274,20 +270,26 @@ def frequencia_aula(request, pk):
     queryset = AulaAluno.objects.filter(aula=aula)
 
     if request.method == 'POST':
-        formset = aula_aluno_formset(request.POST, queryset=queryset)
+        formset = AulaAlunoFormSet(request.POST, queryset=queryset)
         if formset.is_valid():
-            formset.save()
-            messages.success(request, 'Aula registrada com sucesso.')
-            return redirect(DETALHES_AULA, pk=aula.codigo)
+            for form in formset:
+                instance = form.save(commit=False)
+                instance.aula = aula  # apenas por segurança
+                instance.save()
+            messages.success(request, "Frequência e evolução salvas com sucesso.")
+            return redirect('studio:detalhes_aula', pk=aula.pk)
         else:
-            messages.error(request, 'Erro ao registrar aula. Verifique os campos destacados.')
+            for form in formset:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, error)
     else:
-        formset = aula_aluno_formset(queryset=queryset)
+        formset = AulaAlunoFormSet(queryset=queryset)
 
     return render(request, 'studio/aula/frequencia_aula.html', {
         'aula': aula,
-        'formset': formset,
-    })
+        'formset': formset
+    })          
 
 
 @require_http_methods(["GET", "POST"])
