@@ -5,6 +5,21 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Lista de Aulas</h2>
+
+    <form method="get" action="{% url 'studio:listar_aulas' %}" class="row g-3 align-items-end mb-4">
+        <div class="col-auto">
+            <label for="data" class="form-label">Data</label>
+            <input type="date" id="data" name="data" value="{{ request.GET.data }}" class="form-control" required>
+        </div>
+        <div class="col-auto">
+            <label for="horario" class="form-label">Horário</label>
+            <input type="time" id="horario" name="horario" value="{{ request.GET.horario }}" class="form-control" {% if not request.GET.data %}disabled{% endif %}>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead class="table-primary">
@@ -31,9 +46,12 @@
                             <a href="{% url 'studio:editar_aula' aula.codigo %}" class="btn btn-warning btn-sm me-1">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="{% url 'studio:cancelar_aula' aula.codigo %}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja cancelar esta aula?');">
-                                <i class="fas fa-times-circle"></i> Cancelar
-                            </a>
+                            <form action="{% url 'studio:cancelar_aula' aula.codigo %}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja cancelar esta aula?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-times-circle"></i> Cancelar Aula
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
                 </tr>
