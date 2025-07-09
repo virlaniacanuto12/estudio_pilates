@@ -109,7 +109,9 @@ class Aula(models.Model):
     data = models.DateField()
     horario = models.TimeField()
     cancelada = models.BooleanField(default=False)
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT)
+    # funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT)
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.PROTECT, null=True, blank=True)
+
     servicos = models.ManyToManyField(Servico)
 
     def __str__(self):
@@ -253,7 +255,8 @@ class Agendamento(models.Model):
     )
     data_agendamento = models.DateTimeField(auto_now_add=True)
     cancelado = models.BooleanField(default=False)
-    motivo_cancelamento = models.TextField(blank=True)
+    motivo_cancelamento = models.TextField(blank=True, null=True)
+
 
     class Meta:
         unique_together = ('horario_disponivel', 'aluno')

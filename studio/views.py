@@ -565,23 +565,23 @@ def editar_agendamento(request, agendamento_id):
     }
     return render(request, 'studio/agendamento/editar_agendamento.html', context)
 
-@require_POST
+@require_http_methods(["GET", "POST"])
 def excluir_agendamento(request, agendamento_id):
     agendamento = get_object_or_404(Agendamento, id=agendamento_id)
 
-    motivo = request.POST.get('motivo_cancelamento', '').strip()
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo_cancelamento', '').strip()
+        if not agendamento.cancelado:
+            agendamento.cancelar_agendamento(motivo=motivo)
+            messages.success(
+                request,
+                f'Agendamento de {agendamento.aluno.nome} em {agendamento.horario_disponivel} cancelado com sucesso. A vaga foi liberada.'
+            )
+        else:
+            messages.info(request, 'Este agendamento já estava cancelado.')
+        return redirect(LISTAR_AGENDAMENTOS)
 
-    if not agendamento.cancelado:
-        agendamento.cancelar_agendamento(motivo=motivo)
-        messages.success(
-            request,
-            f'Agendamento de {agendamento.aluno.nome} em {agendamento.horario_disponivel} cancelado com sucesso. A vaga foi liberada.'
-        )
-    else:
-        messages.info(request, 'Este agendamento já estava cancelado.')
-
-    return redirect(LISTAR_AGENDAMENTOS)
-
+    return render(request, 'studio/agendamento/excluir_agendamento.html', {'agendamento': agendamento})
 
 @require_http_methods(["GET", "POST"])
 def cadastrar_horario_disponivel(request):
@@ -621,22 +621,25 @@ def editar_horario(request, horario_id):
         'form': form,
         'horario': horario,
     }
-    return render(request, 'studio/agendamento/editar_horario_disponivel.html', context)
+    return render(request, 'studio/agendamento/editar_horario.html', context)
 
 
-@require_POST
+@require_http_methods(["GET", "POST"])
 def excluir_horario(request, horario_id):
     horario = get_object_or_404(HorarioDisponivel, id=horario_id)
 
-    if request.method == 'POST':
-        horario.delete()
-        messages.success(request, 'Horário disponível excluído com sucesso!')
-        return redirect(LISTAR_HORARIOS)
+    agendamentos_ativos = horario.agendamentos.filter(cancelado=False).exists()
 
-    context = {
-        'horario': horario,
-    }
-    return render(request, 'studio/agendamento/excluir_horario_disponivel.html', context)
+    if request.method == 'POST':
+        if agendamentos_ativos:
+            messages.error(request, 'Não é possível excluir este horário porque existem agendamentos ativos vinculados a ele.')
+            return redirect(LISTAR_HORARIOS)
+        else:
+            horario.delete()
+            messages.success(request, 'Horário disponível excluído com sucesso!')
+            return redirect(LISTAR_HORARIOS)
+
+    return render(request, 'studio/agendamento/excluir_horario.html', {'horario': horario})
 
 @require_GET
 def home(request):
