@@ -19,6 +19,9 @@ from .forms import PlanoForm, ContaReceberForm, PagamentoForm, AulaForm, AulaAlu
 from .forms import CustomLoginForm
 from datetime import date, datetime, timedelta
 from django.utils import timezone
+from django.views import View
+from django.http import HttpResponseNotAllowed
+
 
 LISTAR_SERVICOS = 'studio:lista_servicos'
 LISTAR_FUNCIONARIO = 'studio:listar_funcionario'
@@ -230,7 +233,6 @@ class PlanoDeleteView(DeleteView):
         messages.success(request, "Plano excluído com sucesso!")
         return redirect(self.success_url)
 
-
 # Views aula
 
 @require_GET
@@ -389,72 +391,75 @@ class ContaReceberUpdateView(UpdateView):
         messages.success(self.request, 'Conta atualizada com sucesso.')
         return super().form_valid(form)
 
-class ContaReceberDeleteView(DeleteView):
-    model = ContaReceber
-    template_name = 'studio/conta/confirmar_exclusao_conta.html'  # ajuste se necessário
-    success_url = reverse_lazy(LISTAR_CONTAS)
-
-    def delete(self, request, *args, **kwargs):
+class ContaReceberDeleteView(View):
+    def post(self, request, pk):
+        conta = get_object_or_404(ContaReceber, pk=pk)
+        conta.delete()
         messages.success(request, "Conta excluída com sucesso!")
-        return super().delete(request, *args, **kwargs)
+        return redirect(LISTAR_CONTAS)
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
 
 class ContaReceberDetailView(DetailView):
     model = ContaReceber
     template_name = 'studio/conta/detalhar_conta.html'
     context_object_name = 'conta'
 
-@require_http_methods(["GET", "POST"])
-def registrar_pagamento(request):
-    conta_id = request.GET.get('conta_id')
-    if request.method == 'POST':
-        form = PagamentoForm(request.POST)
-        if form.is_valid():
-            pagamento = form.save(commit=False)
-            pagamento.valor = pagamento.conta.valor
-            pagamento.status = 'Efetivado'
-            pagamento.save()
+class PagamentoListView(ListView):
+    model = Pagamento
+    template_name = 'studio/pagamento/listar_pagamentos.html'
+    context_object_name = 'pagamentos'
 
-            pagamento.conta.status = 'pago'
-            pagamento.conta.save()
+    def get_queryset(self):
+        pagamentos = super().get_queryset()
+        metodo = self.request.GET.get('metodo')
+        data_inicial = self.request.GET.get('data_inicial')
+        data_final = self.request.GET.get('data_final')
+        aluno = self.request.GET.get('aluno')
 
-            messages.success(request, 'Pagamento registrado com sucesso.')
-            return redirect(LISTAR_PAGAMENTOS)
-    else:
+        if metodo:
+            pagamentos = pagamentos.filter(metodo_pagamento=metodo)
+        if data_inicial and data_final:
+            pagamentos = pagamentos.filter(data_pagamento__range=[data_inicial, data_final])
+        if aluno:
+            pagamentos = pagamentos.filter(conta__aluno__nome__icontains=aluno)
+
+        return pagamentos
+    
+class PagamentoCreateView(CreateView):
+    model = Pagamento
+    form_class = PagamentoForm
+    template_name = 'studio/pagamento/registrar_pagamento.html'
+    success_url = reverse_lazy(LISTAR_PAGAMENTOS)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        conta_id = self.request.GET.get('conta_id')
         if conta_id:
             conta = get_object_or_404(ContaReceber, id=conta_id)
-            hoje_str = timezone.now().date().strftime('%Y-%m-%d')
-            form = PagamentoForm(initial={
+            initial.update({
                 'conta': conta,
                 'data_pagamento': timezone.now().date().strftime('%Y-%m-%d'),
             })
-        else:
-            form = PagamentoForm()
+        return initial
 
-    return render(request, 'studio/pagamento/registrar_pagamento.html', {'form': form})
+    def form_valid(self, form):
+        pagamento = form.save(commit=False)
+        pagamento.valor = pagamento.conta.valor
+        pagamento.status = 'Efetivado'
+        pagamento.save()
 
+        pagamento.conta.status = 'pago'
+        pagamento.conta.save()
 
-@require_GET
-def listar_pagamentos(request):
-    pagamentos = Pagamento.objects.all()
+        messages.success(self.request, 'Pagamento registrado com sucesso.')
+        return redirect(self.success_url)
 
-    metodo = request.GET.get('metodo')
-    data_inicial = request.GET.get('data_inicial')
-    data_final = request.GET.get('data_final')
-    aluno = request.GET.get('aluno')
-
-    if metodo:
-        pagamentos = pagamentos.filter(metodo_pagamento=metodo)
-    if data_inicial and data_final:
-        pagamentos = pagamentos.filter(data_pagamento__range=[data_inicial, data_final])
-    if aluno:
-        pagamentos = pagamentos.filter(conta__aluno__nome__icontains=aluno)
-
-    return render(request, 'studio/pagamento/listar_pagamentos.html', {'pagamentos': pagamentos})
-
-@require_GET
-def detalhes_pagamento(request, pk):
-    pagamento = get_object_or_404(Pagamento, pk=pk)
-    return render(request, 'studio/pagamento/detalhar_pagamento.html', {'pagamento': pagamento})
+class PagamentoDetailView(DetailView):
+    model = Pagamento
+    template_name = 'studio/pagamento/detalhar_pagamento.html'
+    context_object_name = 'pagamento'
 
 # LoginView
 

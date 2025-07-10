@@ -19,6 +19,9 @@ from .views import (
     ContaReceberUpdateView,
     ContaReceberDeleteView,
     ContaReceberDetailView,
+    PagamentoListView,
+    PagamentoCreateView,
+    PagamentoDetailView,
     )
 from django.urls import path, include
 
@@ -79,9 +82,9 @@ urlpatterns = [
     path('contas/<int:pk>/', ContaReceberDetailView.as_view(), name='detalhes_conta'),
 
     #Pagamentos
-    path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
-    path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
-    path('pagamentos/<int:pk>/', views.detalhes_pagamento, name='detalhes_pagamento'),
+    path('pagamentos/novo/', PagamentoCreateView.as_view(), name='registrar_pagamento'),
+    path('pagamentos/', PagamentoListView.as_view(), name='listar_pagamentos'),
+    path('pagamentos/<int:pk>/', PagamentoDetailView.as_view(), name='detalhes_pagamento'),
 
     #Horarios
     path('agendamentos/horarios/novo/', views.cadastrar_horario_disponivel, name='cadastrar_horario_disponivel'),
