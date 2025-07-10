@@ -456,6 +456,10 @@ def listar_pagamentos(request):
 
     return render(request, 'studio/pagamento/listar_pagamentos.html', {'pagamentos': pagamentos})
 
+@require_GET
+def detalhes_pagamento(request, pk):
+    pagamento = get_object_or_404(Pagamento, pk=pk)
+    return render(request, 'studio/pagamento/detalhar_pagamento.html', {'pagamento': pagamento})
 
 # LoginView
 

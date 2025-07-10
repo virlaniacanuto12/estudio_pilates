@@ -1,9 +1,18 @@
 {% extends 'studio/base.html' %}
 
-{% block title %}Lista de Pagamentos{% endblock %}
+{% block title %}Pagamentos{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2><i class="fas fa-money-check-alt me-2"></i>Pagamentos</h2>
         <a href="{% url 'studio:registrar_pagamento' %}" class="btn btn-success">
@@ -13,36 +22,38 @@
 
     <form method="get" class="row g-3 align-items-end mb-4">
         <div class="col-md-3">
-            <label class="form-label">Método:</label>
-            <select name="metodo" class="form-select">
-                <option value="">-- Todos --</option>
-                <option value="PIX">PIX</option>
-                <option value="Cartão">Cartão</option>
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Transferência">Transferência</option>
+            <label for="metodo" class="form-label">Método:</label>
+            <select name="metodo" id="metodo" class="form-select">
+                <option value="">Todos</option>
+                <option value="PIX" {% if request.GET.metodo == 'PIX' %}selected{% endif %}>PIX</option>
+                <option value="Cartão" {% if request.GET.metodo == 'Cartão' %}selected{% endif %}>Cartão</option>
+                <option value="Dinheiro" {% if request.GET.metodo == 'Dinheiro' %}selected{% endif %}>Dinheiro</option>
+                <option value="Transferência" {% if request.GET.metodo == 'Transferência' %}selected{% endif %}>Transferência</option>
             </select>
         </div>
         <div class="col-md-3">
-            <label class="form-label">Data Inicial:</label>
-            <input type="date" name="data_inicial" class="form-control">
+            <label for="data_inicial" class="form-label">Data Inicial:</label>
+            <input type="date" name="data_inicial" id="data_inicial" class="form-control" value="{{ request.GET.data_inicial }}">
         </div>
         <div class="col-md-3">
-            <label class="form-label">Data Final:</label>
-            <input type="date" name="data_final" class="form-control">
+            <label for="data_final" class="form-label">Data Final:</label>
+            <input type="date" name="data_final" id="data_final" class="form-control" value="{{ request.GET.data_final }}">
         </div>
-        <div class="col-md-3">
-            <label class="form-label">Aluno:</label>
-            <input type="text" name="aluno" placeholder="Nome do aluno" class="form-control">
+        <div class="col-md-2">
+            <label for="aluno" class="form-label">Aluno:</label>
+            <input type="text" name="aluno" id="aluno" placeholder="Nome do aluno" class="form-control" value="{{ request.GET.aluno }}">
         </div>
-        <div class="col-12 text-end">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
+        <div class="col-md-auto d-grid">
+            <label class="form-label invisible">Filtrar</label>
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fas fa-filter me-1"></i> Filtrar
+            </button>
         </div>
     </form>
-
     {% if pagamentos %}
     <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-success">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-primary">
                 <tr>
                     <th>ID</th>
                     <th>Aluno</th>
@@ -50,6 +61,7 @@
                     <th>Valor</th>
                     <th>Método</th>
                     <th>Status</th>
+                    <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,16 +72,29 @@
                     <td>{{ pagamento.data_pagamento|date:"d/m/Y" }}</td>
                     <td>R$ {{ pagamento.valor }}</td>
                     <td>{{ pagamento.metodo_pagamento }}</td>
-                    <td>{{ pagamento.status }}</td>
+                    <td>
+                        {% if pagamento.status|lower == 'pendente' %}
+                            <span class="badge bg-warning text-dark">Pendente</span>
+                        {% elif pagamento.status|lower == 'pago' %}
+                            <span class="badge bg-success">Pago</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ pagamento.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'studio:detalhes_pagamento' pagamento.pk %}" class="btn btn-sm btn-info" title="Detalhes">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     {% else %}
-        <div class="alert alert-warning" role="alert">
-            Nenhum pagamento encontrado.
-        </div>
+    <div class="alert alert-warning" role="alert">
+        Nenhum pagamento encontrado.
+    </div>
     {% endif %}
 </div>
 {% endblock %}

@@ -77,6 +77,7 @@ urlpatterns = [
     #Pagamentos
     path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
     path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
+    path('pagamentos/<int:pk>/', views.detalhes_pagamento, name='detalhes_pagamento'),
 
     #Horarios
     path('agendamentos/horarios/novo/', views.cadastrar_horario_disponivel, name='cadastrar_horario_disponivel'),
