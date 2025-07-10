@@ -398,10 +398,15 @@ def editar_conta(request, pk):
 
 @require_POST
 def excluir_conta(request, pk):
-    plano = get_object_or_404(ContaReceber, pk=pk)
-    plano.delete()
+    conta = get_object_or_404(ContaReceber, pk=pk)
+    conta.delete()
     messages.success(request, "Conta excluída com sucesso!")
     return redirect(LISTAR_CONTAS)
+
+@require_GET
+def detalhes_conta(request, pk):
+    conta = get_object_or_404(ContaReceber, pk=pk)
+    return render(request, 'studio/conta/detalhar_conta.html', {'conta': conta})
 
 @require_http_methods(["GET", "POST"])
 def registrar_pagamento(request):
@@ -451,6 +456,10 @@ def listar_pagamentos(request):
 
     return render(request, 'studio/pagamento/listar_pagamentos.html', {'pagamentos': pagamentos})
 
+@require_GET
+def detalhes_pagamento(request, pk):
+    pagamento = get_object_or_404(Pagamento, pk=pk)
+    return render(request, 'studio/pagamento/detalhar_pagamento.html', {'pagamento': pagamento})
 
 # LoginView
 

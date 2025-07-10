@@ -249,6 +249,9 @@ class ContaReceberForm(forms.ModelForm):
         empty_label="Selecione o aluno",
         widget=forms.Select
     )
+    vencimento = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
 
 
 class PagamentoForm(forms.ModelForm):
