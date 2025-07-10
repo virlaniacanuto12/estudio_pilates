@@ -12,6 +12,7 @@
             </div>
         {% endfor %}
     {% endif %}
+    
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h3 class="card-title mb-0">
@@ -20,7 +21,8 @@
         </div>
         <div class="card-body">
             <p><strong>Aluno:</strong> {{ pagamento.conta.aluno.nome }}</p>
-            <p><strong>Valor Pago:</strong> R$ {{ pagamento.valor_pago }}</p>
+            <p><strong>Método de Pagamento:</strong> {{ pagamento.metodo_pagamento }}</p>
+            <p><strong>Valor Pago:</strong> R$ {{ pagamento.valor|floatformat:2 }}</p>
             <p><strong>Data do Pagamento:</strong> {{ pagamento.data_pagamento|date:"d/m/Y" }}</p>
             <p><strong>Conta Relacionada:</strong> 
                 <a href="{% url 'studio:detalhes_conta' pagamento.conta.pk %}" class="link-primary">

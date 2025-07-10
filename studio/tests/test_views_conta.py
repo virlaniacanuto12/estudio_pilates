@@ -152,3 +152,27 @@ class ContaReceberViewsTestCase(TestCase):
         self.assertIn('aluno', form.errors)
         self.assertIn('valor', form.errors)
         self.assertIn('vencimento', form.errors)
+    def test_excluir_conta_post(self):
+        url = reverse('studio:excluir_conta', args=[self.conta_pendente.id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(ContaReceber.objects.filter(pk=self.conta_pendente.id).exists())
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any("excluída com sucesso" in str(m) for m in messages))
+    def test_excluir_conta_get_not_allowed(self):
+        url = reverse('studio:excluir_conta', args=[self.conta_pendente.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 405)
+    def test_detalhar_conta(self):
+        url = reverse('studio:detalhes_conta', args=[self.conta_pendente.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.aluno1.nome)
+        self.assertTemplateUsed(response, 'studio/conta/detalhar_conta.html')
+    def test_listar_contas_post_not_allowed(self):
+        url = reverse('studio:listar_contas')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 405)
+
+
