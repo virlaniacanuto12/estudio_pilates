@@ -14,6 +14,14 @@ from .views import (
     ServicoCreateView,
     ServicoUpdateView,
     ServicoDeleteView,
+    ContaReceberListView,
+    ContaReceberCreateView,
+    ContaReceberUpdateView,
+    ContaReceberDeleteView,
+    ContaReceberDetailView,
+    PagamentoListView,
+    PagamentoCreateView,
+    PagamentoDetailView,
     )
 from django.urls import path, include
 
@@ -67,17 +75,16 @@ urlpatterns = [
     path('aulas/cancelar/<int:codigo>/', views.cancelar_aula, name='cancelar_aula'),
 
     #Contas a receber
-    path('contas/', views.listar_contas, name='listar_contas'),  
-    path('contas/novo/', views.registrar_conta, name='registrar_conta'),
-    path('contas/editar/<int:pk>/', views.editar_conta, name='editar_conta'),
-    path('contas/excluir/<int:pk>/', views.excluir_conta, name='excluir_conta'),
-    path('contas/<int:pk>/', views.detalhes_conta, name='detalhes_conta'),
-
+    path('contas/', ContaReceberListView.as_view(), name='listar_contas'),
+    path('contas/novo/', ContaReceberCreateView.as_view(), name='registrar_conta'),
+    path('contas/editar/<int:pk>/', ContaReceberUpdateView.as_view(), name='editar_conta'),
+    path('contas/excluir/<int:pk>/', ContaReceberDeleteView.as_view(), name='excluir_conta'),
+    path('contas/<int:pk>/', ContaReceberDetailView.as_view(), name='detalhes_conta'),
 
     #Pagamentos
-    path('pagamentos/novo/', views.registrar_pagamento, name='registrar_pagamento'),
-    path('pagamentos/', views.listar_pagamentos, name='listar_pagamentos'),
-    path('pagamentos/<int:pk>/', views.detalhes_pagamento, name='detalhes_pagamento'),
+    path('pagamentos/novo/', PagamentoCreateView.as_view(), name='registrar_pagamento'),
+    path('pagamentos/', PagamentoListView.as_view(), name='listar_pagamentos'),
+    path('pagamentos/<int:pk>/', PagamentoDetailView.as_view(), name='detalhes_pagamento'),
 
     #Horarios
     path('agendamentos/horarios/novo/', views.cadastrar_horario_disponivel, name='cadastrar_horario_disponivel'),
