@@ -397,12 +397,16 @@ def editar_conta(request, pk):
     return render(request, 'studio/conta/registrar_conta.html', contexto)
 
 @require_POST
-@require_POST
 def excluir_conta(request, pk):
     conta = get_object_or_404(ContaReceber, pk=pk)
     conta.delete()
     messages.success(request, "Conta excluída com sucesso!")
     return redirect(LISTAR_CONTAS)
+
+@require_GET
+def detalhes_conta(request, pk):
+    conta = get_object_or_404(ContaReceber, pk=pk)
+    return render(request, 'studio/conta/detalhar_conta.html', {'conta': conta})
 
 @require_http_methods(["GET", "POST"])
 def registrar_pagamento(request):

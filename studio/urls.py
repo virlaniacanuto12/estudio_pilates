@@ -71,6 +71,7 @@ urlpatterns = [
     path('contas/novo/', views.registrar_conta, name='registrar_conta'),
     path('contas/editar/<int:pk>/', views.editar_conta, name='editar_conta'),
     path('contas/excluir/<int:pk>/', views.excluir_conta, name='excluir_conta'),
+    path('contas/<int:pk>/', views.detalhes_conta, name='detalhes_conta'),
 
 
     #Pagamentos
