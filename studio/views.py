@@ -397,9 +397,10 @@ def editar_conta(request, pk):
     return render(request, 'studio/conta/registrar_conta.html', contexto)
 
 @require_POST
+@require_POST
 def excluir_conta(request, pk):
-    plano = get_object_or_404(ContaReceber, pk=pk)
-    plano.delete()
+    conta = get_object_or_404(ContaReceber, pk=pk)
+    conta.delete()
     messages.success(request, "Conta excluída com sucesso!")
     return redirect(LISTAR_CONTAS)
 
