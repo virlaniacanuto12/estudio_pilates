@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
 from django.db.models import Count, Sum, Q, F 
 from django.db import models 
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView,DetailView  
 from .models import Servico
 from .forms import ServicoForm, ServicoFilterForm
 from .models import Funcionario
@@ -333,80 +333,75 @@ def cancelar_aula(request, codigo):
 
 # Views contas/pagamentos
 
-@require_GET
-def listar_contas(request):
-    contas = ContaReceber.objects.all()
-    aluno_id = request.GET.get('aluno')
-    estado = request.GET.get('estado')
-    inicio = request.GET.get('inicio')
-    fim = request.GET.get('fim')
-    if aluno_id:
-        contas = contas.filter(aluno_id=aluno_id)
-    if estado:
-        estado = estado.lower()
-        if estado == 'vencido':
-            contas = contas.filter(vencimento__lt=date.today()).exclude(status='pago')
-        elif estado in ['pendente', 'pago']:
-            contas = contas.filter(status=estado)
-    if inicio and fim:
-        contas = contas.filter(vencimento__range=[inicio, fim])
+class ContaReceberListView(ListView):
+    model = ContaReceber
+    template_name = 'studio/conta/listar_contas.html'
+    context_object_name = 'contas'
 
-    alunos = Aluno.objects.all()
-    return render(request, 'studio/conta/listar_contas.html', {
-        'contas': contas,
-        'alunos': alunos,
-    })
+    def get_queryset(self):
+        contas = super().get_queryset()
+        aluno_id = self.request.GET.get('aluno')
+        estado = self.request.GET.get('estado')
+        inicio = self.request.GET.get('inicio')
+        fim = self.request.GET.get('fim')
 
+        if aluno_id:
+            contas = contas.filter(aluno_id=aluno_id)
+        if estado:
+            estado = estado.lower()
+            if estado == 'vencido':
+                contas = contas.filter(vencimento__lt=date.today()).exclude(status='pago')
+            elif estado in ['pendente', 'pago']:
+                contas = contas.filter(status=estado)
+        if inicio and fim:
+            contas = contas.filter(vencimento__range=[inicio, fim])
+        return contas
 
-@require_http_methods(["GET", "POST"])
-def registrar_conta(request):
-    if request.method == 'POST':
-        form = ContaReceberForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Conta registrada com sucesso.')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['alunos'] = Aluno.objects.all()
+        return context
+
+class ContaReceberCreateView(CreateView):
+    model = ContaReceber
+    form_class = ContaReceberForm
+    template_name = 'studio/conta/registrar_conta.html'
+    success_url = reverse_lazy(LISTAR_CONTAS)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Conta registrada com sucesso.')
+        return super().form_valid(form)
+
+class ContaReceberUpdateView(UpdateView):
+    model = ContaReceber
+    form_class = ContaReceberForm
+    template_name = 'studio/conta/registrar_conta.html'
+    success_url = reverse_lazy(LISTAR_CONTAS)
+
+    def dispatch(self, request, *args, **kwargs):
+        conta = self.get_object()
+        if conta.status.lower() == 'pago':
+            messages.warning(request, 'Esta conta já foi paga e não pode mais ser editada.')
             return redirect(LISTAR_CONTAS)
-    else:
-        form = ContaReceberForm()
+        return super().dispatch(request, *args, **kwargs)
 
-    contexto = {
-        'form': form
-    }
-    return render(request, 'studio/conta/registrar_conta.html', contexto)
+    def form_valid(self, form):
+        messages.success(self.request, 'Conta atualizada com sucesso.')
+        return super().form_valid(form)
 
+class ContaReceberDeleteView(DeleteView):
+    model = ContaReceber
+    template_name = 'studio/conta/confirmar_exclusao_conta.html'  # ajuste se necessário
+    success_url = reverse_lazy(LISTAR_CONTAS)
 
-@require_http_methods(["GET", "POST"])
-def editar_conta(request, pk):
-    conta = get_object_or_404(ContaReceber, pk=pk)
-    if conta.status.lower() == 'pago':
-        messages.warning(request, 'Esta conta já foi paga e não pode mais ser editada.')
-        return redirect('studio:listar_contas')
-    if request.method == 'POST':
-        form = ContaReceberForm(request.POST, instance=conta)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Conta atualizada com sucesso.')
-            return redirect(LISTAR_CONTAS)
-    else:
-        form = ContaReceberForm(instance=conta)
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Conta excluída com sucesso!")
+        return super().delete(request, *args, **kwargs)
 
-    contexto = {
-        'form': form,
-        'conta': conta,
-    }
-    return render(request, 'studio/conta/registrar_conta.html', contexto)
-
-@require_POST
-def excluir_conta(request, pk):
-    conta = get_object_or_404(ContaReceber, pk=pk)
-    conta.delete()
-    messages.success(request, "Conta excluída com sucesso!")
-    return redirect(LISTAR_CONTAS)
-
-@require_GET
-def detalhes_conta(request, pk):
-    conta = get_object_or_404(ContaReceber, pk=pk)
-    return render(request, 'studio/conta/detalhar_conta.html', {'conta': conta})
+class ContaReceberDetailView(DetailView):
+    model = ContaReceber
+    template_name = 'studio/conta/detalhar_conta.html'
+    context_object_name = 'conta'
 
 @require_http_methods(["GET", "POST"])
 def registrar_pagamento(request):
