@@ -132,3 +132,16 @@ class PagamentoViewsTestCase(TestCase):
         response = self.client.get(url, {'aluno': 'NãoExiste'})
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, self.aluno.nome)
+    def test_detalhes_pagamento(self):
+        pagamento = Pagamento.objects.create(
+            conta=self.conta,
+            data_pagamento=date.today(),
+            metodo_pagamento='PIX',
+            valor=self.conta.valor
+        )
+        url = reverse('studio:detalhes_pagamento', args=[pagamento.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.aluno.nome)
+        self.assertContains(response, 'PIX')
+        self.assertContains(response, '300,00')
