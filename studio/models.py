@@ -275,5 +275,5 @@ class Agendamento(models.Model):
 
     def reativar_agendamento(self):
         self.cancelado = False
-        self.motivo_cancelamento = None
+        self.motivo_cancelamento = ''
         self.save()
