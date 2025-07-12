@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum, Q, F 
 from django.db import models 
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -173,6 +174,7 @@ class AlunoDeleteView(DeleteView):
         return redirect(self.success_url)
 
 
+@login_required
 def evolucoes_aluno(request, id):
     aluno = get_object_or_404(Aluno, id=id)
     
@@ -182,7 +184,7 @@ def evolucoes_aluno(request, id):
         evolucao_na_aula__isnull=True
     ).exclude(
         evolucao_na_aula__exact=''
-    ).select_related('aula').order_by('-aula__data')  # ordenar por data da aula, mais recente primeiro
+    ).select_related('aula').order_by('-aula__data')
     
     evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
     
@@ -234,10 +236,18 @@ class PlanoDeleteView(DeleteView):
 # Views aula
 
 @require_GET
+@login_required
 def listar_aulas(request):
     data = request.GET.get('data')
     horario = request.GET.get('horario')
+    status = request.GET.get('status')
+
     aulas = Aula.objects.all()
+
+    if status == 'ativas':
+        aulas = aulas.filter(cancelada=False)
+    elif status == 'canceladas':
+        aulas = aulas.filter(cancelada=True)
 
     if data:
         aulas = aulas.filter(data=data)
@@ -247,7 +257,12 @@ def listar_aulas(request):
         messages.warning(request, "Para filtrar por horário, você deve informar a data.")
         aulas = Aula.objects.none()
 
-    return render(request, 'studio/aula/listar_aulas.html', {'aulas': aulas})
+    return render(request, 'studio/aula/listar_aulas.html', {
+        'aulas': aulas,
+        'status': status,
+        'data': data,
+        'horario': horario,
+    })
 
 
 @require_GET
@@ -257,41 +272,42 @@ def detalhes_aula(request, pk):
     return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula, 'participacoes': participacoes})
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def frequencia_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
-
-    AulaAlunoFormSet = modelformset_factory(
-        AulaAluno,
-        form=AulaAlunoFrequenciaForm,
-        extra=0
-    )
-
-    queryset = AulaAluno.objects.filter(aula=aula)
+    AulaAlunoFormSet = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
 
     if request.method == 'POST':
-        formset = AulaAlunoFormSet(request.POST, queryset=queryset)
-        if formset.is_valid():
-            for form in formset:
-                instance = form.save(commit=False)
-                instance.aula = aula  # apenas por segurança
-                instance.save()
-            messages.success(request, "Frequência e evolução salvas com sucesso.")
-            return redirect('studio:detalhes_aula', pk=aula.pk)
-        else:
-            for form in formset:
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        messages.error(request, error)
-    else:
-        formset = AulaAlunoFormSet(queryset=queryset)
+        formset = AulaAlunoFormSet(request.POST, queryset=AulaAluno.objects.filter(aula=aula))
+        return processar_formset(request, formset, aula)
 
-    return render(request, 'studio/aula/frequencia_aula.html', {
-        'aula': aula,
-        'formset': formset
-    })          
+    formset = AulaAlunoFormSet(queryset=AulaAluno.objects.filter(aula=aula))
+    return render(request, 'studio/aula/frequencia_aula.html', {'aula': aula, 'formset': formset})
 
 
+def processar_formset(request, formset, aula):
+    if formset.is_valid():
+        for form in formset:
+            salvar_formulario(form, aula)
+        messages.success(request, "Frequência e evolução salvas com sucesso.")
+        return redirect(DETALHES_AULA, pk=aula.pk)
+    
+    for form in formset:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, error)
+    
+    return render(request, 'studio/aula/frequencia_aula.html', {'aula': aula, 'formset': formset})
+
+
+def salvar_formulario(form, aula):
+    instance = form.save(commit=False)
+    instance.aula = aula
+    instance.save()       
+
+
+@login_required
 @require_http_methods(["GET", "POST"])
 def cadastro_aula(request):
     if request.method == 'POST':
@@ -304,7 +320,7 @@ def cadastro_aula(request):
         form = AulaForm()
     return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
 
-
+@login_required
 @require_http_methods(["GET", "POST"])
 def editar_aula(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
@@ -322,6 +338,7 @@ def editar_aula(request, pk):
     return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
 
 
+@login_required
 @require_POST
 def cancelar_aula(request, codigo):
     aula = get_object_or_404(Aula, codigo=codigo)
