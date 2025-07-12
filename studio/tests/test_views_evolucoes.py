@@ -1,10 +1,14 @@
 from datetime import date, time
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 from studio.models import Aluno, Aula, AulaAluno, Funcionario
 
 class EvolucoesAlunoViewTestCase(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
         self.funcionario = Funcionario.objects.create(
             cpf="12345678900",
             nome="Instrutor Teste",
@@ -35,24 +39,23 @@ class EvolucoesAlunoViewTestCase(TestCase):
             horario=time(10, 0),
             funcionario=self.funcionario
         )
-        # Cria participações com evoluções
-        self.participacao1 = AulaAluno.objects.create(
+        AulaAluno.objects.create(
             aula=self.aula1,
             aluno=self.aluno,
             frequencia=True,
             evolucao_na_aula="Melhorou muito a postura"
         )
-        self.participacao2 = AulaAluno.objects.create(
+        AulaAluno.objects.create(
             aula=self.aula2,
             aluno=self.aluno,
             frequencia=True,
             evolucao_na_aula=""
         )
-        self.participacao3 = AulaAluno.objects.create(
+        AulaAluno.objects.create(
             aula=self.aula2,
             aluno=self.aluno,
             frequencia=True,
-            evolucao_na_aula=None
+            evolucao_na_aula=""
         )
 
     def test_evolucoes_aluno_view(self):
@@ -61,7 +64,6 @@ class EvolucoesAlunoViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['aluno'], self.aluno)
 
-        # Evoluções que não são vazias ou nulas
         evolucoes = response.context['evolucoes']
         self.assertEqual(len(evolucoes), 1)
         self.assertEqual(evolucoes[0][1], "Melhorou muito a postura")
