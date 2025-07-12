@@ -1,10 +1,14 @@
 from datetime import date, time
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 from studio.models import Aula, AulaAluno, Aluno, Funcionario, Servico, HorarioDisponivel, Agendamento
 
 class AulaViewsTestCase(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
         self.funcionario = Funcionario.objects.create(
             cpf="12345678900",
             nome="Instrutor Teste",
@@ -51,8 +55,6 @@ class AulaViewsTestCase(TestCase):
             aluno=self.aluno,
             cancelado=False
         )
-
-        # AulaAluno criado automaticamente pelo signal para o agendamento
 
     def test_listar_aulas_sem_filtros(self):
         url = reverse('studio:listar_aulas')
@@ -102,15 +104,13 @@ class AulaViewsTestCase(TestCase):
             'form-MIN_NUM_FORMS': '0',
             'form-MAX_NUM_FORMS': '1000',
             'form-0-id': aulaaluno.id,
-            'form-0-aula': str(self.aula.pk),
-            'form-0-aluno': str(self.aluno.pk),
-            'form-0-frequencia': 'on',
+            'form-0-frequencia': 'on',         
             'form-0-evolucao_na_aula': 'Evolução testada'
         }
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         aulaaluno.refresh_from_db()
-        self.assertTrue(aulaaluno.frequencia)
+        self.assertTrue(aulaaluno.frequencia)                       
         self.assertEqual(aulaaluno.evolucao_na_aula, 'Evolução testada')
         self.assertContains(response, "Frequência e evolução salvas com sucesso.")
 
@@ -124,13 +124,13 @@ class AulaViewsTestCase(TestCase):
         url = reverse('studio:cadastro_aula')
         data = {
             'data': date.today(),
-            'horario': time(15, 0),
+            'horario': time(17, 0),
             'funcionario': self.funcionario.pk,
             'servicos': [self.servico.pk]
         }
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(Aula.objects.filter(horario=time(15, 0)).exists())
+        self.assertTrue(Aula.objects.filter(horario=time(17, 0)).exists())
         self.assertContains(response, "Aula cadastrada com sucesso.")
 
     def test_editar_aula_get(self):
@@ -144,14 +144,14 @@ class AulaViewsTestCase(TestCase):
         url = reverse('studio:editar_aula', args=[self.aula.pk])
         data = {
             'data': date.today(),
-            'horario': time(11, 0),
+            'horario': time(20, 0),
             'funcionario': self.funcionario.pk,
             'servicos': [self.servico.pk]
         }
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.aula.refresh_from_db()
-        self.assertEqual(self.aula.horario.hour, 11)
+        self.assertEqual(self.aula.horario.hour, 20)
         self.assertContains(response, "Aula atualizada com sucesso.")
 
     def test_editar_aula_cancelada_redireciona(self):
