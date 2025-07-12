@@ -51,8 +51,7 @@ class AgendamentoModelTestCase(TestCase):
         )
         self.assertEqual(Agendamento.objects.count(), 1)
         self.assertFalse(agendamento.cancelado)
-        self.assertIsNone(agendamento.motivo_cancelamento)
-
+        self.assertEqual(agendamento.motivo_cancelamento, '') 
     def test_cancelar_agendamento(self):
         agendamento = Agendamento.objects.create(
             horario_disponivel=self.horario,
@@ -73,7 +72,7 @@ class AgendamentoModelTestCase(TestCase):
         agendamento.reativar_agendamento()
         agendamento.refresh_from_db()
         self.assertFalse(agendamento.cancelado)
-        self.assertIsNone(agendamento.motivo_cancelamento)
+        self.assertEqual(agendamento.motivo_cancelamento, '')
 
     def test_unicidade_de_horario_aluno(self):
         Agendamento.objects.create(horario_disponivel=self.horario, aluno=self.aluno)
