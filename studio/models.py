@@ -149,7 +149,7 @@ class AulaAluno(models.Model):
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='participacoes')
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     frequencia = models.BooleanField(default=False)
-    evolucao_na_aula = models.TextField(blank=True, null=True)
+    evolucao_na_aula = models.TextField(blank=True)
 
     def __str__(self):
         return f'Aluno {self.aluno} na Aula {self.aula}'
@@ -254,7 +254,7 @@ class Agendamento(models.Model):
     )
     data_agendamento = models.DateTimeField(auto_now_add=True)
     cancelado = models.BooleanField(default=False)
-    motivo_cancelamento = models.TextField(blank=True, null=True)
+    motivo_cancelamento = models.TextField(blank=True)
 
 
     class Meta:
