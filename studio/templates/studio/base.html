@@ -11,7 +11,6 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <style>
-        /* Estilos para a nova paleta de cores */
         :root {
             --primary-purple: #764ba2;
             --secondary-blue: #667eea;
@@ -46,7 +45,7 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
         
-        /* --- Estilização do Menu Lateral (Offcanvas) --- */
+        /* --- Estilização do Menu Lateral  --- */
         .offcanvas-custom {
             background: var(--primary-purple);
             color: white;
@@ -82,7 +81,6 @@
 </head>
 <body>
 
-    <!-- Navbar com as novas classes de estilo -->
     <nav class="navbar navbar-dark navbar-custom fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">
@@ -101,7 +99,6 @@
                     </a>
                 {% endif %}
 
-                <!-- Botão do menu lateral que está sempre visível -->
                 <button class="btn btn-custom-toggler ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -109,7 +106,6 @@
         </div>
     </nav>
 
-    <!-- Offcanvas com a nova classe de estilo -->
     <div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu de Gerenciamento</h5>
