@@ -105,7 +105,7 @@ def cadastro_funcionario(request):
         form = FuncionarioForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(LISTAR_FUNCIONARIO)
+            return redirect('studio:listar_funcionario')
     else:
         form = FuncionarioForm()
     return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
@@ -125,7 +125,7 @@ def editar_funcionario(request, id):
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
-            return redirect(LISTAR_FUNCIONARIO)
+            return redirect('studio:listar_funcionario')
     else:
         form = FuncionarioForm(instance=funcionario)
 

@@ -85,6 +85,12 @@ class FuncionarioForm(forms.ModelForm):
             'senha',
             'is_admin',
         ]
+    
+    def clean_cpf(self):
+        cpf = self.cleaned_data['cpf']
+        if not cpf.isdigit() or len(cpf) != 11:
+            raise forms.ValidationError("CPF deve conter exatamente 11 dígitos numéricos.")
+        return cpf
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
