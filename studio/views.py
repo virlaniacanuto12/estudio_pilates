@@ -738,12 +738,11 @@ def excluir_horario(request, horario_id):
 
 @require_GET
 def home(request):
-    
     hoje = date.today()
     agora = timezone.now()
-    
+
     total_alunos_ativos = Aluno.objects.filter(status=True).count()
-    
+
     aulas_com_vagas_hoje = HorarioDisponivel.objects.filter(
         data=hoje,
     ).annotate(
@@ -752,24 +751,33 @@ def home(request):
         agendamentos_ativos_count__lt=models.F('capacidade_maxima')
     ).count()
 
-    contas_a_receber_atraso_soma = ContaReceber.objects.filter(
+    contas_em_atraso_qtd = ContaReceber.objects.filter(
+        vencimento__lt=hoje,
+        status='pendente'
+    ).count()
+
+    contas_em_atraso_valor = ContaReceber.objects.filter(
         vencimento__lt=hoje,
         status='pendente'
     ).aggregate(Sum('valor'))['valor__sum'] or 0
-    
+
     data_vencimento_proximo = hoje + timedelta(days=7)
-    contas_a_vencer_proximo_soma = ContaReceber.objects.filter(
+    contas_a_vencer_proximo_valor = ContaReceber.objects.filter(
         vencimento__range=(hoje, data_vencimento_proximo),
         status='pendente'
     ).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    # monta texto para aviso
+    texto_vencimentos = None
+    if contas_a_vencer_proximo_valor > 0:
+        texto_vencimentos = f"Há R$ {contas_a_vencer_proximo_valor:.2f} em contas que vencem nos próximos 7 dias."
 
     proximos_agendamentos_hoje = Agendamento.objects.filter(
         horario_disponivel__data=hoje,
         horario_disponivel__horario_inicio__gte=agora.time(),
         cancelado=False
     ).select_related('aluno', 'horario_disponivel__funcionario').order_by('horario_disponivel__horario_inicio')
-    
-    
+
     aniversariantes_mes = Aluno.objects.filter(
         data_nascimento__month=hoje.month,
         status=True 
@@ -789,10 +797,9 @@ def home(request):
         'dashboard_data': {
             'total_alunos_ativos': total_alunos_ativos,
             'aulas_com_vagas': aulas_com_vagas_hoje,
-            'contas_em_atraso_valor': contas_a_receber_atraso_soma,
-            'contas_a_vencer_proximo_valor': contas_a_vencer_proximo_soma,
+            'contas_a_receber': contas_em_atraso_valor + contas_a_vencer_proximo_valor,
             'aulas_confirmadas_hoje': aulas_confirmadas_hoje,
-            'faltas_hoje': faltas_hoje, 
+            'faltas_hoje': faltas_hoje,
             'proximos_agendamentos': [
                 {
                     'id': ag.id,
@@ -807,7 +814,12 @@ def home(request):
                 {'nome': aluno.nome, 'aniversario': aluno.data_nascimento}
                 for aluno in aniversariantes_mes
             ],
+            'alertas_financeiros': {
+                'contas_em_atraso': contas_em_atraso_qtd,
+                'proximos_vencimentos': texto_vencimentos,
+                'inicio': hoje.strftime('%Y-%m-%d'),
+                'fim': data_vencimento_proximo.strftime('%Y-%m-%d'),
+            }
         }
     }
-    
     return render(request, 'studio/home.html', context)
