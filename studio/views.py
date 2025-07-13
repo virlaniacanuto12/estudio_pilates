@@ -154,6 +154,11 @@ class AlunoCreateView(CreateView):
     form_class = AlunoForm
     template_name = 'studio/aluno/cadastrar_aluno.html'
     success_url = reverse_lazy(LISTAR_ALUNOS)
+    def dispatch(self, request, *args, **kwargs):
+        if not Plano.objects.exists():
+            messages.warning(request, 'Você precisa cadastrar pelo menos um plano antes de adicionar um aluno.')
+            return redirect(LISTAR_PLANOS)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AlunoUpdateView(UpdateView):
