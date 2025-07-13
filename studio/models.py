@@ -99,7 +99,6 @@ class Aluno(Pessoa):
     data_vencimento_plano = models.DateField()
     plano = models.ForeignKey('studio.Plano', on_delete=models.SET_NULL, null=True, blank=True)
     plano_ativo = models.BooleanField(default=True)
-    evolucao = models.TextField(blank=True)
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
