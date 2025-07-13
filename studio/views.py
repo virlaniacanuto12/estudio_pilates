@@ -106,7 +106,7 @@ def cadastro_funcionario(request):
         form = FuncionarioForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('studio:listar_funcionario')
+            return redirect(LISTAR_FUNCIONARIO)
     else:
         form = FuncionarioForm()
     return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
@@ -126,7 +126,7 @@ def editar_funcionario(request, id):
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
-            return redirect('studio:listar_funcionario')
+            return redirect(LISTAR_FUNCIONARIO)
     else:
         form = FuncionarioForm(instance=funcionario)
 
@@ -301,7 +301,7 @@ class FrequenciaAulaView(View):
                 inst.aula = aula
                 inst.save()
             messages.success(request, "Frequência e evolução salvas com sucesso.")
-            return redirect("studio:detalhes_aula", pk=aula.pk)
+            return redirect(DETALHES_AULA, pk=aula.pk)
 
         for form in formset:
             for errors in form.errors.values():
@@ -311,9 +311,9 @@ class FrequenciaAulaView(View):
 
     @staticmethod
     def _criar_formset(data=None, instance=None):
-        FormSet = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
+        form_set = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
         qs = AulaAluno.objects.filter(aula=instance)
-        return FormSet(data, queryset=qs) if data else FormSet(queryset=qs)
+        return form_set(data, queryset=qs) if data else form_set(queryset=qs)
 
     def _render(self, request, aula, formset):
         return render(request, self.template_name, {"aula": aula, "formset": formset})
@@ -340,7 +340,7 @@ class AulaUpdateView(UpdateView):
         aula = self.get_object()
         if aula.cancelada:
             messages.error(request, "Não é possível editar uma aula cancelada.")
-            return redirect("studio:detalhes_aula", pk=aula.pk)
+            return redirect(DETALHES_AULA, pk=aula.pk)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -348,7 +348,7 @@ class AulaUpdateView(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("studio:detalhes_aula", kwargs={"pk": self.object.pk})
+        return reverse_lazy(DETALHES_AULA, kwargs={"pk": self.object.pk})
 
 
 class AulaCancelView(View):
