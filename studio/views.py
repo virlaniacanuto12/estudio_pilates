@@ -177,25 +177,26 @@ class AlunoDeleteView(DeleteView):
         return redirect(self.success_url)
 
 
-@login_required
-def evolucoes_aluno(request, id):
-    aluno = get_object_or_404(Aluno, id=id)
-    
-    participacoes = AulaAluno.objects.filter(
-        aluno=aluno,
-    ).exclude(
-        evolucao_na_aula__isnull=True
-    ).exclude(
-        evolucao_na_aula__exact=''
-    ).select_related('aula').order_by('-aula__data')
-    
-    evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
-    
-    context = {
-        'aluno': aluno,
-        'evolucoes': evolucoes,
-    }
-    return render(request, 'studio/aluno/evolucoes_aluno.html', context)
+
+class EvolucoesAlunoView(View):
+    template_name = "studio/aluno/evolucoes_aluno.html"
+    http_method_names = ["get"] 
+
+    def get(self, request, id):
+        aluno = get_object_or_404(Aluno, id=id)
+        participacoes = (
+            AulaAluno.objects.filter(aluno=aluno)
+            .exclude(evolucao_na_aula__isnull=True)
+            .exclude(evolucao_na_aula__exact="")
+            .select_related("aula")
+            .order_by("-aula__data")
+        )
+        evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
+        return render(
+            request,
+            self.template_name,
+            {"aluno": aluno, "evolucoes": evolucoes},
+        )
 
 
 # View Plano
@@ -237,117 +238,128 @@ class PlanoDeleteView(DeleteView):
 
 # Views aula
 
-@require_GET
-@login_required
-def listar_aulas(request):
-    data = request.GET.get('data')
-    horario = request.GET.get('horario')
-    status = request.GET.get('status')
+class AulaListView(ListView):
+    template_name = "studio/aula/listar_aulas.html"
+    context_object_name = "aulas"
+    model = Aula
 
-    aulas = Aula.objects.all()
+    def get_queryset(self):
+        qs = super().get_queryset()
+        data = self.request.GET.get("data")
+        horario = self.request.GET.get("horario")
+        status = self.request.GET.get("status")
 
-    if status == 'ativas':
-        aulas = aulas.filter(cancelada=False)
-    elif status == 'canceladas':
-        aulas = aulas.filter(cancelada=True)
+        if status == "ativas":
+            qs = qs.filter(cancelada=False)
+        elif status == "canceladas":
+            qs = qs.filter(cancelada=True)
 
-    if data:
-        aulas = aulas.filter(data=data)
-        if horario:
-            aulas = aulas.filter(horario=horario)
-    elif horario:
-        messages.warning(request, "Para filtrar por horário, você deve informar a data.")
-        aulas = Aula.objects.none()
+        if data:
+            qs = qs.filter(data=data)
+            if horario:
+                qs = qs.filter(horario=horario)
+        elif horario:
+            messages.warning(self.request, "Para filtrar por horário, você deve informar a data.")
+            qs = qs.none()
+        return qs
 
-    return render(request, 'studio/aula/listar_aulas.html', {
-        'aulas': aulas,
-        'status': status,
-        'data': data,
-        'horario': horario,
-    })
-
-
-@require_GET
-def detalhes_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
-    participacoes = AulaAluno.objects.filter(aula=aula)
-    return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula, 'participacoes': participacoes})
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            "data": self.request.GET.get("data", ""),
+            "horario": self.request.GET.get("horario", ""),
+            "status": self.request.GET.get("status", ""),
+        })
+        return ctx
 
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def frequencia_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
-    AulaAlunoFormSet = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
+class AulaDetailView(DetailView):
+    template_name = "studio/aula/detalhar_aula.html"
+    model = Aula
+    pk_url_kwarg = "pk"
 
-    if request.method == 'POST':
-        formset = AulaAlunoFormSet(request.POST, queryset=AulaAluno.objects.filter(aula=aula))
-        return processar_formset(request, formset, aula)
-
-    formset = AulaAlunoFormSet(queryset=AulaAluno.objects.filter(aula=aula))
-    return render(request, 'studio/aula/frequencia_aula.html', {'aula': aula, 'formset': formset})
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["participacoes"] = AulaAluno.objects.filter(aula=self.object)
+        return ctx
 
 
-def processar_formset(request, formset, aula):
-    if formset.is_valid():
+class FrequenciaAulaView(View):
+    template_name = "studio/aula/frequencia_aula.html"
+
+    def get(self, request, pk):
+        aula = get_object_or_404(Aula, pk=pk)
+        formset = self._criar_formset(instance=aula)
+        return self._render(request, aula, formset)
+
+    def post(self, request, pk):
+        aula = get_object_or_404(Aula, pk=pk)
+        formset = self._criar_formset(request.POST, aula)
+        if formset.is_valid():
+            for form in formset:
+                inst = form.save(commit=False)
+                inst.aula = aula
+                inst.save()
+            messages.success(request, "Frequência e evolução salvas com sucesso.")
+            return redirect("studio:detalhes_aula", pk=aula.pk)
+
         for form in formset:
-            salvar_formulario(form, aula)
-        messages.success(request, "Frequência e evolução salvas com sucesso.")
-        return redirect(DETALHES_AULA, pk=aula.pk)
-    
-    for form in formset:
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(request, error)
-    
-    return render(request, 'studio/aula/frequencia_aula.html', {'aula': aula, 'formset': formset})
+            for errors in form.errors.values():
+                for err in errors:
+                    messages.error(request, err)
+        return self._render(request, aula, formset)
+
+    @staticmethod
+    def _criar_formset(data=None, instance=None):
+        FormSet = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
+        qs = AulaAluno.objects.filter(aula=instance)
+        return FormSet(data, queryset=qs) if data else FormSet(queryset=qs)
+
+    def _render(self, request, aula, formset):
+        return render(request, self.template_name, {"aula": aula, "formset": formset})
 
 
-def salvar_formulario(form, aula):
-    instance = form.save(commit=False)
-    instance.aula = aula
-    instance.save()       
+class AulaCreateView(CreateView):
+    template_name = "studio/aula/cadastrar_aula.html"
+    model = Aula
+    form_class = AulaForm
+    success_url = reverse_lazy("studio:listar_aulas")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Aula cadastrada com sucesso.")
+        return super().form_valid(form)
 
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def cadastro_aula(request):
-    if request.method == 'POST':
-        form = AulaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Aula cadastrada com sucesso.")
-            return redirect(LISTAR_AULAS)
-    else:
-        form = AulaForm()
-    return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
+class AulaUpdateView(UpdateView):
+    template_name = "studio/aula/editar_aula.html"
+    model = Aula
+    form_class = AulaForm
+    pk_url_kwarg = "pk"
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def editar_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
-    if aula.cancelada:
-        messages.error(request, 'Não é possível editar uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.codigo)
-    if request.method == 'POST':
-        form = AulaForm(request.POST, instance=aula)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Aula atualizada com sucesso.')
-            return redirect(DETALHES_AULA, pk=aula.codigo)
-    else:
-        form = AulaForm(instance=aula)
-    return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
+    def dispatch(self, request, *args, **kwargs):
+        aula = self.get_object()
+        if aula.cancelada:
+            messages.error(request, "Não é possível editar uma aula cancelada.")
+            return redirect("studio:detalhes_aula", pk=aula.pk)
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Aula atualizada com sucesso.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("studio:detalhes_aula", kwargs={"pk": self.object.pk})
 
 
-@login_required
-@require_POST
-def cancelar_aula(request, codigo):
-    aula = get_object_or_404(Aula, codigo=codigo)
-    aula.cancelada = True
-    aula.save()
-    messages.success(request, f'Aula {aula.codigo} foi cancelada com sucesso.')
-    return redirect(LISTAR_AULAS)
+class AulaCancelView(View):
+    http_method_names = ["post"]
+
+    def post(self, request, codigo):
+        aula = get_object_or_404(Aula, codigo=codigo)
+        aula.cancelada = True
+        aula.save()
+        messages.success(request, f"Aula {aula.codigo} foi cancelada com sucesso.")
+        return redirect("studio:listar_aulas")
 
 
 # Views contas/pagamentos
@@ -713,6 +725,10 @@ def home(request):
         cancelada=False
     ).count()
 
+    faltas_hoje = AulaAluno.objects.filter(
+        aula__data=hoje,
+        frequencia=False
+    ).count()
 
     context = {
         'dashboard_data': {
@@ -721,9 +737,10 @@ def home(request):
             'contas_em_atraso_valor': contas_a_receber_atraso_soma,
             'contas_a_vencer_proximo_valor': contas_a_vencer_proximo_soma,
             'aulas_confirmadas_hoje': aulas_confirmadas_hoje,
+            'faltas_hoje': faltas_hoje, 
             'proximos_agendamentos': [
                 {
-                    'id': ag.id, # Adicionei o ID do agendamento
+                    'id': ag.id,
                     'data': ag.horario_disponivel.data.strftime('%d/%m/%Y'),
                     'hora_inicio': ag.horario_disponivel.horario_inicio.strftime('%H:%M'),
                     'servico': ag.horario_disponivel.servico.modalidade if ag.horario_disponivel.servico else 'N/A',

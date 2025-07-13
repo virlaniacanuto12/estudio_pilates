@@ -18,19 +18,18 @@
     <form method="get" action="{% url 'studio:listar_aulas' %}" class="row g-3 align-items-end mb-4">
         <div class="col-auto">
             <label for="data" class="form-label">Data</label>
-            <input type="date" id="data" name="data" value="{{ request.GET.data }}" class="form-control" required>
+            <input type="date" id="data" name="data" value="{{ data }}" class="form-control">
         </div>
         <div class="col-auto">
             <label for="horario" class="form-label">Horário</label>
-            <input type="time" id="horario" name="horario" value="{{ request.GET.horario }}" class="form-control" {% if not request.GET.data %}disabled{% endif %}>
+            <input type="time" id="horario" name="horario" value="{{ horario }}" class="form-control" {% if not data %}disabled{% endif %}>
         </div>
         <div class="col-auto">
-
             <label for="status" class="form-label">Status</label>
             <select name="status" id="status" class="form-select">
                 <option value="">Todos</option>
-                <option value="ativas" {% if request.GET.status == 'ativas' %}selected{% endif %}>Ativas</option>
-                <option value="canceladas" {% if request.GET.status == 'canceladas' %}selected{% endif %}>Canceladas</option>
+                <option value="ativas" {% if status == 'ativas' %}selected{% endif %}>Ativas</option>
+                <option value="canceladas" {% if status == 'canceladas' %}selected{% endif %}>Canceladas</option>
             </select>
         </div>
         <div class="col-auto">
