@@ -155,7 +155,7 @@ class AlunoForm(forms.ModelForm):
         fields = [
             'nome', 'cpf', 'rg', 'telefone', 'email', 'data_nascimento',
             'profissao', 'historico_saude', 'data_inicio_plano',
-            'data_vencimento_plano', 'plano_ativo', 'evolucao', 'plano'
+            'data_vencimento_plano', 'plano_ativo', 'plano'
         ]
 
     plano = forms.ModelChoiceField(

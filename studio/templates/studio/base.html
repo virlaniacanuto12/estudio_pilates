@@ -56,7 +56,7 @@
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
       }
 
-      /* --- Estilização do Menu Lateral  --- */
+      /* --- Estilização do Menu Lateral --- */
       .offcanvas-custom {
         background: var(--primary-purple);
         color: white;
@@ -84,16 +84,15 @@
       }
 
       .main-content {
-        padding-top: 70px; 
+        padding-top: 70px;
       }
       .card-header.bg-primary {
-        background-color: var(--secondary-blue) !important; 
-        
-    }
-    
-        .card-header.bg-primary.text-white {
-        color: white !important; 
-        }
+        background-color: var(--secondary-blue) !important;
+      }
+
+      .card-header.bg-primary.text-white {
+        color: white !important;
+      }
       .btn-success {
         background: linear-gradient(
           135deg,
@@ -105,15 +104,15 @@
         transition: background 0.3s ease, border-color 0.3s ease;
       }
       .btn-primary {
-        background-color: var(--secondary-blue); 
+        background-color: var(--secondary-blue);
         border-color: var(--secondary-blue);
         color: white;
-    }
-    .btn-primary:hover {
+      }
+      .btn-primary:hover {
         background-color: var(--primary-purple);
         border-color: var(--primary-purple);
         color: white;
-    }
+      }
       .btn-success:hover {
         background: linear-gradient(135deg, var(--primary-purple) 0%);
         border-color: var(--primary-purple);
@@ -138,6 +137,33 @@
         background-color: var(--primary-purple);
         border-color: var(--primary-purple);
         color: white;
+      }
+
+      /* Estilos para as mensagens */
+      .messages {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        position: fixed; /* Fixa a mensagem na tela */
+        top: 70px; /* Ajusta a posição logo abaixo da navbar */
+        left: 50%;
+        transform: translateX(-50%); /* Centraliza horizontalmente */
+        width: 80%; /* Largura da mensagem */
+        max-width: 600px; /* Limita a largura máxima */
+        z-index: 1050; /* Garante que fique acima de outros elementos */
+      }
+      .message-warning {
+        background-color: #ffeeba; /* Cor de fundo amarela clara para aviso (Bootstrap .alert-warning) */
+        color: #856404; /* Cor do texto para aviso (Bootstrap .alert-warning) */
+        border: 1px solid #ffc107; /* Borda para aviso */
+        padding: 15px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out; /* Transição suave para sumir */
+      }
+      .message-warning.fade-out {
+        opacity: 0;
       }
     </style>
 
@@ -240,6 +266,15 @@
     </div>
 
     <main class="container-fluid main-content">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %} 
       {% block content %} {% endblock %}
     </main>
 
@@ -259,6 +294,22 @@
       defer
     ></script>
 
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const messagesContainer = document.querySelector('.messages');
+          if (messagesContainer) {
+              setTimeout(() => {
+                  const messageItems = messagesContainer.querySelectorAll('li');
+                  messageItems.forEach(item => {
+                      item.classList.add('fade-out'); 
+                  });
+                  setTimeout(() => {
+                      messagesContainer.remove(); 
+                  }, 500); 
+              }, 5000); 
+          }
+      });
+    </script>
     {% block extra_js %}{% endblock %}
   </body>
 </html>
