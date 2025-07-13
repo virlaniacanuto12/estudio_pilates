@@ -31,7 +31,15 @@
                     <span class="badge bg-danger">Vencido</span>
                 {% endif %}
             </p>
-            <p><strong>Estado Atual:</strong> {{ conta.estado_atual }}</p>
+            <p><strong>Estado Atual:</strong> {% if conta.estado_atual|lower == 'pendente' %}
+                            <span class="badge" style="background-color: #667eea">Aberto</span>
+                        {% elif conta.estado_atual|lower == 'vencido' %}
+                            <span class="badge bg-danger">Atrasado</span>
+                        {% elif conta.estado_atual|lower == 'pago' %}
+                            <span class="badge bg-success">Recebido</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ conta.estado_atual }}</span>
+                        {% endif %}</p>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                 {% if conta.status != 'pago' %}
