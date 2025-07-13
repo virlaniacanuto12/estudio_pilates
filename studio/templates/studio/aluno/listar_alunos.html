@@ -11,6 +11,46 @@
         </a>
     </div>
 
+    <form method="GET" class="mb-4 p-3 border rounded shadow-sm bg-light">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="id_nome_aluno" class="form-label">Nome:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="id_nome_aluno"
+                    name="nome"
+                    value="{{ nome_filtro }}"
+                    placeholder="Filtrar por nome do aluno"
+                />
+            </div>
+            <div class="col-md-3">
+                <label for="id_cpf_aluno" class="form-label">CPF:</label>
+                <input
+                    type="text"
+                    class="form-control cpf-mask"
+                    id="id_cpf_aluno"
+                    name="cpf"
+                    value="{{ cpf_filtro }}"
+                    placeholder="000.000.000-00"
+                />
+            </div>
+            <div class="col-md-3">
+                <label for="id_status_aluno" class="form-label">Status do Plano:</label>
+                <select class="form-select" id="id_status_aluno" name="status">
+                    <option value="">Todos</option>
+                    <option value="ativos" {% if status_filtro == "ativos" %}selected{% endif %}>Plano Ativo</option>
+                    <option value="inativos" {% if status_filtro == "inativos" %}selected{% endif %}>Plano Inativo</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-1"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+
     <table class="table table-bordered table-striped table-hover align-middle">
         <thead class="table-primary">
             <tr>
@@ -42,7 +82,7 @@
                     <a href="{% url 'studio:editar_aluno' aluno.id %}" class="btn btn-sm btn-warning me-1">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <button 
+                    <button
                         type="button"
                         class="btn btn-danger btn-sm"
                         data-bs-toggle="modal"
@@ -51,11 +91,16 @@
                         data-nome="{{ aluno.nome }}">
                         <i class="fa fa-trash"></i>
                     </button>
+                    {% comment %}
+                    <a href="{% url 'studio:evolucoes_aluno' aluno.id %}" class="btn btn-sm btn-info ms-1">
+                        <i class="fas fa-chart-line"></i> Evoluções
+                    </a>
+                    {% endcomment %}
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="text-center text-muted">Nenhum aluno cadastrado.</td>
+                <td colspan="7" class="text-center text-muted">Nenhum aluno encontrado com os filtros aplicados.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -64,7 +109,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Modal de confirmação -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content border-0">
@@ -101,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var form = confirmModal.querySelector('#deleteForm');
         form.setAttribute('action', url);
     });
+
+    $('.cpf-mask').mask('000.000.000-00', {reverse: true});
 });
 </script>
 {% endblock %}

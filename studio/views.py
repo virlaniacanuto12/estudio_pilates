@@ -147,6 +147,32 @@ class AlunoListView(ListView):
     model = Aluno
     template_name = 'studio/aluno/listar_alunos.html'
     context_object_name = 'alunos'
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        nome = self.request.GET.get('nome')
+        cpf = self.request.GET.get('cpf')
+        status = self.request.GET.get('status') 
+        if nome:
+            qs = qs.filter(nome__icontains=nome) 
+        if cpf:
+            qs = qs.filter(cpf=cpf)
+        if status:
+            if status == 'ativos':
+                qs = qs.filter(plano_ativo=True)
+            elif status == 'inativos':
+                qs = qs.filter(plano_ativo=False)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            'nome_filtro': self.request.GET.get('nome', ''),
+            'cpf_filtro': self.request.GET.get('cpf', ''),
+            'status_filtro': self.request.GET.get('status', ''),
+        })
+        return ctx
+
 
 
 class AlunoCreateView(CreateView):
@@ -211,6 +237,30 @@ class PlanoListView(ListView):
     template_name = 'studio/plano/listar_planos.html'
     context_object_name = 'planos'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        codigo = self.request.GET.get('codigo')
+        nome = self.request.GET.get('nome')
+        status = self.request.GET.get('status')
+        if codigo:
+            qs = qs.filter(codigo=codigo)
+        if nome:
+            qs = qs.filter(nome__icontains=nome) 
+        if status:
+            if status == 'ativos':
+                qs = qs.filter(status=True)
+            elif status == 'inativos':
+                qs = qs.filter(status=False)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            'codigo_filtro': self.request.GET.get('codigo', ''),
+            'nome_filtro': self.request.GET.get('nome', ''),
+            'status_filtro': self.request.GET.get('status', ''),
+        })
+        return ctx
 
 class PlanoCreateView(CreateView):
     model = Plano

@@ -11,6 +11,46 @@
         </a>
     </div>
 
+    <form method="GET" class="mb-4 p-3 border rounded shadow-sm bg-light">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="id_codigo_plano" class="form-label">Código:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="id_codigo_plano"
+                    name="codigo"
+                    value="{{ codigo_filtro }}"
+                    placeholder="Filtrar por código"
+                />
+            </div>
+            <div class="col-md-4">
+                <label for="id_nome_plano_filtro" class="form-label">Nome do Plano:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="id_nome_plano_filtro"
+                    name="nome"
+                    value="{{ nome_filtro }}"
+                    placeholder="Filtrar por nome do plano"
+                />
+            </div>
+            <div class="col-md-3">
+                <label for="id_status_plano_filtro" class="form-label">Status:</label>
+                <select class="form-select" id="id_status_plano_filtro" name="status">
+                    <option value="">Todos</option>
+                    <option value="ativos" {% if status_filtro == "ativos" %}selected{% endif %}>Ativo</option>
+                    <option value="inativos" {% if status_filtro == "inativos" %}selected{% endif %}>Inativo</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-1"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+
     <table class="table table-bordered table-striped table-hover align-middle">
         <thead class="table-primary">
             <tr>
@@ -42,7 +82,7 @@
                     <a href="{% url 'studio:editar_plano' plano.codigo %}" class="btn btn-sm btn-warning me-1">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <button 
+                    <button
                         type="button"
                         class="btn btn-danger btn-sm"
                         data-bs-toggle="modal"
@@ -55,7 +95,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="text-center text-muted">Nenhum plano cadastrado.</td>
+                <td colspan="7" class="text-center text-muted">Nenhum plano encontrado com os filtros aplicados.</td>
             </tr>
             {% endfor %}
         </tbody>
