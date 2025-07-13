@@ -472,6 +472,7 @@ class ContaReceberUpdateView(UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        form.instance.aluno = self.get_object().aluno
         messages.success(self.request, 'Conta atualizada com sucesso.')
         return super().form_valid(form)
 

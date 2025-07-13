@@ -253,12 +253,18 @@ class ContaReceberForm(forms.ModelForm):
     aluno = forms.ModelChoiceField(
         queryset=Aluno.objects.all(),
         empty_label="Selecione o aluno",
-        widget=forms.Select
+        widget=forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'})
     )
     vencimento = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        input_formats=['%Y-%m-%d']
     )
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.vencimento:
+            self.initial['vencimento'] = self.instance.vencimento.strftime('%Y-%m-%d')
+        if self.instance and self.instance.pk:
+            self.fields['aluno'].disabled = True
 
 class PagamentoForm(forms.ModelForm):
     class Meta:
