@@ -111,14 +111,18 @@
                     {% if dashboard_data.alertas_financeiros.contas_em_atraso and dashboard_data.alertas_financeiros.contas_em_atraso > 0 %}
                         <div class="alert alert-danger" role="alert">
                             <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Contas a pagar em atraso!</h6>
-                            <p class="mb-0">Você tem <strong>{{ dashboard_data.alertas_financeiros.contas_em_atraso }} conta(s)</strong> em atraso. <a href="#" class="alert-link">Clique aqui para pagamentos.</a></p>
+                            <p class="mb-0">Você tem <strong>{{ dashboard_data.alertas_financeiros.contas_em_atraso }} conta(s)</strong> em atraso. <a href="{% url 'studio:listar_contas' %}?estado=vencido" class="alert-link">Clique para pagamentos.</a></p>
                         </div>
                     {% endif %}
                     {% if dashboard_data.alertas_financeiros.proximos_vencimentos %}
                         <div class="alert alert-info" role="alert">
                             <h6 class="alert-heading"><i class="fas fa-bell me-2"></i>Próximos vencimentos</h6>
-                            <p class="mb-0">{{ dashboard_data.alertas_financeiros.proximos_vencimentos }}</p>
-                        </div>
+                            <p class="mb-0">
+                                {{ dashboard_data.alertas_financeiros.proximos_vencimentos }}
+                                <a href="{% url 'studio:listar_contas' %}?estado=pendente&inicio={{ dashboard_data.alertas_financeiros.inicio }}&fim={{ dashboard_data.alertas_financeiros.fim }}" class="alert-link">
+                                Clique para visualizar.
+                                </a>
+                            </p>
                     {% endif %}
                     {% if not dashboard_data.alertas_financeiros.contas_em_atraso and not dashboard_data.alertas_financeiros.proximos_vencimentos %}
                         <div class="alert alert-success mb-0" role="alert">

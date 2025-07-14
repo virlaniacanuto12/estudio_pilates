@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST, require_http_methods, require_safe
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum, Q, F 
 from django.db import models 
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView,DetailView  
@@ -105,7 +106,7 @@ def cadastro_funcionario(request):
         form = FuncionarioForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('studio:listar_funcionario')
+            return redirect(LISTAR_FUNCIONARIO)
     else:
         form = FuncionarioForm()
     return render(request, 'studio/funcionario/cadastro_funcionario.html', {'form': form})
@@ -125,7 +126,7 @@ def editar_funcionario(request, id):
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
-        return redirect('studio:listar_funcionario')
+        return redirect(LISTAR_FUNCIONARIO)
     else:
         form = FuncionarioForm(instance=funcionario)
 
@@ -146,6 +147,32 @@ class AlunoListView(ListView):
     model = Aluno
     template_name = 'studio/aluno/listar_alunos.html'
     context_object_name = 'alunos'
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        nome = self.request.GET.get('nome')
+        cpf = self.request.GET.get('cpf')
+        status = self.request.GET.get('status') 
+        if nome:
+            qs = qs.filter(nome__icontains=nome) 
+        if cpf:
+            qs = qs.filter(cpf=cpf)
+        if status:
+            if status == 'ativos':
+                qs = qs.filter(plano_ativo=True)
+            elif status == 'inativos':
+                qs = qs.filter(plano_ativo=False)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            'nome_filtro': self.request.GET.get('nome', ''),
+            'cpf_filtro': self.request.GET.get('cpf', ''),
+            'status_filtro': self.request.GET.get('status', ''),
+        })
+        return ctx
+
 
 
 class AlunoCreateView(CreateView):
@@ -153,6 +180,11 @@ class AlunoCreateView(CreateView):
     form_class = AlunoForm
     template_name = 'studio/aluno/cadastrar_aluno.html'
     success_url = reverse_lazy(LISTAR_ALUNOS)
+    def dispatch(self, request, *args, **kwargs):
+        if not Plano.objects.exists():
+            messages.warning(request, 'Você precisa cadastrar pelo menos um plano antes de adicionar um aluno.')
+            return redirect(LISTAR_PLANOS)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AlunoUpdateView(UpdateView):
@@ -176,24 +208,26 @@ class AlunoDeleteView(DeleteView):
         return redirect(self.success_url)
 
 
-def evolucoes_aluno(request, id):
-    aluno = get_object_or_404(Aluno, id=id)
-    
-    participacoes = AulaAluno.objects.filter(
-        aluno=aluno,
-    ).exclude(
-        evolucao_na_aula__isnull=True
-    ).exclude(
-        evolucao_na_aula__exact=''
-    ).select_related('aula').order_by('-aula__data')  # ordenar por data da aula, mais recente primeiro
-    
-    evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
-    
-    context = {
-        'aluno': aluno,
-        'evolucoes': evolucoes,
-    }
-    return render(request, 'studio/aluno/evolucoes_aluno.html', context)
+
+class EvolucoesAlunoView(View):
+    template_name = "studio/aluno/evolucoes_aluno.html"
+    http_method_names = ["get"] 
+
+    def get(self, request, id):
+        aluno = get_object_or_404(Aluno, id=id)
+        participacoes = (
+            AulaAluno.objects.filter(aluno=aluno)
+            .exclude(evolucao_na_aula__isnull=True)
+            .exclude(evolucao_na_aula__exact="")
+            .select_related("aula")
+            .order_by("-aula__data")
+        )
+        evolucoes = [(p.aula, p.evolucao_na_aula) for p in participacoes]
+        return render(
+            request,
+            self.template_name,
+            {"aluno": aluno, "evolucoes": evolucoes},
+        )
 
 
 # View Plano
@@ -203,6 +237,30 @@ class PlanoListView(ListView):
     template_name = 'studio/plano/listar_planos.html'
     context_object_name = 'planos'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        codigo = self.request.GET.get('codigo')
+        nome = self.request.GET.get('nome')
+        status = self.request.GET.get('status')
+        if codigo:
+            qs = qs.filter(codigo=codigo)
+        if nome:
+            qs = qs.filter(nome__icontains=nome) 
+        if status:
+            if status == 'ativos':
+                qs = qs.filter(status=True)
+            elif status == 'inativos':
+                qs = qs.filter(status=False)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            'codigo_filtro': self.request.GET.get('codigo', ''),
+            'nome_filtro': self.request.GET.get('nome', ''),
+            'status_filtro': self.request.GET.get('status', ''),
+        })
+        return ctx
 
 class PlanoCreateView(CreateView):
     model = Plano
@@ -235,102 +293,128 @@ class PlanoDeleteView(DeleteView):
 
 # Views aula
 
-@require_GET
-def listar_aulas(request):
-    data = request.GET.get('data')
-    horario = request.GET.get('horario')
-    aulas = Aula.objects.all()
+class AulaListView(ListView):
+    template_name = "studio/aula/listar_aulas.html"
+    context_object_name = "aulas"
+    model = Aula
 
-    if data:
-        aulas = aulas.filter(data=data)
-        if horario:
-            aulas = aulas.filter(horario=horario)
-    elif horario:
-        messages.warning(request, "Para filtrar por horário, você deve informar a data.")
-        aulas = Aula.objects.none()
+    def get_queryset(self):
+        qs = super().get_queryset()
+        data = self.request.GET.get("data")
+        horario = self.request.GET.get("horario")
+        status = self.request.GET.get("status")
 
-    return render(request, 'studio/aula/listar_aulas.html', {'aulas': aulas})
+        if status == "ativas":
+            qs = qs.filter(cancelada=False)
+        elif status == "canceladas":
+            qs = qs.filter(cancelada=True)
+
+        if data:
+            qs = qs.filter(data=data)
+            if horario:
+                qs = qs.filter(horario=horario)
+        elif horario:
+            messages.warning(self.request, "Para filtrar por horário, você deve informar a data.")
+            qs = qs.none()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update({
+            "data": self.request.GET.get("data", ""),
+            "horario": self.request.GET.get("horario", ""),
+            "status": self.request.GET.get("status", ""),
+        })
+        return ctx
 
 
-@require_GET
-def detalhes_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
-    participacoes = AulaAluno.objects.filter(aula=aula)
-    return render(request, 'studio/aula/detalhar_aula.html', {'aula': aula, 'participacoes': participacoes})
+class AulaDetailView(DetailView):
+    template_name = "studio/aula/detalhar_aula.html"
+    model = Aula
+    pk_url_kwarg = "pk"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["participacoes"] = AulaAluno.objects.filter(aula=self.object)
+        return ctx
 
 
-@require_http_methods(["GET", "POST"])
-def frequencia_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
+class FrequenciaAulaView(View):
+    template_name = "studio/aula/frequencia_aula.html"
 
-    AulaAlunoFormSet = modelformset_factory(
-        AulaAluno,
-        form=AulaAlunoFrequenciaForm,
-        extra=0
-    )
+    def get(self, request, pk):
+        aula = get_object_or_404(Aula, pk=pk)
+        formset = self._criar_formset(instance=aula)
+        return self._render(request, aula, formset)
 
-    queryset = AulaAluno.objects.filter(aula=aula)
-
-    if request.method == 'POST':
-        formset = AulaAlunoFormSet(request.POST, queryset=queryset)
+    def post(self, request, pk):
+        aula = get_object_or_404(Aula, pk=pk)
+        formset = self._criar_formset(request.POST, aula)
         if formset.is_valid():
             for form in formset:
-                instance = form.save(commit=False)
-                instance.aula = aula  # apenas por segurança
-                instance.save()
+                inst = form.save(commit=False)
+                inst.aula = aula
+                inst.save()
             messages.success(request, "Frequência e evolução salvas com sucesso.")
-            return redirect('studio:detalhes_aula', pk=aula.pk)
-        else:
-            for form in formset:
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        messages.error(request, error)
-    else:
-        formset = AulaAlunoFormSet(queryset=queryset)
+            return redirect(DETALHES_AULA, pk=aula.pk)
 
-    return render(request, 'studio/aula/frequencia_aula.html', {
-        'aula': aula,
-        'formset': formset
-    })          
+        for form in formset:
+            for errors in form.errors.values():
+                for err in errors:
+                    messages.error(request, err)
+        return self._render(request, aula, formset)
 
+    @staticmethod
+    def _criar_formset(data=None, instance=None):
+        form_set = modelformset_factory(AulaAluno, form=AulaAlunoFrequenciaForm, extra=0)
+        qs = AulaAluno.objects.filter(aula=instance)
+        return form_set(data, queryset=qs) if data else form_set(queryset=qs)
 
-@require_http_methods(["GET", "POST"])
-def cadastro_aula(request):
-    if request.method == 'POST':
-        form = AulaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Aula cadastrada com sucesso.")
-            return redirect(LISTAR_AULAS)
-    else:
-        form = AulaForm()
-    return render(request, 'studio/aula/cadastrar_aula.html', {'form': form})
+    def _render(self, request, aula, formset):
+        return render(request, self.template_name, {"aula": aula, "formset": formset})
 
 
-@require_http_methods(["GET", "POST"])
-def editar_aula(request, pk):
-    aula = get_object_or_404(Aula, pk=pk)
-    if aula.cancelada:
-        messages.error(request, 'Não é possível editar uma aula cancelada.')
-        return redirect(DETALHES_AULA, pk=aula.codigo)
-    if request.method == 'POST':
-        form = AulaForm(request.POST, instance=aula)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Aula atualizada com sucesso.')
-            return redirect(DETALHES_AULA, pk=aula.codigo)
-    else:
-        form = AulaForm(instance=aula)
-    return render(request, 'studio/aula/editar_aula.html', {'form': form, 'aula': aula})
+class AulaCreateView(CreateView):
+    template_name = "studio/aula/cadastrar_aula.html"
+    model = Aula
+    form_class = AulaForm
+    success_url = reverse_lazy("studio:listar_aulas")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Aula cadastrada com sucesso.")
+        return super().form_valid(form)
 
 
-@require_POST
-def cancelar_aula(request, codigo):
-    aula = get_object_or_404(Aula, codigo=codigo)
-    aula.cancelada = True
-    aula.save()
-    messages.success(request, f'Aula {aula.codigo} foi cancelada com sucesso.')
-    return redirect(LISTAR_AULAS)
+class AulaUpdateView(UpdateView):
+    template_name = "studio/aula/editar_aula.html"
+    model = Aula
+    form_class = AulaForm
+    pk_url_kwarg = "pk"
+
+    def dispatch(self, request, *args, **kwargs):
+        aula = self.get_object()
+        if aula.cancelada:
+            messages.error(request, "Não é possível editar uma aula cancelada.")
+            return redirect(DETALHES_AULA, pk=aula.pk)
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Aula atualizada com sucesso.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy(DETALHES_AULA, kwargs={"pk": self.object.pk})
+
+
+class AulaCancelView(View):
+    http_method_names = ["post"]
+
+    def post(self, request, codigo):
+        aula = get_object_or_404(Aula, codigo=codigo)
+        aula.cancelada = True
+        aula.save()
+        messages.success(request, f"Aula {aula.codigo} foi cancelada com sucesso.")
+        return redirect("studio:listar_aulas")
 
 
 # Views contas/pagamentos
@@ -388,6 +472,7 @@ class ContaReceberUpdateView(UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        form.instance.aluno = self.get_object().aluno
         messages.success(self.request, 'Conta atualizada com sucesso.')
         return super().form_valid(form)
 
@@ -654,12 +739,11 @@ def excluir_horario(request, horario_id):
 
 @require_GET
 def home(request):
-    
     hoje = date.today()
     agora = timezone.now()
-    
+
     total_alunos_ativos = Aluno.objects.filter(status=True).count()
-    
+
     aulas_com_vagas_hoje = HorarioDisponivel.objects.filter(
         data=hoje,
     ).annotate(
@@ -668,24 +752,33 @@ def home(request):
         agendamentos_ativos_count__lt=models.F('capacidade_maxima')
     ).count()
 
-    contas_a_receber_atraso_soma = ContaReceber.objects.filter(
+    contas_em_atraso_qtd = ContaReceber.objects.filter(
+        vencimento__lt=hoje,
+        status='pendente'
+    ).count()
+
+    contas_em_atraso_valor = ContaReceber.objects.filter(
         vencimento__lt=hoje,
         status='pendente'
     ).aggregate(Sum('valor'))['valor__sum'] or 0
-    
+
     data_vencimento_proximo = hoje + timedelta(days=7)
-    contas_a_vencer_proximo_soma = ContaReceber.objects.filter(
+    contas_a_vencer_proximo_valor = ContaReceber.objects.filter(
         vencimento__range=(hoje, data_vencimento_proximo),
         status='pendente'
     ).aggregate(Sum('valor'))['valor__sum'] or 0
+
+    # monta texto para aviso
+    texto_vencimentos = None
+    if contas_a_vencer_proximo_valor > 0:
+        texto_vencimentos = f"Há R$ {contas_a_vencer_proximo_valor:.2f} em contas que vencem nos próximos 7 dias."
 
     proximos_agendamentos_hoje = Agendamento.objects.filter(
         horario_disponivel__data=hoje,
         horario_disponivel__horario_inicio__gte=agora.time(),
         cancelado=False
     ).select_related('aluno', 'horario_disponivel__funcionario').order_by('horario_disponivel__horario_inicio')
-    
-    
+
     aniversariantes_mes = Aluno.objects.filter(
         data_nascimento__month=hoje.month,
         status=True 
@@ -696,17 +789,21 @@ def home(request):
         cancelada=False
     ).count()
 
+    faltas_hoje = AulaAluno.objects.filter(
+        aula__data=hoje,
+        frequencia=False
+    ).count()
 
     context = {
         'dashboard_data': {
             'total_alunos_ativos': total_alunos_ativos,
             'aulas_com_vagas': aulas_com_vagas_hoje,
-            'contas_em_atraso_valor': contas_a_receber_atraso_soma,
-            'contas_a_vencer_proximo_valor': contas_a_vencer_proximo_soma,
+            'contas_a_receber': contas_em_atraso_valor + contas_a_vencer_proximo_valor,
             'aulas_confirmadas_hoje': aulas_confirmadas_hoje,
+            'faltas_hoje': faltas_hoje,
             'proximos_agendamentos': [
                 {
-                    'id': ag.id, # Adicionei o ID do agendamento
+                    'id': ag.id,
                     'data': ag.horario_disponivel.data.strftime('%d/%m/%Y'),
                     'hora_inicio': ag.horario_disponivel.horario_inicio.strftime('%H:%M'),
                     'servico': ag.horario_disponivel.servico.modalidade if ag.horario_disponivel.servico else 'N/A',
@@ -718,7 +815,12 @@ def home(request):
                 {'nome': aluno.nome, 'aniversario': aluno.data_nascimento}
                 for aluno in aniversariantes_mes
             ],
+            'alertas_financeiros': {
+                'contas_em_atraso': contas_em_atraso_qtd,
+                'proximos_vencimentos': texto_vencimentos,
+                'inicio': hoje.strftime('%Y-%m-%d'),
+                'fim': data_vencimento_proximo.strftime('%Y-%m-%d'),
+            }
         }
     }
-    
     return render(request, 'studio/home.html', context)

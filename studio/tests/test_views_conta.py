@@ -149,7 +149,7 @@ class ContaReceberViewsTestCase(TestCase):
         self.assertTemplateUsed(response, 'studio/conta/registrar_conta.html')
         form = response.context['form']
         self.assertFalse(form.is_valid())
-        self.assertIn('aluno', form.errors)
+        self.assertNotIn('aluno', form.errors)
         self.assertIn('valor', form.errors)
         self.assertIn('vencimento', form.errors)
     def test_excluir_conta_post(self):

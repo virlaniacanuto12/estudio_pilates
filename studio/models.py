@@ -99,7 +99,6 @@ class Aluno(Pessoa):
     data_vencimento_plano = models.DateField()
     plano = models.ForeignKey('studio.Plano', on_delete=models.SET_NULL, null=True, blank=True)
     plano_ativo = models.BooleanField(default=True)
-    evolucao = models.TextField(blank=True)
     
     def __str__(self):
         return f"{self.cpf} ({self.nome})"
@@ -149,7 +148,7 @@ class AulaAluno(models.Model):
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='participacoes')
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     frequencia = models.BooleanField(default=False)
-    evolucao_na_aula = models.TextField(blank=True, null=True)
+    evolucao_na_aula = models.TextField(blank=True)
 
     def __str__(self):
         return f'Aluno {self.aluno} na Aula {self.aula}'
@@ -254,7 +253,7 @@ class Agendamento(models.Model):
     )
     data_agendamento = models.DateTimeField(auto_now_add=True)
     cancelado = models.BooleanField(default=False)
-    motivo_cancelamento = models.TextField(blank=True, null=True)
+    motivo_cancelamento = models.TextField(blank=True)
 
 
     class Meta:
@@ -275,5 +274,5 @@ class Agendamento(models.Model):
 
     def reativar_agendamento(self):
         self.cancelado = False
-        self.motivo_cancelamento = None
+        self.motivo_cancelamento = ''
         self.save()

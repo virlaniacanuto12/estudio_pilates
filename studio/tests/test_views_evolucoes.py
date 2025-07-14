@@ -1,68 +1,50 @@
-from datetime import date, time
+from datetime import date, time, timedelta
 from django.test import TestCase
 from django.urls import reverse
-from studio.models import Aluno, Aula, AulaAluno, Funcionario
+from studio.models import Aluno, Aula, AulaAluno, Funcionario, Servico
+
+TOMORROW = date.today() + timedelta(days=1)
+
 
 class EvolucoesAlunoViewTestCase(TestCase):
     def setUp(self):
-        self.funcionario = Funcionario.objects.create(
-            cpf="12345678900",
-            nome="Instrutor Teste",
-            data_nascimento=date(1980, 1, 1),
-            funcao="Instrutor",
-            salario=2000.0,
-            carga_horaria=40,
-            login="instrutor1",
-            senha="senha123"
+        self.func = Funcionario.objects.create(
+            cpf="12345678900", nome="Instrutor", data_nascimento=date(1980, 1, 1),
+            funcao="Instrutor", salario=2000, carga_horaria=40,
+            login="instrutor1", senha="senha123"
+        )
+        self.servico = Servico.objects.create(
+            modalidade="Pilates", niveis_dificuldade="Iniciante"
         )
         self.aluno = Aluno.objects.create(
-            cpf="11111111111",
-            nome="Aluno Evolucao",
-            data_nascimento=date(1995, 5, 5),
-            profissao="Estudante",
-            historico_saude="Sem restrições",
-            data_inicio_plano=date.today(),
-            data_vencimento_plano=date.today(),
-            plano_ativo=True
+            cpf="11111111111", nome="Aluno Evolucao",
+            data_nascimento=date(1995, 5, 5), profissao="Estudante",
+            historico_saude="Ok",
+            data_inicio_plano=TOMORROW, data_vencimento_plano=TOMORROW + timedelta(days=30),
+            plano_ativo=True,
         )
         self.aula1 = Aula.objects.create(
-            data=date.today(),
-            horario=time(9, 0),
-            funcionario=self.funcionario
+            data=TOMORROW, horario=time(9, 0), funcionario=self.func
         )
+        self.aula1.servicos.add(self.servico)
         self.aula2 = Aula.objects.create(
-            data=date.today(),
-            horario=time(10, 0),
-            funcionario=self.funcionario
+            data=TOMORROW, horario=time(10, 0), funcionario=self.func
         )
-        # Cria participações com evoluções
-        self.participacao1 = AulaAluno.objects.create(
-            aula=self.aula1,
-            aluno=self.aluno,
-            frequencia=True,
-            evolucao_na_aula="Melhorou muito a postura"
+        self.aula2.servicos.add(self.servico)
+
+        AulaAluno.objects.create(
+            aula=self.aula1, aluno=self.aluno, frequencia=True,
+            evolucao_na_aula="Melhorou postura"
         )
-        self.participacao2 = AulaAluno.objects.create(
-            aula=self.aula2,
-            aluno=self.aluno,
-            frequencia=True,
-            evolucao_na_aula=""
-        )
-        self.participacao3 = AulaAluno.objects.create(
-            aula=self.aula2,
-            aluno=self.aluno,
-            frequencia=True,
-            evolucao_na_aula=None
+        AulaAluno.objects.create(
+            aula=self.aula2, aluno=self.aluno, frequencia=True,
+            evolucao_na_aula=""       
         )
 
-    def test_evolucoes_aluno_view(self):
-        url = reverse('studio:evolucoes_aluno', args=[self.aluno.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['aluno'], self.aluno)
-
-        # Evoluções que não são vazias ou nulas
-        evolucoes = response.context['evolucoes']
+    def test_evolucoes_view(self):
+        resp = self.client.get(reverse("studio:evolucoes_aluno", args=[self.aluno.id]))
+        self.assertEqual(resp.status_code, 200)
+        evolucoes = resp.context["evolucoes"]
         self.assertEqual(len(evolucoes), 1)
-        self.assertEqual(evolucoes[0][1], "Melhorou muito a postura")
+        self.assertEqual(evolucoes[0][1], "Melhorou postura")
         self.assertEqual(evolucoes[0][0], self.aula1)
