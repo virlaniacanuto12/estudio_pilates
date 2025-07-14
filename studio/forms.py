@@ -10,6 +10,7 @@ from crispy_forms.layout import Layout, Fieldset, Row, Column, Submit, HTML, Fie
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from django.utils import timezone
 from datetime import date, datetime
+import re 
 
 
 COL_MD_6 = "col-md-6"
@@ -87,10 +88,17 @@ class FuncionarioForm(forms.ModelForm):
         ]
     
     def clean_cpf(self):
-        cpf = self.cleaned_data['cpf']
-        if not cpf.isdigit() or len(cpf) != 11:
-            raise forms.ValidationError("CPF deve conter exatamente 11 dígitos numéricos.")
-        return cpf
+        cpf = self.cleaned_data.get('cpf') 
+        if cpf: # Verifica se o campo foi preenchido
+            # Remove todos os caracteres não numéricos do CPF
+            cpf_numerico = re.sub(r'\D', '', cpf) 
+
+            # Valida o CPF com números apenas
+            if not cpf_numerico.isdigit() or len(cpf_numerico) != 11:
+                raise forms.ValidationError("CPF deve conter exatamente 11 dígitos numéricos.")
+            
+            return cpf_numerico
+        return cpf 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -143,7 +151,7 @@ class FuncionarioForm(forms.ModelForm):
             Fieldset(
                 "Horários de Trabalho",
                 'horarios_trabalho',
-                'observacoes'
+                'observacoes',
             ),
 
         )

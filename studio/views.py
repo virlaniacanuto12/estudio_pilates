@@ -126,7 +126,7 @@ def editar_funcionario(request, id):
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
-            return redirect(LISTAR_FUNCIONARIO)
+        return redirect(LISTAR_FUNCIONARIO)
     else:
         form = FuncionarioForm(instance=funcionario)
 
