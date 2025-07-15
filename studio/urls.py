@@ -7,6 +7,7 @@ from .views import (
     AlunoCreateView,
     AlunoUpdateView,
     AlunoDeleteView,
+    EvolucoesAlunoView,
     PlanoListView,
     PlanoCreateView,
     PlanoUpdateView,
@@ -23,6 +24,12 @@ from .views import (
     PagamentoListView,
     PagamentoCreateView,
     PagamentoDetailView,
+    AulaListView, 
+    AulaDetailView, 
+    FrequenciaAulaView,
+    AulaCreateView, 
+    AulaUpdateView, 
+    AulaCancelView,
     )
 from django.urls import path, include
 
@@ -53,7 +60,7 @@ urlpatterns = [
     path('alunos/novo/', AlunoCreateView.as_view(), name='cadastrar_aluno'),
     path('alunos/editar/<int:id>/', AlunoUpdateView.as_view(), name='editar_aluno'),
     path('alunos/excluir/<int:id>/', AlunoDeleteView.as_view(), name='excluir_aluno'),
-    path('alunos/<int:id>/evolucoes/', views.evolucoes_aluno, name='evolucoes_aluno'),
+    path("alunos/<int:id>/evolucoes/", EvolucoesAlunoView.as_view(), name="evolucoes_aluno"),
 
     # Plano
     path('planos/', PlanoListView.as_view(), name='listar_planos'),
@@ -63,12 +70,12 @@ urlpatterns = [
 
 
     # Aula
-    path('aulas/', views.listar_aulas, name='listar_aulas'),
-    path('aulas/cadastrar/', views.cadastro_aula, name='cadastro_aula'),
-    path('aulas/<int:pk>/', views.detalhes_aula, name='detalhes_aula'),
-    path('aulas/<int:pk>/editar/', views.editar_aula, name='editar_aula'),
-    path('aulas/<int:pk>/frequencia/', views.frequencia_aula, name='frequencia_aula'),
-    path('aulas/cancelar/<int:codigo>/', views.cancelar_aula, name='cancelar_aula'),
+    path("aulas/", AulaListView.as_view(), name="listar_aulas"),
+    path("aulas/nova/", AulaCreateView.as_view(), name="cadastro_aula"),
+    path("aulas/<int:pk>/", AulaDetailView.as_view(), name="detalhes_aula"),
+    path("aulas/<int:pk>/editar/", AulaUpdateView.as_view(), name="editar_aula"),
+    path("aulas/<int:pk>/frequencia/", FrequenciaAulaView.as_view(), name="frequencia_aula"),
+    path("aulas/cancelar/<int:codigo>/", AulaCancelView.as_view(), name="cancelar_aula"),
 
     #Contas a receber
     path('contas/', ContaReceberListView.as_view(), name='listar_contas'),

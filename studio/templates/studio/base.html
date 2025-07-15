@@ -1,88 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Studio Pilates{% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
     <style>
-        /* Estilos para a nova paleta de cores */
-        :root {
-            --primary-purple: #764ba2;
-            --secondary-blue: #667eea;
-        }
+      :root {
+        --primary-purple: #764ba2;
+        --secondary-blue: #667eea;
+      }
 
-        body {
-            background-color: #f8f9fa; /* Cor de fundo leve para a página */
-        }
+      body {
+        background-color: #f8f9fa; /* Cor de fundo leve para a página */
+      }
 
-        /* --- Estilização da Navbar --- */
-        .navbar-custom {
-            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--primary-purple) 100%);
-        }
+      /* --- Estilização da Navbar --- */
+      .navbar-custom {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-blue) 0%,
+          var(--primary-purple) 100%
+        );
+      }
 
-        .navbar-custom .navbar-brand,
-        .navbar-custom .navbar-text,
-        .navbar-custom .nav-link {
-            color: white;
-        }
-        
-        .navbar-custom .btn-custom-toggler {
-            color: rgba(255, 255, 255, 0.7);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+      .navbar-custom .navbar-brand,
+      .navbar-custom .navbar-text,
+      .navbar-custom .nav-link {
+        color: white;
+      }
 
-        .navbar-custom .btn-custom-toggler:hover {
-            color: white;
-            border-color: white;
-        }
-        
-        .navbar-custom .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-        
-        /* --- Estilização do Menu Lateral (Offcanvas) --- */
-        .offcanvas-custom {
-            background: var(--primary-purple);
-            color: white;
-        }
+      .navbar-custom .btn-custom-toggler {
+        color: rgba(255, 255, 255, 0.7);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
 
-        .offcanvas-custom .offcanvas-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
+      .navbar-custom .btn-custom-toggler:hover {
+        color: white;
+        border-color: white;
+      }
 
-        .offcanvas-custom .list-group-item {
-            background-color: transparent;
-            color: white;
-            border: none;
-            border-radius: 0;
-            padding: 1rem 1.5rem;
-            font-size: 1.1em;
-            transition: all 0.2s ease-in-out;
-        }
-        
-        .offcanvas-custom .list-group-item:hover,
-        .offcanvas-custom .list-group-item:focus {
-            background-color: var(--secondary-blue);
-            color: white;
-            transform: translateX(5px);
-        }
+      .navbar-custom .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
 
-        .main-content {
-            padding-top: 70px; /* Espaço para a navbar fixa */
-        }
+      /* --- Estilização do Menu Lateral --- */
+      .offcanvas-custom {
+        background: var(--primary-purple);
+        color: white;
+      }
+
+      .offcanvas-custom .offcanvas-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .offcanvas-custom .list-group-item {
+        background-color: transparent;
+        color: white;
+        border: none;
+        border-radius: 0;
+        padding: 1rem 1.5rem;
+        font-size: 1.1em;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .offcanvas-custom .list-group-item:hover,
+      .offcanvas-custom .list-group-item:focus {
+        background-color: var(--secondary-blue);
+        color: white;
+        transform: translateX(5px);
+      }
+
+      .main-content {
+        padding-top: 70px;
+      }
+      .card-header.bg-primary {
+        background-color: var(--secondary-blue) !important;
+      }
+
+      .card-header.bg-primary.text-white {
+        color: white !important;
+      }
+      .btn-success {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-blue) 0%,
+          var(--primary-purple) 100%
+        );
+        border-color: var(--secondary-blue);
+        color: white;
+        transition: background 0.3s ease, border-color 0.3s ease;
+      }
+      .btn-primary {
+        background-color: var(--secondary-blue);
+        border-color: var(--secondary-blue);
+        color: white;
+      }
+      .btn-primary:hover {
+        background-color: var(--primary-purple);
+        border-color: var(--primary-purple);
+        color: white;
+      }
+      .btn-success:hover {
+        background: linear-gradient(135deg, var(--primary-purple) 0%);
+        border-color: var(--primary-purple);
+        color: white;
+      }
+      .btn-warning {
+        background-color: var(--secondary-blue);
+        border-color: var(--secondary-blue);
+        color: white;
+      }
+      .btn-warning:hover {
+        background-color: var(--primary-purple);
+        border-color: var(--primary-purple);
+        color: white;
+      }
+      .btn-info {
+        background-color: var(--secondary-blue);
+        border-color: var(--secondary-blue);
+        color: white;
+      }
+      .btn-info:hover {
+        background-color: var(--primary-purple);
+        border-color: var(--primary-purple);
+        color: white;
+      }
+
+      /* Estilos para as mensagens */
+      .messages {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        position: fixed; /* Fixa a mensagem na tela */
+        top: 70px; /* Ajusta a posição logo abaixo da navbar */
+        left: 50%;
+        transform: translateX(-50%); /* Centraliza horizontalmente */
+        width: 80%; /* Largura da mensagem */
+        max-width: 600px; /* Limita a largura máxima */
+        z-index: 1050; /* Garante que fique acima de outros elementos */
+      }
+      .message-warning {
+        background-color: #ffeeba; /* Cor de fundo amarela clara para aviso (Bootstrap .alert-warning) */
+        color: #856404; /* Cor do texto para aviso (Bootstrap .alert-warning) */
+        border: 1px solid #ffc107; /* Borda para aviso */
+        padding: 15px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out; /* Transição suave para sumir */
+      }
+      .message-warning.fade-out {
+        opacity: 0;
+      }
     </style>
 
     {% block head_extra %}{% endblock %}
-</head>
-<body>
-
-    <!-- Navbar com as novas classes de estilo -->
+  </head>
+  <body>
     <nav class="navbar navbar-dark navbar-custom fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'studio:home' %}">
@@ -101,58 +188,135 @@
                     </a>
                 {% endif %}
 
-                <!-- Botão do menu lateral que está sempre visível -->
-                <button class="btn btn-custom-toggler ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+          <button
+            class="btn btn-custom-toggler ms-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasMenu"
+            aria-controls="offcanvasMenu"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
+      </div>
     </nav>
 
-    <!-- Offcanvas com a nova classe de estilo -->
-    <div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menu de Gerenciamento</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div
+      class="offcanvas offcanvas-end offcanvas-custom"
+      tabindex="-1"
+      id="offcanvasMenu"
+      aria-labelledby="offcanvasMenuLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasMenuLabel">
+          Menu de Gerenciamento
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="list-group list-group-flush">
+          <a
+            href="{% url 'studio:listar_alunos' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-user-friends me-2"></i> Alunos
+          </a>
+          <a
+            href="{% url 'studio:listar_agendamentos' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-calendar-alt me-2"></i> Agendamentos
+          </a>
+          <a
+            href="{% url 'studio:listar_aulas' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-spa me-2"></i> Aulas
+          </a>
+          <a
+            href="{% url 'studio:listar_funcionario' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-user-tie me-2"></i> Funcionários
+          </a>
+          <a
+            href="{% url 'studio:listar_planos' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-file-invoice-dollar me-2"></i> Planos
+          </a>
+          <a
+            href="{% url 'studio:lista_servicos' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-concierge-bell me-2"></i> Serviços
+          </a>
+          <a
+            href="{% url 'studio:listar_contas' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-credit-card me-2"></i> Contas a Receber
+          </a>
+          <a
+            href="{% url 'studio:listar_pagamentos' %}"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-hand-holding-usd me-2"></i> Pagamentos
+          </a>
         </div>
-        <div class="offcanvas-body">
-            <div class="list-group list-group-flush">
-                <a href="{% url 'studio:listar_alunos' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-user-friends me-2"></i> Alunos
-                </a>
-                <a href="{% url 'studio:listar_agendamentos' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-calendar-alt me-2"></i> Agendamentos
-                </a>
-                <a href="{% url 'studio:listar_aulas' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-spa me-2"></i> Aulas
-                </a>
-                <a href="{% url 'studio:listar_funcionario' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-user-tie me-2"></i> Funcionários
-                </a>
-                <a href="{% url 'studio:listar_planos' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-file-invoice-dollar me-2"></i> Planos
-                </a>
-                <a href="{% url 'studio:lista_servicos' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-concierge-bell me-2"></i> Serviços
-                </a>
-                <a href="{% url 'studio:listar_pagamentos' %}" class="list-group-item list-group-item-action">
-                    <i class="fas fa-hand-holding-usd me-2"></i> Pagamentos
-                </a>
-            </div>
-        </div>
+      </div>
     </div>
 
     <main class="container-fluid main-content">
-        {% block content %}
-        {% endblock %}
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %} 
+      {% block content %} {% endblock %}
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
 
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const messagesContainer = document.querySelector('.messages');
+          if (messagesContainer) {
+              setTimeout(() => {
+                  const messageItems = messagesContainer.querySelectorAll('li');
+                  messageItems.forEach(item => {
+                      item.classList.add('fade-out'); 
+                  });
+                  setTimeout(() => {
+                      messagesContainer.remove(); 
+                  }, 500); 
+              }, 5000); 
+          }
+      });
+    </script>
     {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>
