@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 from .views import (
-    StudioLoginView,
+    login_view_simples,
+    home,
     AlunoListView,
     AlunoCreateView,
     AlunoUpdateView,
@@ -36,13 +37,10 @@ from django.urls import path, include
 app_name = 'studio'
 
 urlpatterns = [
+    #Rota para a view de login
+    path('', views.login_view_simples, name='login'),
 
-
-    #Login
-    
-    #path('', StudioLoginView.as_view(), name='login'),
-
-    #home
+    # Rota para a view da home page
     path('home/', views.home, name='home'),
 
     # Serviços
@@ -70,8 +68,6 @@ urlpatterns = [
     path('planos/<int:codigo>/editar/', PlanoUpdateView.as_view(), name='editar_plano'),
     path('planos/<int:codigo>/excluir/', PlanoDeleteView.as_view(), name='excluir_plano'),
 
-    #Login
-    path('login/', StudioLoginView.as_view(), name='login'),
 
     # Aula
     path("aulas/", AulaListView.as_view(), name="listar_aulas"),

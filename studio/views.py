@@ -546,13 +546,19 @@ class PagamentoDetailView(DetailView):
     template_name = 'studio/pagamento/detalhar_pagamento.html'
     context_object_name = 'pagamento'
 
-# LoginView
+# LoginView (usado para login real)
+#class StudioLoginView(LoginView):
+    #template_name = 'studio/login.html'
+    #authentication_form = AuthenticationForm
+    #next_page = reverse_lazy('home')
 
-class StudioLoginView(LoginView):
-    template_name = 'studio/login.html'
-    authentication_form = AuthenticationForm
-    next_page = reverse_lazy('home')
-
+# Login direto (para entrar sem autenticação real)
+def login_view_simples(request):
+    # Se o usuário enviou o formulário (clicou em Entrar)
+    if request.method == 'POST':
+        # Redireciona direto para a página 'home'sem verificar nada.
+        return redirect('studio:home') 
+    return render(request, 'studio/login.html')
 
 # Views Horarios/Agendamento
 
